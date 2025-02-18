@@ -1,6 +1,7 @@
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 
 class CaCustomCard extends StatelessWidget {
@@ -47,13 +48,17 @@ class CaCustomCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 5),
-            textItem(lable: 'CLIENT NAME', value: clintName),
+            CustomTextInfo(
+                flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: clintName),
             SizedBox(height: 5),
-            textItem(lable: 'DOCUMENT', value: document),
+            CustomTextInfo(
+                flex1: 2, flex2: 3, lable: 'DOCUMENT', value: document),
             SizedBox(height: 5),
-            textItem(lable: 'CATEGORY', value: catogory),
+            CustomTextInfo(
+                flex1: 2, flex2: 3, lable: 'CATEGORY', value: catogory),
             SizedBox(height: 5),
-            textItem(lable: 'DOWNLOAD', value: download),
+            CustomTextInfo(
+                flex1: 2, flex2: 3, lable: 'DOWNLOAD', value: download),
             SizedBox(height: 10),
             Align(
               alignment: Alignment.bottomRight,
@@ -76,12 +81,12 @@ class CaCustomCard extends StatelessWidget {
       children: [
         Text(
           lable,
-          style: AppTextStyle().cardLableText,
+          style: AppTextStyle().lableText,
         ),
         SizedBox(width: 5),
         Text(
           ':',
-          style: AppTextStyle().cardLableText,
+          style: AppTextStyle().lableText,
         ),
         SizedBox(width: 5),
         Expanded(

@@ -1,5 +1,4 @@
-import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
-import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_state.dart';
+
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
@@ -10,7 +9,6 @@ import 'package:ca_app/widgets/custom_dropdown_button.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_multi_select_dropdown.dart';
 import 'package:ca_app/widgets/file_picker_widget.dart';
-import 'package:ca_app/widgets/multi_dropdown_widget.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +26,8 @@ class RaiseRequestScreen extends StatefulWidget {
 class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _listController = TextEditingController();
-  List<String> selectedItem = [];
+
+  List<String> selectedItems = [];
   List<PlatformFile> documentList = [];
   String? selectedCa;
   final List<String> items = [
@@ -98,22 +96,38 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                             return null;
                           },
                         )
-                      : MultiSelectDropdownWidget(
+                      : MultiSelectSearchableDropdown(
+                          hintText: 'Select client',
                           items: items,
-                          hintText: 'Select items',
-                          onSelectionChange: (value) {
+                          selectedItems: selectedItems,
+                          onChanged: (newSelection) {
                             setState(() {
-                              selectedItem = value;
+                              selectedItems = newSelection;
                             });
-                            debugPrint('slectedItem,,,,,$selectedItem');
                           },
-                          validator: (p0) {
-                            if (p0 == null || p0.isEmpty) {
-                              return 'Please select item';
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select client';
                             }
                             return null;
                           },
                         ),
+                  // : MultiSelectDropdownWidget(
+                  //     items: items,
+                  //     hintText: 'Select items',
+                  //     onSelectionChange: (value) {
+                  //       setState(() {
+                  //         selectedItem = value;
+                  //       });
+                  //       debugPrint('slectedItem,,,,,$selectedItem');
+                  //     },
+                  //     validator: (p0) {
+                  //       if (p0 == null || p0.isEmpty) {
+                  //         return 'Please select item';
+                  //       }
+                  //       return null;
+                  //     },
+                  //   ),
                   SizedBox(height: 10),
                   // BlocBuilder<MultiSelectDropdownBloc,
                   //     MultiSelectDropdownState>(
@@ -168,7 +182,7 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                   CommonButtonWidget(
                       buttonTitle: 'Raise',
                       onTap: () {
-                        debugPrint('vcnvbbnmxbdxnm$selectedItem');
+                        debugPrint('vcnvbbnmxbdxnm$selectedItems');
                         if (_formKey.currentState!.validate()) {}
                       })
                 ],

@@ -62,19 +62,19 @@ class _ForgotScreenState extends State<ForgotScreen> {
               SizedBox(height: 20),
               BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
-                  if (state is AuthForgotSuccessState) {
+                  if (state is SendOtpSuccess) {
                     context.push('/otpVerify', extra: _emailController.text);
                     Utils.toastSuccessMessage('Otp Sent Successfully');
                   }
                 },
                 builder: (context, state) {
                   return CommonButtonWidget(
-                      loader: state is AuthForgotLoadingState,
+                      loader: state is AuthLoading,
                       buttonTitle: 'Submit',
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
                           BlocProvider.of<AuthBloc>(context).add(
-                              AuthForgotEvent(email: _emailController.text));
+                              SendOtpEvent(email: _emailController.text));
                           // context.read<AuthBloc>().add(
                           //     AuthForgotEvent(email: _emailController.text));
                         }

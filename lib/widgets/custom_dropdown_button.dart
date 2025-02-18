@@ -52,7 +52,7 @@ class CustomDropdownButton extends StatelessWidget {
                       return DropdownMenuItem(value: value, child: Text(value));
                     }).toList(),
                     buttonStyleData: ButtonStyleData(
-                      height: 55,
+                      height: 50,
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
@@ -106,7 +106,7 @@ class CustomDropdownButton extends StatelessWidget {
                   ),
                   if (fieldState.hasError)
                     Padding(
-                      padding: const EdgeInsets.only(top: 5, left: 15),
+                      padding: const EdgeInsets.only(top: 5, left: 10),
                       child: Text(
                         fieldState.errorText!,
                         style: TextStyle(

@@ -15,7 +15,7 @@ class ServicesScreen extends StatefulWidget {
 }
 
 class _ServicesScreenState extends State<ServicesScreen> {
-  List<String> tabList = ['Services', 'Create New Services', 'View Services'];
+  List<String> tabList = ['Services', 'Create Services', 'View Services'];
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {

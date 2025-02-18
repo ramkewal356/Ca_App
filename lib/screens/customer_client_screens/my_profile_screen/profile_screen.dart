@@ -1,4 +1,5 @@
-import 'package:ca_app/blocs/register/register_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
@@ -57,6 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 20),
+              
                 Center(
                     child: ImagePickerWidget(
                   userImg: '',
@@ -165,15 +167,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     hintText: 'Select location'),
                 SizedBox(height: 10),
                 SizedBox(height: 20),
-                BlocConsumer<RegisterBloc, RegisterState>(
+                BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
-                    if (state is RegisterSuccess) {
-                      context.push('/login');
-                    }
+                    // if (state is RegisterSuccess) {
+                    //   context.push('/login');
+                    // }
                   },
                   builder: (context, state) {
                     return CommonButtonWidget(
-                        loader: state is RegisterLoading,
+                        // loader: state is RegisterLoading,
                         buttonTitle: 'Save & Update',
                         onTap: () {
                           debugPrint('selected Value $countryCode');

@@ -1,5 +1,6 @@
-import 'package:ca_app/blocs/login/login_bloc.dart';
-import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_event.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -81,7 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   suffixIcons: IconButton(
                     icon: Icon(
                       obsucePassword ? Icons.visibility : Icons.visibility_off,
-                      color: ColorConstants.black,
+                      color: obsucePassword
+                          ? ColorConstants.black
+                          : ColorConstants.darkGray,
                     ),
                     onPressed: () {
                       setState(() {
@@ -108,17 +111,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 SizedBox(height: 10),
-                BlocConsumer<LoginBloc, LoginState>(
+                BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
-                    if (state is LoginSuccessState) {
-                      SharedPrefsClass()
-                          .saveToken(state.loginModel?.token ?? '');
-                      // context.pushReplacement('/ca_dashboard');
-                      context.pushReplacement('/customer_dashboard');
-
+                    if (state is LoginSuccess) {
+                      if (state.loginModel?.data?.role == 'CA') {
+                        context.pushReplacement('/ca_dashboard');
+                      } else if (state.loginModel?.data?.role == 'SUBCA') {
+                        context.pushReplacement('/subca_dashboard');
+                      } else if (state.loginModel?.data?.role == 'CUSTOMER') {
+                        context.pushReplacement('/customer_dashboard');
+                      } else {}
+                     
                       Utils.toastSuccessMessage('Login Successfully');
-                    } else if (state is LoginErrorState) {
-                      Utils.toastErrorMessage(state.errorMessage);
                     }
                   },
                   builder: (context, state) {
@@ -127,12 +131,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // }
                     return CommonButtonWidget(
-                      loader: state is LoginLoadingState,
+                      loader: state is AuthLoading,
                       buttonTitle: 'Sign In',
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
                           debugPrint('jcxbxjnmxcnmc');
-                          BlocProvider.of<LoginBloc>(context).add(LoginApi(
+                          BlocProvider.of<AuthBloc>(context).add(LoginEvent(
                               userName: _emailController.text,
                               password: _passwordController.text));
                         }
@@ -144,9 +148,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CustomTextButton(
-                      buttonTitle: 'Not User ?',
-                      onTap: () {},
+                    // CustomTextButton(
+                    //   buttonTitle: 'Not User ?',
+                    //   onTap: () {},
+                    // ),
+                    Text(
+                      'Not User ?',
+                      style: AppTextStyle().cardLableText,
                     ),
                     SizedBox(width: 10),
                     CustomTextButton(

@@ -1,4 +1,5 @@
-import 'package:ca_app/blocs/register/register_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/models/register_request_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
@@ -214,7 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 SizedBox(height: 20),
-                BlocConsumer<RegisterBloc, RegisterState>(
+                BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
                     if (state is RegisterSuccess) {
                       context.push('/login');
@@ -222,20 +223,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                   builder: (context, state) {
                     return CommonButtonWidget(
-                        loader: state is RegisterLoading,
+                        loader: state is AuthLoading,
                         buttonTitle: 'Register',
                         onTap: () {
                           debugPrint('selected Value $countryCode');
                           debugPrint('phone number ${_phoneController.text}');
 
                           if (_formKey.currentState!.validate()) {
-                            BlocProvider.of<RegisterBloc>(context).add(Register(
-                                registerRequest: RegisterRequestModel(
-                                    firstName: _firstNameController.text,
-                                    address: _emailController.text,
-                                    password: _newPassController.text,
-                                    gender: selectedValue,
-                                    userId: 13)));
+                            // BlocProvider.of<AuthBloc>(context).add(Register(
+                            //     registerRequest: RegisterRequestModel(
+                            //         firstName: _firstNameController.text,
+                            //         address: _emailController.text,
+                            //         password: _newPassController.text,
+                            //         gender: selectedValue,
+                            //         userId: 13)));
                           }
                         });
                   },

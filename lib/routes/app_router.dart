@@ -1,5 +1,13 @@
 import 'package:ca_app/screens/auth_screens/forgot_screen.dart';
+import 'package:ca_app/screens/ca_screens/all_raise_history/all_raise_history_screen.dart';
+import 'package:ca_app/screens/ca_screens/customer_allocation/customer_allocation.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/my_client_screen.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/view_client_screen.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/view_document_screen.dart';
 import 'package:ca_app/screens/ca_screens/services_screens/services_screen.dart';
+import 'package:ca_app/screens/ca_screens/task_allocation/task_allocation_screen.dart';
+import 'package:ca_app/screens/ca_screens/team_member/team_member_screen.dart';
+import 'package:ca_app/screens/ca_screens/team_member/view_team_member_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support.dart';
 import 'package:ca_app/screens/auth_screens/login_screen.dart';
 import 'package:ca_app/screens/auth_screens/otp_verification_screen.dart';
@@ -23,6 +31,7 @@ import 'package:ca_app/screens/starting_screens/splash_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_clients/my_clients_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_services/my_services_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_task/my_task_screen.dart';
+import 'package:ca_app/screens/sub_ca_screens/my_task/task_view_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/recent_document/recent_document_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/sub_ca_dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -183,6 +192,54 @@ final GoRouter goRouter = GoRouter(
                 return ServicesScreen();
               },
             ),
+            GoRoute(
+              path: 'my_client',
+              builder: (context, state) {
+                return MyCAClientScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_client',
+              builder: (context, state) {
+                return ViewClientScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_document',
+              builder: (context, state) {
+                return ViewDocumentScreen();
+              },
+            ),
+            GoRoute(
+              path: 'team_member',
+              builder: (context, state) {
+                return TeamMemberScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_team_member',
+              builder: (context, state) {
+                return ViewTeamMemberScreen();
+              },
+            ),
+            GoRoute(
+              path: 'customer_allocation',
+              builder: (context, state) {
+                return CustomerAllocation();
+              },
+            ),
+            GoRoute(
+              path: 'task_allocation',
+              builder: (context, state) {
+                return TaskAllocationScreen();
+              },
+            ),
+            GoRoute(
+              path: 'all_raise_history',
+              builder: (context, state) {
+                return AllRaiseHistoryScreen();
+              },
+            ),
           ]),
       // SUBCA MODULE ROUTES
       GoRoute(
@@ -209,5 +266,12 @@ final GoRouter goRouter = GoRouter(
                 return MyTaskScreen();
               },
             ),
+            GoRoute(
+              path: 'task_view',
+              builder: (context, state) {
+                return TaskViewScreen();
+              },
+            ),
+          
           ]),
     ]);

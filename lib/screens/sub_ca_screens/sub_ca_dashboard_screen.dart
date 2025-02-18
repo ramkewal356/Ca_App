@@ -210,7 +210,10 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                             style: AppTextStyle().subheadingtext,
                           ),
                           CustomTextButton(
-                              buttonTitle: 'View All', onTap: () {})
+                              buttonTitle: 'View All',
+                              onTap: () {
+                                context.push('/subca_dashboard/my_client');
+                              })
                         ],
                       ),
                       Expanded(
@@ -256,7 +259,11 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                     'Recent document',
                     style: AppTextStyle().headingtext,
                   ),
-                  CustomTextButton(buttonTitle: 'View All', onTap: () {})
+                  CustomTextButton(
+                      buttonTitle: 'View All',
+                      onTap: () {
+                        context.push('/recent_document');
+                      })
                 ],
               ),
             ),

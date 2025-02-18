@@ -28,9 +28,11 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 1,
       // shadowColor: ColorConstants.white,
+      centerTitle: true,
       titleSpacing: 0,
       backgroundColor: ColorConstants.buttonColor,
       title: Row(
+       
         children: [
           Text(
             time ?? '',
@@ -39,7 +41,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
           Expanded(
             child: Text(
               title,
-              style: AppTextStyle().buttontext,
+              style: AppTextStyle().appbartext,
               overflow: TextOverflow.ellipsis,
             ),
           ),

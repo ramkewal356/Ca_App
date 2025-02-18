@@ -3,6 +3,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 
@@ -58,13 +59,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                     lable: 'CREATED DATE', value: '23/01/2023'))
                           ],
                         ),
-                        CustomTextItem(
+                        CustomTextInfo(
+                            flex1: 2,
+                            flex2: 3,
                             lable: 'DOCUMENT NAME', value: 'jdbjhdjhj'),
-                        CustomTextItem(
+                        CustomTextInfo(
+                            flex1: 2,
+                            flex2: 3,
                             lable: 'CATEGORY', value: 'dhjbjhjdhvjdv'),
-                        CustomTextItem(
+                        CustomTextInfo(
+                            flex1: 2,
+                            flex2: 3,
                             lable: 'SU CATEGORY', value: 'dhjbjhjdhvjdv'),
-                        CustomTextItem(
+                        CustomTextInfo(
+                            flex1: 2,
+                            flex2: 3,
                             lable: 'DOWNLOAD', value: 'dhjbjhjdhvjdv'),
                         SizedBox(height: 5),
                         Align(

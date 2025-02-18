@@ -2,7 +2,7 @@ import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-import 'package:ca_app/widgets/custom_text_item.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 
 class MyServicesScreen extends StatefulWidget {
@@ -36,15 +36,24 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                   return CustomCard(
                       child: Column(
                     children: [
-                      CustomTextItem(lable: 'ID', value: '#123'),
-                      CustomTextItem(
+                      CustomTextInfo(
+                          flex1: 3, flex2: 4, lable: 'ID', value: '#123'),
+                      CustomTextInfo(
+                          flex1: 3,
+                          flex2: 4,
                           lable: 'SERVICE NAME', value: 'GST service'),
-                      CustomTextItem(
+                      CustomTextInfo(
+                          flex1: 3,
+                          flex2: 4,
                           lable: 'SUBSERVICE NAME', value: 'gst number'),
-                      CustomTextItem(
+                      CustomTextInfo(
+                          flex1: 3,
+                          flex2: 4,
                           lable: 'CREATE DATE/TIME',
                           value: '04/02/2025 / 11:19'),
-                      CustomTextItem(
+                      CustomTextInfo(
+                          flex1: 3,
+                          flex2: 4,
                           lable: 'SERVICE DESCRIPTIONS',
                           value:
                               '#1 jhcjdcjhchjd bhjbjjdn hjkjknd hdjkdkjjkd jh'),

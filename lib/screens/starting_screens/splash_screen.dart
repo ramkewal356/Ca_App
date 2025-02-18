@@ -26,14 +26,17 @@ class _SplashScreenState extends State<SplashScreen> {
     return BlocListener<AuthBloc, AuthState>(
       bloc: BlocProvider.of<AuthBloc>(context),
       listener: (context, state) {
-        debugPrint('vcbnvcbcxnbcvnb');
+       
 
         if (state is AuthSuccessState) {
-          // context.pushReplacement('/');
-          // context.pushReplacement('/customer_dashboard');
-          // context.pushReplacement('/ca_dashboard');
-          context.pushReplacement('/subca_dashboard');
-        } else if (state is AuthFailState) {
+          if (state.role == 'CA') {
+            context.pushReplacement('/ca_dashboard');
+          } else if (state.role == 'SUBCA') {
+            context.pushReplacement('/subca_dashboard');
+          } else if (state.role == 'CUSTOMER') {
+            context.pushReplacement('/customer_dashboard');
+          }
+        } else if (state is AuthErrorState) {
           debugPrint('vcbnvcbcxnbcvnb');
 
           context.pushReplacement('/login');

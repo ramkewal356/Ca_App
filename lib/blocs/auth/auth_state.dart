@@ -1,3 +1,7 @@
+import 'package:ca_app/data/models/get_user_by_id_model.dart';
+import 'package:ca_app/data/models/login_model.dart';
+import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
+import 'package:ca_app/data/models/update_user_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AuthState extends Equatable {
@@ -6,29 +10,84 @@ abstract class AuthState extends Equatable {
   List<Object> get props => [];
 }
 
+//////////////**** Initial State ****////////////////
 class AuthInitState extends AuthState {}
 
-class AuthSuccessState extends AuthState {}
+///////////////**** Loading State ****///////////////
+class AuthLoading extends AuthState {}
 
-class AuthFailState extends AuthState {}
+///////////////**** Success State ****///////////////
+/// Auth Success State///
+class AuthSuccessState extends AuthState {
+  final String role;
 
-class AuthForgotLoadingState extends AuthState {}
-
-class AuthForgotSuccessState extends AuthState {}
-
-class AuthForgotFailState extends AuthState {
-  final String message;
-
-  const AuthForgotFailState({required this.message});
+  const AuthSuccessState({required this.role});
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [role];
 }
 
-class AuthAppFailureState extends AuthState {
-  final String message;
+/// Login Success State///
+class LoginSuccess extends AuthState {
+  final LoginModel? loginModel;
 
-  const AuthAppFailureState({required this.message});
+  const LoginSuccess({required this.loginModel});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [loginModel ?? []];
+}
+
+/// Register Success State///
+final class RegisterSuccess extends AuthState {
+  // final RegisterResponseModel? registerResponse;
+  final bool registerResponse;
+
+  const RegisterSuccess({required this.registerResponse});
+  @override
+  List<Object> get props => [registerResponse];
+}
+
+/// SendOtp Success State///
+class SendOtpSuccess extends AuthState {
+  final OtpSendAndVerifyModel? otpSendModel;
+
+  const SendOtpSuccess({required this.otpSendModel});
+  @override
+  List<Object> get props => [otpSendModel ?? []];
+}
+
+/// VerifyOtp Success State///
+class VerifyOtpSuccess extends AuthState {
+  final OtpSendAndVerifyModel? verifyModel;
+
+  const VerifyOtpSuccess({required this.verifyModel});
+  @override
+
+  List<Object> get props => [verifyModel ?? []];
+}
+
+/// Update Success State///
+class UpdateUserSuccess extends AuthState {
+  final UpdateUserModel? updateUser;
+
+  const UpdateUserSuccess({required this.updateUser});
+  @override
+  List<Object> get props => [updateUser ?? []];
+}
+/// GetUserById Success State///
+class GetUserByIdSuccess extends AuthState {
+  final GetUserByIdModel? getUserByIdData;
+  const GetUserByIdSuccess({required this.getUserByIdData});
+  @override
+  List<Object> get props => [getUserByIdData ?? []];
+}
+/////////////////**** End Success State ****////////////////
+
+///////////////**** Error State ****////////////////
+class AuthErrorState extends AuthState {
+  final String erroMessage;
+
+  const AuthErrorState({required this.erroMessage});
+
+  @override
+  List<Object> get props => [erroMessage];
 }

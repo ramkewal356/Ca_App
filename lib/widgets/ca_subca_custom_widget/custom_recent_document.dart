@@ -1,7 +1,8 @@
 import 'package:ca_app/utils/constanst/colors.dart';
+import 'package:ca_app/utils/constanst/text_style.dart';
 
 import 'package:ca_app/widgets/common_button_widget.dart';
-import 'package:ca_app/widgets/custom_text_item.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 
 class CustomRecentDocument extends StatelessWidget {
@@ -29,17 +30,25 @@ class CustomRecentDocument extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextItem(lable: 'ID', value: '#1234'),
-        CustomTextItem(lable: 'CLIENT NAME', value: 'Vjhdfjhdsjf'),
-        CustomTextItem(lable: 'DOCUMENT NAME', value: 'ddjhdjvdvcccc'),
-        CustomTextItem(lable: 'CATEGORY', value: 'cxvbcvyu'),
-        CustomTextItem(lable: 'SUBCATEGORY', value: 'dndjvhudu'),
-        CustomTextItem(lable: 'POSTED DATE', value: 'dcjhbjhdcyu'),
+        CustomTextInfo(flex1: 2, flex2: 3, lable: 'ID', value: '#1234'),
+        CustomTextInfo(
+            flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: 'Vjhdfjhdsjf'),
+        CustomTextInfo(
+            flex1: 2, flex2: 3, lable: 'DOCUMENT NAME', value: 'ddjhdjvdvcccc'),
+        CustomTextInfo(
+            flex1: 2, flex2: 3, lable: 'CATEGORY', value: 'cxvbcvyu'),
+        CustomTextInfo(
+            flex1: 2, flex2: 3, lable: 'SUBCATEGORY', value: 'dndjvhudu'),
+        CustomTextInfo(
+            flex1: 2, flex2: 3, lable: 'POSTED DATE', value: 'dcjhbjhdcyu'),
+        SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CommonButtonWidget(
-                buttonColor: ColorConstants.greenColor,
+                buttonColor: ColorConstants.white,
+                buttonBorderColor: ColorConstants.greenColor,
+                tileStyle: AppTextStyle().getgreenText,
                 buttonWidth: 120,
                 buttonTitle: 'Download',
                 onTap: onTapDownload),

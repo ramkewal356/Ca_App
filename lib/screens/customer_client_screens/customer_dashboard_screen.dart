@@ -162,49 +162,56 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                     )),
               ),
               SizedBox(height: 10),
-              Text(
-                'Recent Request',
-                style: AppTextStyle().headingtext,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Text(
+                  'Recent Request',
+                  style: AppTextStyle().headingtext,
+                ),
               ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: 6,
                 itemBuilder: (context, index) {
-                  return CustomCard(
-                    // id: '1',
-                    // date: '23/01/2025',
-                    // senderCa: 'Vishal Singh',
-                    // description: 'fsdfsdf fsdfdfdf fdsdsfdff df',
-                    // onTap: () {},
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: CustomTextItem(lable: 'ID', value: '1')),
-                            Expanded(
-                                child: CustomTextItem(
-                                    lable: 'DATE', value: '23/01/2023'))
-                          ],
-                        ),
-                        CustomTextItem(
-                            lable: 'SENDER(CA)', value: 'Vishal singh'),
-                        CustomTextItem(
-                            lable: 'DESCRIPTION',
-                            value: 'dhjbjhjdhvjdvjkdsvjjh'),
-                        SizedBox(height: 5),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: CommonButtonWidget(
-                              buttonWidth: 100,
-                              buttonheight: 50,
-                              buttonTitle: 'View',
-                              onTap: () {
-                                context.push('/request_details');
-                              }),
-                        )
-                      ],
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: CustomCard(
+                      // id: '1',
+                      // date: '23/01/2025',
+                      // senderCa: 'Vishal Singh',
+                      // description: 'fsdfsdf fsdfdfdf fdsdsfdff df',
+                      // onTap: () {},
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                  child:
+                                      CustomTextItem(lable: 'ID', value: '1')),
+                              Expanded(
+                                  child: CustomTextItem(
+                                      lable: 'DATE', value: '23/01/2023'))
+                            ],
+                          ),
+                          CustomTextItem(
+                              lable: 'SENDER(CA)', value: 'Vishal singh'),
+                          CustomTextItem(
+                              lable: 'DESCRIPTION',
+                              value: 'dhjbjhjdhvjdvjkdsvjjh'),
+                          SizedBox(height: 5),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: CommonButtonWidget(
+                                buttonWidth: 100,
+                                buttonheight: 50,
+                                buttonTitle: 'View',
+                                onTap: () {
+                                  context.push('/request_details');
+                                }),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 },

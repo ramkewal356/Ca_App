@@ -1,8 +1,6 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
-import 'package:ca_app/blocs/login/login_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
-import 'package:ca_app/blocs/register/register_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/routes/app_router.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +20,9 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc()),
-        BlocProvider(create: (_) => LoginBloc()),
+      
         BlocProvider(create: (_) => CustomDropdownBloc()),
-        BlocProvider(create: (_) => RegisterBloc()),
+    
         BlocProvider(create: (_) => UploadDocumentBloc()),
         BlocProvider(create: (_) => MultiSelectDropdownBloc()),
       ],

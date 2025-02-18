@@ -1,9 +1,12 @@
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/utils/assets.dart';
 // import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CustomDrawer extends StatefulWidget {
   final String userName;
@@ -66,7 +69,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           accountEmail: Text(widget.emailAddress),
           currentAccountPicture: CircleAvatar(
-            child: ClipOval(child: Image.asset(widget.profileUrl)),
+            child: ClipOval(
+                child: widget.profileUrl.isNotEmpty
+                    ? Image.network(
+                        widget.profileUrl,
+                        fit: BoxFit.fill,
+                      )
+                    : Image.asset(appLogo)),
           ),
         ),
         Expanded(
@@ -131,6 +140,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ListTile(
+                  onTap: () async {
+                    context.pop();
+                    final box = context.findRenderObject() as RenderBox?;
+
+                    await Share.share(
+                      'Check out this Flutter app: https://example.com',
+                      subject: 'ram',
+                      sharePositionOrigin:
+                          box!.localToGlobal(Offset.zero) & box.size,
+                    );
+                    // Share.share(
+                    //     'Check out this Flutter app: https://example.com');
+                  },
                   leading: Icon(Icons.share_sharp),
                   title: Text(
                     'Share App',
@@ -139,8 +161,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
                 ListTile(
                   onTap: () {
-                    context.pushReplacement('/login');
-                    SharedPrefsClass().removeToken();
+                    context.pop();
+                    showConfimLogout();
                   },
                   leading: Icon(Icons.logout),
                   title: Text(
@@ -153,6 +175,55 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
         )
       ]),
+    );
+  }
+
+  showConfimLogout() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: ColorConstants.white,
+          insetPadding: EdgeInsets.all(20),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text.rich(TextSpan(children: [
+                      TextSpan(
+                          text: 'Are you sure you want to ',
+                          style: AppTextStyle().cardLableText),
+                      TextSpan(text: 'Logout ?', style: AppTextStyle().redText)
+                    ]))),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CommonButtonWidget(
+                      buttonWidth: 70,
+                      buttonTitle: 'No',
+                      onTap: () {
+                        context.pop();
+                      },
+                    ),
+                    CommonButtonWidget(
+                      buttonWidth: 70,
+                      buttonTitle: 'Yes',
+                      onTap: () {
+                        context.pushReplacement('/login');
+                        SharedPrefsClass().removeToken();
+                      },
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

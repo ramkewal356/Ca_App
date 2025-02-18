@@ -86,7 +86,7 @@ class _CustomPhoneFieldState extends State<CustomPhoneField> {
                 // dropdownTextStyle: AppTextStyle.hintText,
                 decoration: InputDecoration(
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   filled: widget.readOnly,
                   fillColor: widget.readOnly
                       ? ColorConstants.buttonColor.withOpacity(0.1)

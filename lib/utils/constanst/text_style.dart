@@ -7,10 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTextStyle {
   TextStyle largWhitetext = GoogleFonts.roboto(
       color: ColorConstants.white, fontSize: 40, fontWeight: FontWeight.w600);
+  TextStyle appbartext = GoogleFonts.roboto(
+      color: ColorConstants.white, fontSize: 20, fontWeight: FontWeight.w600);
   TextStyle mediumWhitetext = GoogleFonts.roboto(
       color: ColorConstants.white, fontSize: 35, fontWeight: FontWeight.w600);
   TextStyle buttontext = GoogleFonts.roboto(
-      color: ColorConstants.white, fontSize: 18, fontWeight: FontWeight.w600);
+      color: ColorConstants.white, fontSize: 16, fontWeight: FontWeight.w600);
   TextStyle smallbuttontext = GoogleFonts.roboto(
       color: ColorConstants.white, fontSize: 16, fontWeight: FontWeight.w500);
   TextStyle statustext = GoogleFonts.roboto(
@@ -74,4 +76,8 @@ class AppTextStyle {
       color: ColorConstants.redColor,
       fontSize: 14,
       fontWeight: FontWeight.w500);
+  TextStyle redText = GoogleFonts.roboto(
+      color: ColorConstants.redColor,
+      fontSize: 16,
+      fontWeight: FontWeight.w600);
 }
