@@ -1,6 +1,8 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
+import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
+import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/routes/app_router.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,9 @@ class MyApp extends StatelessWidget {
     
         BlocProvider(create: (_) => UploadDocumentBloc()),
         BlocProvider(create: (_) => MultiSelectDropdownBloc()),
+        BlocProvider(create: (_) => TeamMemberBloc()),
+        BlocProvider(create: (_) => CustomerBloc()),
+
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

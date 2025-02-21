@@ -16,6 +16,7 @@ class SendOtpEvent extends AuthEvent {
   @override
   List<Object> get props => [email];
 }
+
 //**** Verify Otp Event ****//
 class VerifyOtpEvent extends AuthEvent {
   final String email;
@@ -53,8 +54,33 @@ class LoginEvent extends AuthEvent {
   List<Object> get props => [userName, password];
 }
 
-//**** Register Event ****//
-class RegisterEvent extends AuthEvent {}
+//**** Add New User Event ****//
+class AddUserEvent extends AuthEvent {
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String countryCode;
+  final String mobile;
+  final String role;
+
+  const AddUserEvent(
+      {required this.firstName,
+      required this.lastName,
+      required this.email,
+      required this.countryCode,
+      required this.mobile,
+      required this.role});
+
+  @override
+  List<Object> get props =>
+      [firstName, lastName, email, countryCode, mobile, role];
+}
 
 //**** GetUserById Event ****//
-class GetUserByIdEvent extends AuthEvent {}
+class GetUserByIdEvent extends AuthEvent {
+  final String? userId;
+
+  const GetUserByIdEvent({this.userId});
+  @override
+  List<Object> get props => [userId ?? ''];
+}

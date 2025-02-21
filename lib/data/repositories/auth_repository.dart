@@ -1,3 +1,4 @@
+
 import 'package:ca_app/data/models/get_user_by_id_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
 import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
@@ -32,7 +33,46 @@ class AuthRepository {
     }
     return null;
   }
+  //**** Add New User API ****//
+  Future<GetUserByIdModel?> addNewUser(
+      {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.addNewUserUrl,
+        body: body,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.POST);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('userResponse ${response?.data}');
+      return GetUserByIdModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
 
+  //**** Update Profile Image API ****//
+  Future<void> updateProfileImage({required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.updateProfileImageUrl,
+        body: body,
+        bodyType: HttpBodyType.FormData,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('sendOtpResponse ${response?.data}');
+      // return OtpSendAndVerifyModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
   //**** Send Otp API ****//
   Future<OtpSendAndVerifyModel?> sendOtpForReset(
       {required Map<String, dynamic> query}) async {

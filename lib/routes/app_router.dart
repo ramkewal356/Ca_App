@@ -219,7 +219,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'view_team_member',
               builder: (context, state) {
-                return ViewTeamMemberScreen();
+                var userId = state.extra as Map<String, dynamic>;
+                return ViewTeamMemberScreen(
+                  userId: userId['userId'],
+                );
               },
             ),
             GoRoute(
@@ -272,6 +275,5 @@ final GoRouter goRouter = GoRouter(
                 return TaskViewScreen();
               },
             ),
-          
           ]),
     ]);

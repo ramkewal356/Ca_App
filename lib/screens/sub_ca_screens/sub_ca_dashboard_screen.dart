@@ -1,4 +1,4 @@
-import 'package:ca_app/utils/assets.dart';
+
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/ca_custom_card.dart';
@@ -61,7 +61,7 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
       drawer: CustomDrawer(
         userName: 'xyz',
         emailAddress: 'xyz@gmail.com',
-        profileUrl: appLogo,
+        profileUrl: '',
         activeButton: true,
         activeTex: 'Active',
         // selectedIndex: selectedValue,
@@ -223,6 +223,9 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                             return Column(
                               children: [
                                 ListTile(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10),
+                                  horizontalTitleGap: 10,
                                   leading: CircleAvatar(
                                     radius: 25,
                                     backgroundColor: ColorConstants.buttonColor,

@@ -10,11 +10,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitState()) {
     on<AuthAppInitEvent>(_authUser);
     on<LoginEvent>(_loginApi);
+    on<AddUserEvent>(_addUserApi);
+
     on<SendOtpEvent>(_sendOtpApi);
     on<VerifyOtpEvent>(_verifyOtpApi);
     on<UpdateUserEvent>(_updateUserApi);
     on<GetUserByIdEvent>(_getUserById);
-   
   }
   //**** Call AuthUser API ****//
   Future<void> _authUser(
@@ -28,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (token != null) {
         emit(AuthSuccessState(role: role ?? ''));
       } else {
-        emit(AuthErrorState(erroMessage: 'Failed'));
+        emit(AuthFail());
       }
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
@@ -46,10 +47,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       var loginResp = await _myRepo.loginApi(body: body);
       if (loginResp?.status?.httpCode == '200') {
         if (loginResp?.data?.token != null || loginResp?.data?.role != null) {
-          SharedPrefsClass().saveUser(loginResp?.data?.token ?? '',
+          await SharedPrefsClass().saveUser(loginResp?.data?.token ?? '',
               loginResp?.data?.role ?? '', loginResp?.data?.id ?? 0);
           emit(LoginSuccess(loginModel: loginResp));
         }
+      }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
+  }
+
+  //**** Call Add User API ****//
+  Future<void> _addUserApi(AddUserEvent event, Emitter<AuthState> emit) async {
+    try {
+      int? userId = await SharedPrefsClass().getUserId();
+      debugPrint('userId.,.,.,.,.,.,., $userId');
+
+      Map<String, dynamic> body = {
+        "caId": userId,
+        "addedBy": userId,
+        "firstName": event.firstName,
+        "lastName": event.lastName,
+        "mobile": event.mobile,
+        "email": event.email,
+        "role": event.role,
+        "countryCode": event.countryCode
+      };
+      emit(AuthLoading());
+      var userResp = await _myRepo.addNewUser(body: body);
+      if (userResp?.status?.httpCode == '200') {
+        emit(AddUserSuccess(addUserModel: userResp));
       }
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
@@ -112,7 +139,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
       int? userId = await SharedPrefsClass().getUserId();
-      Map<String, dynamic> query = {"userId": userId};
+      if (userId == null) {
+        await Future.delayed(Duration(seconds: 2));
+      }
+      Map<String, dynamic> query = {
+        "userId": (event.userId ?? '').isEmpty ? userId : event.userId
+      };
       var resp = await _myRepo.getUserByIdApi(query: query);
       if (resp?.status?.httpCode == '200') {
         emit(GetUserByIdSuccess(getUserByIdData: resp));

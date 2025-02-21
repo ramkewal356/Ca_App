@@ -47,16 +47,16 @@ class CaCustomCard extends StatelessWidget {
                 Expanded(child: textItem(lable: 'DATE', value: date))
               ],
             ),
-            SizedBox(height: 5),
+          
             CustomTextInfo(
                 flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: clintName),
-            SizedBox(height: 5),
+        
             CustomTextInfo(
                 flex1: 2, flex2: 3, lable: 'DOCUMENT', value: document),
-            SizedBox(height: 5),
+          
             CustomTextInfo(
                 flex1: 2, flex2: 3, lable: 'CATEGORY', value: catogory),
-            SizedBox(height: 5),
+            
             CustomTextInfo(
                 flex1: 2, flex2: 3, lable: 'DOWNLOAD', value: download),
             SizedBox(height: 10),

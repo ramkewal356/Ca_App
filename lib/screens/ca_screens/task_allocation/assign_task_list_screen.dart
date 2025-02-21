@@ -49,7 +49,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
               ),
               SizedBox(width: 5),
               CustomFilterPopup(
-                filterTitle: 'All',
+                // filterTitle: 'All',
                 filterIcon: Icon(Icons.filter_list_rounded),
                 filterItems: ['All', 'Active', 'Inactive'],
                 selectedFilters: selectedFilter,

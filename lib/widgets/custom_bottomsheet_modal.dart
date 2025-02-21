@@ -7,13 +7,14 @@ class CustomBottomsheetModal extends StatefulWidget {
   final double? buttonWidth;
   final double? buttonHieght;
   final Widget child;
-
+  final bool buttonIcon;
   const CustomBottomsheetModal(
       {super.key,
       required this.buttonTitle,
       this.buttonWidth,
       this.buttonHieght,
-      required this.child});
+      required this.child,
+      this.buttonIcon = false});
 
   @override
   State<CustomBottomsheetModal> createState() => _CustomBottomsheetModalState();
@@ -26,6 +27,11 @@ class _CustomBottomsheetModalState extends State<CustomBottomsheetModal> {
       buttonWidth: widget.buttonWidth,
       buttonheight: widget.buttonHieght,
       buttonTitle: widget.buttonTitle,
+      buttonIconVisible: widget.buttonIcon,
+      buttonIcon: Icon(
+        Icons.add,
+        color: ColorConstants.white,
+      ),
       onTap: () {
         _showModalBottomSheet(context);
       },

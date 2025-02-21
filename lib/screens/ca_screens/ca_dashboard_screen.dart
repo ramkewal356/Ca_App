@@ -2,7 +2,6 @@ import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/models/get_user_by_id_model.dart';
-import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/ca_custom_card.dart';
@@ -263,6 +262,9 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                 return Column(
                                   children: [
                                     ListTile(
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      horizontalTitleGap: 10,
                                       leading: CircleAvatar(
                                         radius: 25,
                                         backgroundColor:

@@ -43,7 +43,7 @@ class HttpService<T> {
       this.headers = <String, String>{};
     }
     var prefsToken = await SharedPreferences.getInstance();
-    String? token = prefsToken.getString('token');
+    String? token = await prefsToken.getString('token');
     if (token != null && token.isNotEmpty) {
       this.headers?.addAll({"Authorization": "Bearer $token"});
     } else {
@@ -113,6 +113,8 @@ class HttpService<T> {
         // FormData dataaa = bodyData;
         debugPrint("bodyData formdata $bodyData");
         debugPrint("baseUrl: ${this.baseURL! + this.endURL!}");
+        debugPrint("call  ${this.headers}");
+
         return _http!.post<T>(
           this.baseURL! + this.endURL!,
           queryParameters: this.queryParameters,

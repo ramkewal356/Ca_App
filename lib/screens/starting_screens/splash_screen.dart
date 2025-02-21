@@ -31,12 +31,14 @@ class _SplashScreenState extends State<SplashScreen> {
         if (state is AuthSuccessState) {
           if (state.role == 'CA') {
             context.pushReplacement('/ca_dashboard');
+            // context.pushReplacement('/subca_dashboard');
+
           } else if (state.role == 'SUBCA') {
             context.pushReplacement('/subca_dashboard');
           } else if (state.role == 'CUSTOMER') {
             context.pushReplacement('/customer_dashboard');
           }
-        } else if (state is AuthErrorState) {
+        } else if (state is AuthFail) {
           debugPrint('vcbnvcbcxnbcvnb');
 
           context.pushReplacement('/login');

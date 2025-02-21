@@ -1,3 +1,4 @@
+
 import 'package:ca_app/data/models/get_user_by_id_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
 import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
@@ -36,14 +37,13 @@ class LoginSuccess extends AuthState {
   List<Object> get props => [loginModel ?? []];
 }
 
-/// Register Success State///
-final class RegisterSuccess extends AuthState {
-  // final RegisterResponseModel? registerResponse;
-  final bool registerResponse;
+/// Add User Success State///
+final class AddUserSuccess extends AuthState {
+  final GetUserByIdModel? addUserModel;
 
-  const RegisterSuccess({required this.registerResponse});
+  const AddUserSuccess({required this.addUserModel});
   @override
-  List<Object> get props => [registerResponse];
+  List<Object> get props => [addUserModel ?? []];
 }
 
 /// SendOtp Success State///
@@ -61,7 +61,6 @@ class VerifyOtpSuccess extends AuthState {
 
   const VerifyOtpSuccess({required this.verifyModel});
   @override
-
   List<Object> get props => [verifyModel ?? []];
 }
 
@@ -73,6 +72,7 @@ class UpdateUserSuccess extends AuthState {
   @override
   List<Object> get props => [updateUser ?? []];
 }
+
 /// GetUserById Success State///
 class GetUserByIdSuccess extends AuthState {
   final GetUserByIdModel? getUserByIdData;
@@ -82,6 +82,8 @@ class GetUserByIdSuccess extends AuthState {
 }
 /////////////////**** End Success State ****////////////////
 
+///////////////**** Fail State ****////////////////
+class AuthFail extends AuthState {}
 ///////////////**** Error State ****////////////////
 class AuthErrorState extends AuthState {
   final String erroMessage;

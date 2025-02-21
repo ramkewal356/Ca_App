@@ -62,7 +62,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                   ),
                   SizedBox(width: 5),
                   CustomFilterPopup(
-                    filterTitle: 'All',
+                    // filterTitle: 'All',
                     filterIcon: Icon(Icons.filter_list_rounded),
                     filterItems: ["All", "Active", "Inactive"],
                     selectedFilters: selectedFilters,

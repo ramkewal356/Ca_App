@@ -3,14 +3,14 @@ import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:flutter/material.dart';
 
 class CustomFilterPopup extends StatefulWidget {
-  final String filterTitle;
+  // final String filterTitle;
   final Widget filterIcon;
   final List<String> filterItems;
   final Map<String, bool> selectedFilters;
-  final ValueChanged<Map<String, bool>> onFilterChanged;
+  final ValueChanged<String> onFilterChanged;
   const CustomFilterPopup(
       {super.key,
-      required this.filterTitle,
+      // required this.filterTitle,
       required this.filterIcon,
       required this.filterItems,
       required this.selectedFilters,
@@ -22,7 +22,7 @@ class CustomFilterPopup extends StatefulWidget {
 
 class _CustomFilterPopupState extends State<CustomFilterPopup> {
   late Map<String, bool> selectedFilters;
-
+  String _filterTitle = 'All';
   @override
   void initState() {
     super.initState();
@@ -33,14 +33,55 @@ class _CustomFilterPopupState extends State<CustomFilterPopup> {
     if (filter == "All") {
       bool newValue = value ?? false;
       selectedFilters.updateAll((key, _) => newValue);
-    } else {
-      selectedFilters[filter] = value ?? false;
-      selectedFilters["All"] = selectedFilters.values.every((v) => v);
+    } else if (filter == "Active") {
+      selectedFilters["Active"] = value ?? false;
+      selectedFilters["Inactive"] =
+          false; // Unselect Inactive if Active is selected
+    } else if (filter == "Inactive") {
+      selectedFilters["Inactive"] = value ?? false;
+      selectedFilters["Active"] =
+          false; // Unselect Active if Inactive is selected
+    }
+
+    // If both "Active" and "Inactive" are selected, check "All"
+    selectedFilters["All"] = selectedFilters["Active"] == true &&
+        selectedFilters["Inactive"] == true;
+
+    // If "All" is unchecked, uncheck Active & Inactive
+    if (!selectedFilters["All"]!) {
+      selectedFilters["All"] = false;
     }
 
     setStatePopup(() {}); // Updates Popup UI
     setState(() {}); // Updates main UI
-    widget.onFilterChanged(selectedFilters); // Notify parent
+
+    // Send the correct filter value to API
+    _applyFilters();
+    _updateFilterTitle();
+  }
+
+  void _updateFilterTitle() {
+    if (selectedFilters["All"] == true) {
+      _filterTitle = "All";
+    } else if (selectedFilters["Active"] == true) {
+      _filterTitle = "Active";
+    } else if (selectedFilters["Inactive"] == true) {
+      _filterTitle = "Inactive";
+    } else {
+      _filterTitle = "All"; // Default title
+    }
+  }
+
+  void _applyFilters() {
+    if (selectedFilters["All"] == true) {
+      widget.onFilterChanged(""); // Pass empty string when all selected
+    } else if (selectedFilters["Active"] == true) {
+      widget.onFilterChanged("true"); // Active
+    } else if (selectedFilters["Inactive"] == true) {
+      widget.onFilterChanged("false"); // Inactive
+    } else {
+      widget.onFilterChanged(""); // Default empty if nothing selected
+    }
   }
 
   @override
@@ -54,11 +95,12 @@ class _CustomFilterPopupState extends State<CustomFilterPopup> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           decoration: BoxDecoration(
-              border: Border.all(), borderRadius: BorderRadius.circular(5)),
+              border: Border.all(color: ColorConstants.darkGray),
+              borderRadius: BorderRadius.circular(5)),
           child: Row(
             children: [
               Text(
-                widget.filterTitle,
+                _filterTitle,
                 style: AppTextStyle().cardValueText,
               ),
               SizedBox(width: 5),

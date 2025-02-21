@@ -32,7 +32,6 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       titleSpacing: 0,
       backgroundColor: ColorConstants.buttonColor,
       title: Row(
-       
         children: [
           Text(
             time ?? '',

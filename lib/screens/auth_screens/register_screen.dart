@@ -1,6 +1,5 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
-import 'package:ca_app/data/models/register_request_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -217,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 20),
                 BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
-                    if (state is RegisterSuccess) {
+                    if (state is AddUserSuccess) {
                       context.push('/login');
                     }
                   },

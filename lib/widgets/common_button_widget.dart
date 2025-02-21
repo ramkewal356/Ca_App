@@ -59,6 +59,7 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
               child: widget.loader
                   ? CircularProgressIndicator(
                       color: ColorConstants.white,
+                   
                     )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
