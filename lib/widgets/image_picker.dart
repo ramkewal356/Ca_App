@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 class ImagePickerWidget extends StatefulWidget {
   final String userImg;
   final File? initialImage;
-  final ValueChanged<File?> onImagePicked;
+  final ValueChanged<MultipartFile?> onImagePicked;
   final double radius;
   const ImagePickerWidget(
       {super.key,
@@ -67,7 +68,9 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           setState(() {
             _selectedImage = compressedFile;
           });
-          widget.onImagePicked(_selectedImage);
+          var profilePic = await MultipartFile.fromFile(compressedFile.path,
+              filename: "profile.jpg");
+          widget.onImagePicked(profilePic);
         }
       }
     } catch (e) {
@@ -95,14 +98,22 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       children: [
         _selectedImage != null
             ? CircleAvatar(
-                backgroundImage: FileImage(_selectedImage!),
-                radius: widget.radius,
+                radius: widget.radius + 1,
+                backgroundColor: ColorConstants.buttonColor,
+                child: CircleAvatar(
+                  backgroundImage: FileImage(_selectedImage!),
+                  radius: widget.radius,
+                ),
               )
             : widget.userImg.toString().isNotEmpty
                 ? CircleAvatar(
-                    backgroundImage:
-                        Image.network(widget.userImg.toString()).image,
-                    radius: widget.radius,
+                    radius: widget.radius + 1,
+                    backgroundColor: ColorConstants.buttonColor,
+                    child: CircleAvatar(
+                      backgroundImage:
+                          Image.network(widget.userImg.toString()).image,
+                      radius: widget.radius,
+                    ),
                   )
                 : CircleAvatar(
                     radius: widget.radius,

@@ -64,12 +64,12 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 listener: (context, state) {
                   if (state is SendOtpSuccess) {
                     context.push('/otpVerify', extra: _emailController.text);
-                    Utils.toastSuccessMessage('Otp Sent Successfully');
+                    // Utils.toastSuccessMessage('Otp Sent Successfully');
                   }
                 },
                 builder: (context, state) {
                   return CommonButtonWidget(
-                      loader: state is AuthLoading,
+                      loader: state is SendOtpLoading,
                       buttonTitle: 'Submit',
                       onTap: () {
                         if (_formKey.currentState!.validate()) {

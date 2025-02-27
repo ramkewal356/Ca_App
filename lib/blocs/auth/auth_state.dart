@@ -1,8 +1,7 @@
 
-import 'package:ca_app/data/models/get_user_by_id_model.dart';
+import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
 import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
-import 'package:ca_app/data/models/update_user_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AuthState extends Equatable {
@@ -16,6 +15,9 @@ class AuthInitState extends AuthState {}
 
 ///////////////**** Loading State ****///////////////
 class AuthLoading extends AuthState {}
+
+///////////////**** Send Otp Loading State ****///////////////
+class SendOtpLoading extends AuthState {}
 
 ///////////////**** Success State ****///////////////
 /// Auth Success State///
@@ -39,7 +41,7 @@ class LoginSuccess extends AuthState {
 
 /// Add User Success State///
 final class AddUserSuccess extends AuthState {
-  final GetUserByIdModel? addUserModel;
+  final UserModel? addUserModel;
 
   const AddUserSuccess({required this.addUserModel});
   @override
@@ -63,10 +65,17 @@ class VerifyOtpSuccess extends AuthState {
   @override
   List<Object> get props => [verifyModel ?? []];
 }
+/// VerifyOtp Success State///
+class VerifyOtpForUserSuccess extends AuthState {
+  final UserModel? verifiedUser;
 
+  const VerifyOtpForUserSuccess({required this.verifiedUser});
+  @override
+  List<Object> get props => [verifiedUser ?? []];
+}
 /// Update Success State///
 class UpdateUserSuccess extends AuthState {
-  final UpdateUserModel? updateUser;
+  final UserModel? updateUser;
 
   const UpdateUserSuccess({required this.updateUser});
   @override
@@ -75,7 +84,7 @@ class UpdateUserSuccess extends AuthState {
 
 /// GetUserById Success State///
 class GetUserByIdSuccess extends AuthState {
-  final GetUserByIdModel? getUserByIdData;
+  final UserModel? getUserByIdData;
   const GetUserByIdSuccess({required this.getUserByIdData});
   @override
   List<Object> get props => [getUserByIdData ?? []];

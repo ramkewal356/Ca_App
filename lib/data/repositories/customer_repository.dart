@@ -6,7 +6,28 @@ import 'package:flutter/material.dart';
 
 class CustomerRepository {
   //**** Get Customer by SUBCA Id API ****//
-  Future<GetCustomerBySubCaIdModel> getCustomerBySubCaId(
+  Future<GetCustomerModel> getCustomerByCaId(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getCustomerByCaId,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('GetCustomerByCaIdResponse ${response?.data}');
+      return GetCustomerModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //**** Get Customer by SUBCA Id API ****//
+  Future<GetCustomerModel> getCustomerBySubCaId(
       {required Map<String, dynamic> query}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -18,11 +39,12 @@ class CustomerRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('customerResponse ${response?.data}');
-      return GetCustomerBySubCaIdModel.fromJson(response?.data);
+      return GetCustomerModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
       rethrow;
     }
   }
+
 }

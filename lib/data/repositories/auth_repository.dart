@@ -1,9 +1,8 @@
 
-import 'package:ca_app/data/models/get_user_by_id_model.dart';
+import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
 import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
 import 'package:ca_app/data/models/response_model/base_response_model.dart';
-import 'package:ca_app/data/models/update_user_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
@@ -34,7 +33,7 @@ class AuthRepository {
     return null;
   }
   //**** Add New User API ****//
-  Future<GetUserByIdModel?> addNewUser(
+  Future<UserModel?> addNewUser(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -46,7 +45,7 @@ class AuthRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('userResponse ${response?.data}');
-      return GetUserByIdModel.fromJson(response?.data);
+      return UserModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
@@ -55,7 +54,8 @@ class AuthRepository {
   }
 
   //**** Update Profile Image API ****//
-  Future<void> updateProfileImage({required Map<String, dynamic> body}) async {
+  Future<UserModel?> updateProfileImage(
+      {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
         baseURL: EndPoints.baseUrl,
@@ -66,7 +66,7 @@ class AuthRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('sendOtpResponse ${response?.data}');
-      // return OtpSendAndVerifyModel.fromJson(response?.data);
+      return UserModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
@@ -77,7 +77,7 @@ class AuthRepository {
   Future<OtpSendAndVerifyModel?> sendOtpForReset(
       {required Map<String, dynamic> query}) async {
     var http = HttpService(
-        isAuthorizeRequest: true,
+        isAuthorizeRequest: false,
         baseURL: EndPoints.baseUrl,
         endURL: EndPoints.sendOtpForResetUrl,
         queryParameters: query,
@@ -94,11 +94,32 @@ class AuthRepository {
     }
   }
 
+  //**** Send Otp API ****//
+  Future<OtpSendAndVerifyModel?> reSendOtpForUser(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: false,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.resendOtpForUsersUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('reSendOtpResponse ${response?.data}');
+      return OtpSendAndVerifyModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
 //**** Verify Otp API ****//
   Future<OtpSendAndVerifyModel?> verifyOtpForReset(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
-        isAuthorizeRequest: true,
+        isAuthorizeRequest: false,
         baseURL: EndPoints.baseUrl,
         endURL: EndPoints.verifyOtpUrl,
         body: body,
@@ -115,9 +136,29 @@ class AuthRepository {
     }
   }
 
-//**** Update User API ****//
-  Future<UpdateUserModel?> updateUser(
+//**** Verify Otp API ****//
+  Future<UserModel?> verifyOtpForUser(
       {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: false,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.verifyOtpForUserUrl,
+        body: body,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('sendOtpResponse ${response?.data}');
+      return UserModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+//**** Update User API ****//
+  Future<UserModel?> updateUser({required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
         baseURL: EndPoints.baseUrl,
@@ -128,7 +169,7 @@ class AuthRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('sendOtpResponse ${response?.data}');
-      return UpdateUserModel.fromJson(response?.data);
+      return UserModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
@@ -136,8 +177,9 @@ class AuthRepository {
     }
   }
 
+
   //**** GetUserById API ****//
-  Future<GetUserByIdModel?> getUserByIdApi(
+  Future<UserModel?> getUserByIdApi(
       {required Map<String, dynamic> query}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -149,7 +191,7 @@ class AuthRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('getUserResponse ${response?.data}');
-      return GetUserByIdModel.fromJson(response?.data);
+      return UserModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

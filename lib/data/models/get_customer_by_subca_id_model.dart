@@ -4,23 +4,23 @@
 
 import 'dart:convert';
 
-GetCustomerBySubCaIdModel getCustomerBySubCaIdModelFromJson(String str) =>
-    GetCustomerBySubCaIdModel.fromJson(json.decode(str));
+GetCustomerModel getCustomerBySubCaIdModelFromJson(String str) =>
+    GetCustomerModel.fromJson(json.decode(str));
 
-String getCustomerBySubCaIdModelToJson(GetCustomerBySubCaIdModel data) =>
+String getCustomerBySubCaIdModelToJson(GetCustomerModel data) =>
     json.encode(data.toJson());
 
-class GetCustomerBySubCaIdModel {
+class GetCustomerModel {
   Status? status;
   List<Datum>? data;
 
-  GetCustomerBySubCaIdModel({
+  GetCustomerModel({
     this.status,
     this.data,
   });
 
-  factory GetCustomerBySubCaIdModel.fromJson(Map<String, dynamic> json) =>
-      GetCustomerBySubCaIdModel(
+  factory GetCustomerModel.fromJson(Map<String, dynamic> json) =>
+      GetCustomerModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null
             ? []

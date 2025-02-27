@@ -95,8 +95,8 @@ class _CustomSearchLocationState extends State<CustomSearchLocation> {
           ),
         ),
 
-        errorStyle: const TextStyle(
-          color: ColorConstants.redColor, // Change error text color
+        errorStyle: TextStyle(
+          color: Colors.red[900], // Change error text color
           fontSize: 13, // Adjust error text size if needed
         ),
       ),

@@ -1,12 +1,14 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
+import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,17 +31,26 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => MultiSelectDropdownBloc()),
         BlocProvider(create: (_) => TeamMemberBloc()),
         BlocProvider(create: (_) => CustomerBloc()),
+        BlocProvider(create: (_) => DocumentBloc()),
+
 
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        routerConfig: goRouter,
-        // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      child: ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: true,
+              ),
+              routerConfig: goRouter,
+              // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+            );
+          }
       ),
     );
   }

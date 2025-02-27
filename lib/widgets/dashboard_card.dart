@@ -1,6 +1,7 @@
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DashboardCard extends StatelessWidget {
   final Widget icon;
@@ -21,8 +22,8 @@ class DashboardCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SizedBox(
-          height: 130,
-          width: 130,
+          height: 100.h,
+          width: 110.w,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

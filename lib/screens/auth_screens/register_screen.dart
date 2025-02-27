@@ -1,5 +1,7 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
+import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -14,7 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final UserModel userData;
+  const RegisterScreen({super.key, required this.userData});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -34,217 +37,237 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool obsuceConfirmPassword = false;
   String? selectedValue;
   String? countryCode = '91';
+  String userId = '';
   @override
   void initState() {
     super.initState();
-    _phoneController.text = '9919523123';
-    _emailController.text = 'emial@gmail.com';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(),
-      backgroundColor: ColorConstants.white,
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
-                Center(
-                  child: Image.asset(
-                    splashLogo,
-                    height: 150,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text('First Name', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                TextformfieldWidget(
-                    readOnly: true,
-                    controller: _firstNameController,
-                    hintText: 'First name'),
-                SizedBox(height: 10),
-                Text('Last Name', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                TextformfieldWidget(
-                    readOnly: true,
-                    controller: _lastNameController,
-                    hintText: 'Last name'),
-                SizedBox(height: 10),
-                Text('Email', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                TextformfieldWidget(
-                  readOnly: true,
-                  fillColor: ColorConstants.white,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  hintText: 'Enter email id',
-                  validator: (email) {
-                    return ValidatorClass.validateEmail(email);
-                  },
-                ),
-                SizedBox(height: 10),
-                Text('New password', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                TextformfieldWidget(
-                  fillColor: ColorConstants.white,
-                  controller: _newPassController,
-                  obscureText: !obsuceNewPassword,
-                  enableInteractiveSelection: obsuceNewPassword,
-                  hintText: 'New password',
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                      RegExp(r'^[\u0000-\u007F]*$'),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is UpdateUserSuccess) {
+          context.pop();
+          context.pop();
+        }
+      },
+      builder: (context, state) {
+        if (state is VerifyOtpForUserSuccess) {
+          var data = state.verifiedUser?.data;
+          userId = data?.id.toString() ?? '';
+          _firstNameController.text = data?.firstName ?? '';
+          _lastNameController.text = data?.lastName ?? '';
+          _emailController.text = data?.email ?? '';
+          countryCode = data?.countryCode ?? '91';
+          _phoneController.text = data?.mobile ?? '';
+          selectedValue = data?.gender ?? selectedValue;
+        }
+        return Scaffold(
+          // appBar: AppBar(),
+          backgroundColor: ColorConstants.white,
+          body: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Center(
+                      child: Image.asset(
+                        splashLogo,
+                        height: 150,
+                      ),
                     ),
-                  ],
-                  suffixIcons: IconButton(
-                    icon: Icon(
-                      obsuceNewPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: ColorConstants.black,
+                    SizedBox(height: 20),
+                    Text('First Name', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                        readOnly: true,
+                        controller: _firstNameController,
+                        hintText: 'First name'),
+                    SizedBox(height: 10),
+                    Text('Last Name', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                        readOnly: true,
+                        controller: _lastNameController,
+                        hintText: 'Last name'),
+                    SizedBox(height: 10),
+                    Text('Email', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                      readOnly: true,
+                      fillColor: ColorConstants.white,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      hintText: 'Enter email id',
+                      validator: (email) {
+                        return ValidatorClass.validateEmail(email);
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        obsuceNewPassword = !obsuceNewPassword;
-                      });
-                    },
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter new password';
-                    } else {
-                      return ValidatorClass.validatePassword(value);
-                    }
-                  },
-                ),
-                SizedBox(height: 10),
-                Text('Confirm password', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                TextformfieldWidget(
-                  fillColor: ColorConstants.white,
-                  controller: _confirmPassController,
-                  obscureText: !obsuceConfirmPassword,
-                  enableInteractiveSelection: obsuceConfirmPassword,
-                  hintText: 'Confirm new password',
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                      RegExp(r'^[\u0000-\u007F]*$'),
+                    SizedBox(height: 10),
+                    Text('New password', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                      fillColor: ColorConstants.white,
+                      controller: _newPassController,
+                      obscureText: !obsuceNewPassword,
+                      enableInteractiveSelection: obsuceNewPassword,
+                      hintText: 'New password',
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^[\u0000-\u007F]*$'),
+                        ),
+                      ],
+                      suffixIcons: IconButton(
+                        icon: Icon(
+                          obsuceNewPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: ColorConstants.black,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obsuceNewPassword = !obsuceNewPassword;
+                          });
+                        },
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter new password';
+                        } else {
+                          return ValidatorClass.validatePassword(value);
+                        }
+                      },
                     ),
-                  ],
-                  suffixIcons: IconButton(
-                    icon: Icon(
-                      obsuceConfirmPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: ColorConstants.black,
+                    SizedBox(height: 10),
+                    Text('Confirm password', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                      fillColor: ColorConstants.white,
+                      controller: _confirmPassController,
+                      obscureText: !obsuceConfirmPassword,
+                      enableInteractiveSelection: obsuceConfirmPassword,
+                      hintText: 'Confirm new password',
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^[\u0000-\u007F]*$'),
+                        ),
+                      ],
+                      suffixIcons: IconButton(
+                        icon: Icon(
+                          obsuceConfirmPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: ColorConstants.black,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obsuceConfirmPassword = !obsuceConfirmPassword;
+                          });
+                        },
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter confirm password';
+                        } else if (value != _newPassController.text) {
+                          return "Password do not match";
+                        } else {
+                          return ValidatorClass.validatePassword(value);
+                        }
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        obsuceConfirmPassword = !obsuceConfirmPassword;
-                      });
-                    },
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter confirm password';
-                    } else if (value != _newPassController.text) {
-                      return "Password do not match";
-                    } else {
-                      return ValidatorClass.validatePassword(value);
-                    }
-                  },
-                ),
-                SizedBox(height: 10),
-                Text('Mobile No', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                CustomPhoneField(
-                  readOnly: true,
-                  intialCountryCode: countryCode,
-                  focusNode: _focusNode,
-                  controller: TextEditingController(text: '9917823234'),
-                  onChanged: (phone) {
-                    debugPrint('complete phone number ${phone.completeNumber}');
-                  },
-                  onCountryChanged: (country) {
-                    setState(() {
-                      countryCode = country.dialCode;
-                    });
-                    debugPrint('complete phone number ${country.name}');
-                  },
-                  validator: (value) {
-                    if (value == null || value.completeNumber.isEmpty) {
-                      return 'Please enter phone number';
-                    } else if (value.completeNumber.length < 10 ||
-                        value.completeNumber.length > 15) {
-                      return 'Please enter a valid phone number';
-                    } else {
-                      var isValid =
-                          ValidatorClass.isValidMobile(value.completeNumber);
-                      if (!isValid) {
-                        return 'Please enter a valid phone number';
-                      }
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-                Text('Select Gender', style: AppTextStyle().labletext),
-                SizedBox(height: 5),
-                CustomDropdownButton(
-                  hintText: 'Select gender',
-                  fillColor: ColorConstants.white,
-                  initialValue: selectedValue,
-                  dropdownItems: ['male', 'female', 'other'],
-                  onChanged: (p0) {
-                    setState(() {
-                      selectedValue = p0;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select gender';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20),
-                BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AddUserSuccess) {
-                      context.push('/login');
-                    }
-                  },
-                  builder: (context, state) {
-                    return CommonButtonWidget(
-                        loader: state is AuthLoading,
-                        buttonTitle: 'Register',
-                        onTap: () {
-                          debugPrint('selected Value $countryCode');
-                          debugPrint('phone number ${_phoneController.text}');
-
-                          if (_formKey.currentState!.validate()) {
-                            // BlocProvider.of<AuthBloc>(context).add(Register(
-                            //     registerRequest: RegisterRequestModel(
-                            //         firstName: _firstNameController.text,
-                            //         address: _emailController.text,
-                            //         password: _newPassController.text,
-                            //         gender: selectedValue,
-                            //         userId: 13)));
-                          }
+                    SizedBox(height: 10),
+                    Text('Mobile No', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    CustomPhoneField(
+                      readOnly: true,
+                      intialCountryCode: countryCode,
+                      focusNode: _focusNode,
+                      controller: _phoneController,
+                      onChanged: (phone) {
+                        debugPrint(
+                            'complete phone number ${phone.completeNumber}');
+                      },
+                      onCountryChanged: (country) {
+                        setState(() {
+                          countryCode = country.dialCode;
                         });
-                  },
-                )
-              ],
+                        debugPrint('complete phone number ${country.name}');
+                      },
+                      validator: (value) {
+                        if (value == null || value.completeNumber.isEmpty) {
+                          return 'Please enter phone number';
+                        } else if (value.completeNumber.length < 10 ||
+                            value.completeNumber.length > 15) {
+                          return 'Please enter a valid phone number';
+                        } else {
+                          var isValid = ValidatorClass.isValidMobile(
+                              value.completeNumber);
+                          if (!isValid) {
+                            return 'Please enter a valid phone number';
+                          }
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 10),
+                    Text('Select Gender', style: AppTextStyle().labletext),
+                    SizedBox(height: 5),
+                    CustomDropdownButton(
+                      hintText: 'Select gender',
+                      fillColor: ColorConstants.white,
+                      initialValue: selectedValue,
+                      dropdownItems: ['Male', 'Female', 'Other'],
+                      onChanged: (p0) {
+                        setState(() {
+                          selectedValue = p0;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select gender';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    BlocConsumer<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is AddUserSuccess) {
+                          context.push('/login');
+                        }
+                      },
+                      builder: (context, state) {
+                        return CommonButtonWidget(
+                            loader: state is AuthLoading,
+                            buttonTitle: 'Register',
+                            onTap: () {
+                              debugPrint('selected Value $countryCode');
+                              debugPrint(
+                                  'phone number ${_phoneController.text}');
+
+                              if (_formKey.currentState!.validate()) {
+                                context.read<AuthBloc>().add(UpdateUserEvent(
+                                    userId: userId,
+                                    gender: selectedValue ?? '',
+                                    firstName: _firstNameController.text,
+                                    lastName: _lastNameController.text,
+                                    password: _newPassController.text));
+                              }
+                            });
+                      },
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

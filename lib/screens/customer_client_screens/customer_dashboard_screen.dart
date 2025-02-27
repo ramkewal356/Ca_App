@@ -62,7 +62,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       drawer: CustomDrawer(
         userName: 'xyz',
         emailAddress: 'xyz@gmail.com',
-        profileUrl: appLogo,
+        profileUrl: '',
         activeButton: true,
         activeTex: 'Active',
         // selectedIndex: selectedValue,

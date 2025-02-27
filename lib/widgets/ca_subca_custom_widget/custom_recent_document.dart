@@ -30,17 +30,18 @@ class CustomRecentDocument extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextInfo(flex1: 2, flex2: 3, lable: 'ID', value: '#1234'),
+        CustomTextInfo(flex1: 2, flex2: 3, lable: 'ID', value: id),
         CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: 'Vjhdfjhdsjf'),
+            flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: clientName),
         CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'DOCUMENT NAME', value: 'ddjhdjvdvcccc'),
+            flex1: 2, flex2: 3, lable: 'CATEGORY', value: category),
         CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'CATEGORY', value: 'cxvbcvyu'),
+            flex1: 2, flex2: 3, lable: 'SUBCATEGORY', value: subCategory),
         CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'SUBCATEGORY', value: 'dndjvhudu'),
+            flex1: 2, flex2: 3, lable: 'POSTED DATE', value: postedDate),
         CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'POSTED DATE', value: 'dcjhbjhdcyu'),
+            flex1: 2, flex2: 3, lable: 'DOCUMENT NAME', value: documentName),
+       
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,6 +1,7 @@
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,13 +29,17 @@ class CustomDropdownButton extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         String? selectedValue = (state is CustomDropdownSelected &&
-                dropdownItems.contains(state.value))
-            ? state.value
-            : initialValue;
+                dropdownItems.contains(formatValue(state.value)))
+            ? formatValue(state.value)
+            : dropdownItems.contains(formatValue(initialValue))
+                ? formatValue(initialValue)
+                : null;
         return FormField<String>(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             initialValue:
-                dropdownItems.contains(selectedValue) ? selectedValue : null,
+                dropdownItems.contains(formatValue(selectedValue))
+                ? formatValue(selectedValue)
+                : null,
             validator: validator,
             builder: (FormFieldState<String> fieldState) {
               return Column(
@@ -49,7 +54,9 @@ class CustomDropdownButton extends StatelessWidget {
                     // disabledHint: Text('data'),
                     underline: SizedBox.shrink(),
                     items: dropdownItems.map((value) {
-                      return DropdownMenuItem(value: value, child: Text(value));
+                      return DropdownMenuItem(
+                          value: formatValue(value),
+                          child: Text(formatValue(value)));
                     }).toList(),
                     buttonStyleData: ButtonStyleData(
                       height: 50,

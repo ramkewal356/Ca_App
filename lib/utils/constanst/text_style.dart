@@ -2,6 +2,7 @@
 
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyle {
@@ -39,7 +40,7 @@ class AppTextStyle {
       color: ColorConstants.black, fontSize: 24, fontWeight: FontWeight.w600);
   TextStyle subheadingtext = GoogleFonts.roboto(
       color: ColorConstants.darkGray,
-      fontSize: 18,
+      fontSize: 17.sp,
       fontWeight: FontWeight.w600);
   TextStyle subTitleText = GoogleFonts.roboto(
       color: ColorConstants.darkGray,
@@ -63,10 +64,12 @@ class AppTextStyle {
   TextStyle cardLableText = GoogleFonts.roboto(
       color: ColorConstants.black, fontSize: 17, fontWeight: FontWeight.w600);
   TextStyle lableText = GoogleFonts.roboto(
-      color: ColorConstants.black, fontSize: 15, fontWeight: FontWeight.w600);
+      color: ColorConstants.black,
+      fontSize: 13.sp,
+      fontWeight: FontWeight.w600);
   TextStyle cardValueText = GoogleFonts.roboto(
       color: ColorConstants.black.withOpacity(0.7),
-      fontSize: 16,
+      fontSize: 13.sp,
       fontWeight: FontWeight.w400);
   TextStyle getgreenText = GoogleFonts.roboto(
       color: ColorConstants.greenColor,

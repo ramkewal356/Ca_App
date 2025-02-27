@@ -29,6 +29,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   ScrollController controller = ScrollController();
+
   String searchQuery = '';
   @override
   void initState() {
@@ -57,12 +58,28 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
     _fetchTeamMembers(isSearch: true);
   }
 
+  // int _currentPage = 0;
+  // final int _rowsPerPage = 1;
   @override
   Widget build(BuildContext context) {
     var currentSatate = context.watch<CustomerBloc>().state;
-    List<Datum>? customer = currentSatate is GetCustomerBySubCaIdSuccess
-        ? currentSatate.getCustomerBySubCaIdModel
+    List<Datum>? customers = currentSatate is GetCustomerBySubCaIdSuccess
+        ? currentSatate.customers
         : [];
+    int currentPage = currentSatate is GetCustomerBySubCaIdSuccess
+        ? currentSatate.currentPage
+        : 0;
+    int rowPerPage = currentSatate is GetCustomerBySubCaIdSuccess
+        ? currentSatate.rowsPerPage
+        : 0;
+    int totalCustomers = currentSatate is GetCustomerBySubCaIdSuccess
+        ? currentSatate.totalCustomer
+        : 0;
+    debugPrint('ccbbnvbvc $customers');
+    // int start = _currentPage * _rowsPerPage;
+    // int end = start + _rowsPerPage;
+    // List<Datum>? customer = customer1!
+    //     .sublist(start, end > customer1.length ? customer1.length : end);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -242,7 +259,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  customer!.length.toString(),
+                                  totalCustomers.toString(),
                                   style: AppTextStyle().smallbuttontext,
                                 ),
                               ),
@@ -272,12 +289,11 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                 DataColumn(label: Text('EMAIL')),
                                 DataColumn(label: Text('MOBILE'))
                               ],
-                              rows: (customer == null || customer.isEmpty)
+                              rows: (customers == null || customers.isEmpty)
                                   ? [
                                       DataRow(cells: [
                                         DataCell.empty,
                                         DataCell(
-                                          
                                           Center(
                                             child: Text(
                                               'No data',
@@ -285,19 +301,17 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                             ),
                                           ),
                                         ),
-                                      
                                         DataCell.empty,
                                         DataCell.empty,
                                       ])
                                     ]
-                                  : customer!.map((toElement) {
+                                  : customers.map((toElement) {
                                       return DataRow(
                                         cells: [
                                           DataCell(Text(
                                               toElement.userId?.toString() ??
                                                   'N/A')),
-                                          DataCell(
-                                              Text(
+                                          DataCell(Text(
                                               toElement.firstName ?? 'N/A')),
                                           DataCell(
                                               Text(toElement.email ?? 'N/A')),
@@ -306,40 +320,110 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                         ],
                                       );
                                     }).toList(),
-                              // rows: [
-                              //   DataRow(cells: [
-                              //     DataCell(
-                              //       Text('#1234'),
-                              //     ),
-                              //     DataCell(
-                              //       Text(
-                              //           ''),
-                              //     ),
-                              //     DataCell(
-                              //       Text('ramkewal@gmail.com'),
-                              //     ),
-                              //     DataCell(
-                              //       Text('992954721'),
-                              //     )
-                              //   ]),
-                              //   DataRow(cells: [
-                              //     DataCell(
-                              //       Text('#1234'),
-                              //     ),
-                              //     DataCell(
-                              //       Text('Ramkewal'),
-                              //     ),
-                              //     DataCell(
-                              //       Text('ramkewal@gmail.com'),
-                              //     ),
-                              //     DataCell(
-                              //       Text('992954721'),
-                              //     )
-                              //   ])
-                              // ]
                             ),
                           ),
-                        )
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Text(
+                                " ${currentPage + 1} - ${customers.length} of $totalCustomers"),
+                            Spacer(),
+                            IconButton(
+                                onPressed: currentPage > 0
+                                    ? () {
+                                        context
+                                            .read<CustomerBloc>()
+                                            .add(PreviousPage());
+                                      }
+                                    : null,
+                                // onPressed: _currentPage > 0
+                                //     ? () {
+                                //         setState(() {
+                                //           _currentPage--;
+                                //         });
+                                //       }
+                                //     : null,
+                                icon: Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: currentPage > 0
+                                            ? ColorConstants.buttonColor
+                                            : ColorConstants.buttonColor
+                                                .withOpacity(0.5)),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_left_rounded,
+                                      color: ColorConstants.white,
+                                    ))),
+                            SizedBox(width: 20),
+                            IconButton(
+                                onPressed: (currentPage + 1) * rowPerPage <
+                                        totalCustomers
+                                    ? () {
+                                        context
+                                            .read<CustomerBloc>()
+                                            .add(NextPage());
+                                      }
+                                    : null,
+                                // onPressed: (_currentPage + 1) * _rowsPerPage <
+                                //         customer1.length
+                                //     ? () {
+                                //         setState(() {
+                                //           _currentPage++;
+                                //         });
+                                //       }
+                                //     : null,
+                                icon: Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: (currentPage + 1) * rowPerPage <
+                                                totalCustomers
+                                            ? ColorConstants.buttonColor
+                                            : ColorConstants.buttonColor
+                                                .withOpacity(0.5)),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_right_rounded,
+                                      color: ColorConstants.white,
+                                    ))),
+                          ],
+                        ),
+                        // SizedBox(height: 20),
+                        // PaginatedDataTable(
+                        //   showEmptyRows: false,
+                        //   arrowHeadColor: ColorConstants.buttonColor,
+                        //   headingRowColor: WidgetStatePropertyAll(
+                        //       ColorConstants.buttonColor),
+                        //   columns: [
+                        //     DataColumn(
+                        //         label: Text(
+                        //       'ID',
+                        //       style: AppTextStyle().smallbuttontext,
+                        //     )),
+                        //     DataColumn(
+                        //         label: Text(
+                        //       'NAME',
+                        //       style: AppTextStyle().smallbuttontext,
+                        //     )),
+                        //     DataColumn(
+                        //         label: Text(
+                        //       'EMAIL',
+                        //       style: AppTextStyle().smallbuttontext,
+                        //     )),
+                        //     DataColumn(
+                        //         label: Text(
+                        //       'MOBILE',
+                        //       style: AppTextStyle().smallbuttontext,
+                        //     )),
+                        //   ],
+                        //   source: CustomerDataSource(customer1),
+
+                        //   rowsPerPage: customer.isEmpty
+                        //       ? 1
+                        //       : (customer.length < 10
+                        //           ? customer.length
+                        //           : 10), // Number of rows per page
+                        //   showCheckboxColumn: false, // Hide checkboxes
+                        // )
                       ],
                     ),
                   ),
@@ -475,4 +559,46 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
           });
         });
   }
+}
+
+class CustomerDataSource extends DataTableSource {
+  final List<Datum> customerList;
+
+  CustomerDataSource(this.customerList);
+  @override
+  DataRow? getRow(int index) {
+    if (customerList.isEmpty) {
+      // Show a placeholder row when there's no data
+      return DataRow(
+          color: WidgetStatePropertyAll(ColorConstants.white),
+          cells: [
+            DataCell(Text("")),
+            DataCell(Center(
+                child: Text("No data", style: TextStyle(color: Colors.red)))),
+            DataCell(Text("")),
+            DataCell(Text("")),
+          ]);
+    }
+
+    if (index >= customerList.length) return null;
+    final customer = customerList[index];
+
+    return DataRow(color: WidgetStatePropertyAll(ColorConstants.white), cells: [
+      DataCell(Text(customer.userId.toString())),
+      DataCell(Text(customer.firstName ?? '')),
+      DataCell(Text(customer.email ?? '')),
+      DataCell(Text(customer.mobile ?? '')),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => customerList.isEmpty
+      ? 1
+      : customerList.length; // Ensure at least one row for "No data found"
+
+  @override
+  int get selectedRowCount => 0;
 }

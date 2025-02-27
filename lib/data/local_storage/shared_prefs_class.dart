@@ -13,7 +13,10 @@ class SharedPrefsClass {
     await share.setInt(_id, id);
 
   }
-
+  Future<void> setUserId(int id) async {
+    SharedPreferences share = await SharedPreferences.getInstance();
+    await share.setInt(_id, id);
+  }
   Future<String?> getToken() async {
     SharedPreferences share = await SharedPreferences.getInstance();
     return share.getString(_token);

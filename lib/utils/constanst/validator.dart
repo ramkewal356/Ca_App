@@ -50,4 +50,25 @@ class ValidatorClass {
     final regex = RegExp(r'^(\+91[\s-]?)?[6-9]\d{9}$');
     return regex.hasMatch(number);
   }
+static bool isValidPanCard(String pan) {
+    final RegExp panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
+    return panRegex.hasMatch(pan);
+  }
+
+  static bool isValidAadhaar(String aadhaar) {
+    final RegExp aadhaarRegex = RegExp(r'^[2-9][0-9]{11}$');
+    return aadhaarRegex.hasMatch(aadhaar);
+  }
+}
+
+String formatValue(String? value) {
+  return value != null ? value.toLowerCase().capitalize() : '';
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return isNotEmpty
+        ? this[0].toUpperCase() + substring(1).toLowerCase()
+        : this;
+  }
 }

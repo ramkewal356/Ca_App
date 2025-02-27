@@ -2,6 +2,7 @@ import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/repositories/auth_repository.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,8 +14,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AddUserEvent>(_addUserApi);
 
     on<SendOtpEvent>(_sendOtpApi);
+    on<ReSendOtpEvent>(_reSendOtpForUserApi);
+
     on<VerifyOtpEvent>(_verifyOtpApi);
+    on<VerifyOtpForUserEvent>(_verifyOtpForUserApi);
+
     on<UpdateUserEvent>(_updateUserApi);
+    on<UpdateProfileImageEvent>(_uploadProfileImageApi);
+
     on<GetUserByIdEvent>(_getUserById);
   }
   //**** Call AuthUser API ****//
@@ -87,10 +94,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _sendOtpApi(SendOtpEvent event, Emitter<AuthState> emit) async {
     Map<String, dynamic> query = {"email": event.email};
     try {
-      emit(AuthLoading());
+      emit(SendOtpLoading());
       var resp = await _myRepo.sendOtpForReset(query: query);
       if (resp?.status?.httpCode == '200') {
         emit(SendOtpSuccess(otpSendModel: resp));
+        Utils.toastSuccessMessage('Otp Send Successfully');
+      }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
+  }
+
+  //**** Call ReSend Otp API ****//
+  Future<void> _reSendOtpForUserApi(
+      ReSendOtpEvent event, Emitter<AuthState> emit) async {
+    Map<String, dynamic> query = {"email": event.email};
+    try {
+      emit(SendOtpLoading());
+      var resp = await _myRepo.reSendOtpForUser(query: query);
+      if (resp?.status?.httpCode == '200') {
+        emit(SendOtpSuccess(otpSendModel: resp));
+        Utils.toastSuccessMessage('Otp Send Successfully');
       }
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
@@ -106,6 +130,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       var resp = await _myRepo.verifyOtpForReset(body: body);
       if (resp?.status?.httpCode == '200') {
         emit(VerifyOtpSuccess(verifyModel: resp));
+        Utils.toastSuccessMessage('Otp Verified Successfully');
+      }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
+  }
+
+  //**** Call Verify Otp for user API ****//
+  Future<void> _verifyOtpForUserApi(
+      VerifyOtpForUserEvent event, Emitter<AuthState> emit) async {
+    Map<String, dynamic> body = {"email": event.email, "otp": event.otp};
+    try {
+      emit(AuthLoading());
+      var resp = await _myRepo.verifyOtpForUser(body: body);
+      if (resp?.status?.httpCode == '200') {
+        emit(VerifyOtpForUserSuccess(verifiedUser: resp));
+        Utils.toastSuccessMessage('Otp Verified Successfully');
       }
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
@@ -115,18 +156,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   //**** Call Update User API ****//
   Future<void> _updateUserApi(
       UpdateUserEvent event, Emitter<AuthState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
     Map<String, dynamic> body = {
-      "userId": event.userId,
-      "password": event.password,
+      "firstname": event.firstName,
+      "lastname": event.lastName,
+      "email": event.email,
       "gender": event.gender,
-      "firstName": event.firstName,
-      "address": event.address
+      "mobile": event.mobile,
+      "panCardNumber": event.panCard,
+      "aadhaarCardNumber": event.addharCard,
+      "address": event.address,
+      "userId": event.userId.isEmpty ? userId : event.userId,
+      "password": event.password
     };
     try {
       emit(AuthLoading());
       var resp = await _myRepo.updateUser(body: body);
       if (resp?.status?.httpCode == '200') {
         emit(UpdateUserSuccess(updateUser: resp));
+        Utils.toastSuccessMessage('Profile Updated Successfully');
+      }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
+  }
+
+//**** Call Upload profile image API ****//
+  Future<void> _uploadProfileImageApi(
+      UpdateProfileImageEvent event, Emitter<AuthState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> body = {
+      "userId": userId,
+      "image": event.imageUrl,
+    };
+    try {
+      emit(AuthLoading());
+      var resp = await _myRepo.updateProfileImage(body: body);
+      if (resp?.status?.httpCode == '200') {
+        emit(UpdateUserSuccess(updateUser: resp));
+        Utils.toastSuccessMessage('Profile Image Updated Successfully');
       }
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
