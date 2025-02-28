@@ -4,23 +4,22 @@
 
 import 'dart:convert';
 
-RecentDocumnetModel recentDocumnetModelFromJson(String str) =>
-    RecentDocumnetModel.fromJson(json.decode(str));
+DocumnetModel recentDocumnetModelFromJson(String str) =>
+    DocumnetModel.fromJson(json.decode(str));
 
-String recentDocumnetModelToJson(RecentDocumnetModel data) =>
+String recentDocumnetModelToJson(DocumnetModel data) =>
     json.encode(data.toJson());
 
-class RecentDocumnetModel {
+class DocumnetModel {
   Status? status;
   Data? data;
 
-  RecentDocumnetModel({
+  DocumnetModel({
     this.status,
     this.data,
   });
 
-  factory RecentDocumnetModel.fromJson(Map<String, dynamic> json) =>
-      RecentDocumnetModel(
+  factory DocumnetModel.fromJson(Map<String, dynamic> json) => DocumnetModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );

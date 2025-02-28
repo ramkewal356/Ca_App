@@ -1,6 +1,7 @@
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/repositories/auth_repository.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -204,7 +205,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   //**** Call GetUser API ****//
-  Future<void> _getUserById(
+  Future<UserModel?> _getUserById(
       GetUserByIdEvent event, Emitter<AuthState> emit) async {
     try {
       emit(AuthLoading());
@@ -219,8 +220,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (resp?.status?.httpCode == '200') {
         emit(GetUserByIdSuccess(getUserByIdData: resp));
       }
+      return resp;
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
     }
+    return null;
   }
 }

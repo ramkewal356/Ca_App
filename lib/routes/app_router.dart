@@ -206,13 +206,19 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'view_client',
               builder: (context, state) {
-                return ViewClientScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return ViewClientScreen(
+                  userId: data["userId"],
+                );
               },
             ),
             GoRoute(
               path: 'view_document',
               builder: (context, state) {
-                return ViewDocumentScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return ViewDocumentScreen(
+                  userId: data["userId"],
+                );
               },
             ),
             GoRoute(

@@ -40,6 +40,8 @@ class CustomRecentDocument extends StatelessWidget {
         CustomTextInfo(
             flex1: 2, flex2: 3, lable: 'POSTED DATE', value: postedDate),
         CustomTextInfo(
+            inOneLinetext: true,
+            maxLine: 2,
             flex1: 2, flex2: 3, lable: 'DOCUMENT NAME', value: documentName),
        
         SizedBox(height: 10),

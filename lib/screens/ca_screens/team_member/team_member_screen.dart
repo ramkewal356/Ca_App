@@ -250,8 +250,9 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                         _lastNameController.clear();
                                         _emailController.clear();
                                         _phoneController.clear();
-                                        _onTeamMemberAdded();
+                                      
                                         context.pop();
+                                        _onTeamMemberAdded();
                                         Utils.toastSuccessMessage(
                                             'Team Member Added SuccessFully');
                                       }
@@ -336,7 +337,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                           flex2: 4,
                                           lable: 'Full Name',
                                           value:
-                                              '${data?.firstName}${data?.lastName}'),
+                                              '${data?.firstName} ${data?.lastName}'),
                                       CustomTextInfo(
                                           flex1: 2,
                                           flex2: 4,
@@ -388,7 +389,8 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                             },
                                             builder: (context, state) {
                                               return CommonButtonWidget(
-                                                loader: selectedIndex == index,
+                                                loader: state is AuthLoading &&
+                                                    selectedIndex == index,
                                                 buttonWidth: 100,
                                                 buttonheight: 45,
                                                 buttonTitle: 'View',

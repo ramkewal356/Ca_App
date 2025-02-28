@@ -223,10 +223,11 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                               children: [
                                 textItem(
                                     lable: 'Pan Card',
-                                    value: '${data?.panCardNumber ?? '_'}'),
+                                    value: '${data?.panCardNumber ?? '__'}'),
                                 textItem(
                                     lable: 'Aadhaar Card',
-                                    value: '${data?.aadhaarCardNumber ?? '_'}'),
+                                    value:
+                                        '${data?.aadhaarCardNumber ?? '__'}'),
                                 textItem(
                                     lable: 'Created Date',
                                     value: DateFormat('dd/MM/yyyy').format(
@@ -234,7 +235,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                             data?.createdDate ?? 0))),
                                 textItem(
                                     lable: 'Gender',
-                                    value: data?.gender ?? '_'),
+                                    value: data?.gender ?? '__'),
                                 textItem(
                                     lable: 'Status',
                                     value: data?.status == true

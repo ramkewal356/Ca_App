@@ -22,7 +22,7 @@ class DashboardCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SizedBox(
-          height: 100.h,
+          height: 110.h,
           width: 110.w,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -13,7 +13,9 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   int pageNumber = 0;
   int rowsPerPage = 1;
   final int pageSize = 4;
+  int pageNumber1 = 0;
 
+  final int pageSize1 = 4;
   bool isFetching = false;
   bool isLastPage = false;
   final _myRepo = CustomerRepository();
@@ -92,8 +94,8 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     Map<String, dynamic> query = {
       "subCaId": event.subCaId,
       "search": event.searchText,
-      "pageNumber": pageNumber,
-      "pageSize": pageSize,
+      "pageNumber": pageNumber1,
+      "pageSize": pageSize1,
     };
     try {
       var resp = await _myRepo.getCustomerBySubCaId(query: query);
@@ -102,7 +104,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $allCustomers');
       emit(GetCustomerBySubCaIdSuccess(
           customers: allCustomers.take(rowsPerPage).toList(),
-          currentPage: pageNumber,
+          currentPage: pageNumber1,
           rowsPerPage: rowsPerPage,
           totalCustomer: allCustomers.length));
       // if (state is GetCustomerBySubCaIdSuccess) {

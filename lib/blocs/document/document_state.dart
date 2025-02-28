@@ -20,6 +20,18 @@ class RecentDocumentSuccess extends DocumentState {
   List<Object> get props => [recentDocumnets ?? [], isLastPage];
 }
 
+class ViewDocumentSuccess extends DocumentState {
+  final List<ViewDocument>? viewDocumnets;
+  final bool isLastPage;
+  final int totalDocument;
+  const ViewDocumentSuccess(
+      {required this.viewDocumnets,
+      required this.isLastPage,
+      required this.totalDocument});
+  @override
+  List<Object> get props => [viewDocumnets ?? [], isLastPage, totalDocument];
+}
+
 final class DocumentError extends DocumentState {
   final String errorMessage;
 

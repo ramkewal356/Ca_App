@@ -38,7 +38,7 @@ class CustomerRepository {
         methodType: HttpMethodType.GET);
     try {
       Response<dynamic>? response = await http.request<dynamic>();
-      debugPrint('customerResponse ${response?.data}');
+      debugPrint('customerby SubCaID Response ${response?.data}');
       return GetCustomerModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');

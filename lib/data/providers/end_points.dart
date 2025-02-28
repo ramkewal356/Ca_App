@@ -18,6 +18,7 @@ class EndPoints {
   //Document url
   static var getRecentDocumentUrl =
       '/ca/get_recent_document_uploaded_by_customer';
+  static var getViewDocumentUrl = '/document/get_document_by_userId';
   //sate url
   static var stateBaseUrl = 'https://countriesnow.space';
   static var getStateNameUrl = '/api/v0.1/countries/states';

@@ -13,13 +13,25 @@ class GetTeamMemberEvent extends TeamMemberEvent {
   final String filterText;
   final bool isFilter;
   final bool isSearch;
+  final int? pageNumber;
+  final int? pagesize;
   const GetTeamMemberEvent(
       {required this.searchText,
       required this.filterText,
       required this.isPagination,
       required this.isFilter,
-      required this.isSearch});
+      required this.isSearch,
+      this.pageNumber,
+      this.pagesize});
   @override
   List<Object> get props =>
-      [searchText, filterText, isPagination, isFilter, isSearch];
+      [
+        searchText,
+        filterText,
+        isPagination,
+        isFilter,
+        isSearch,
+        pageNumber ?? 0,
+        pagesize ?? 0
+      ];
 }

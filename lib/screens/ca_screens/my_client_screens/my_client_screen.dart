@@ -14,6 +14,7 @@ import 'package:ca_app/widgets/custom_filter_popup.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_phone_field.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
     _fetchCustomer(isFilter: true);
   }
 
+  int selectedIndex = -1;
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -117,6 +119,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                   children: [
                     Expanded(
                       child: CustomSearchField(
+                        focusNode: _searchFocusNode,
                         controller: _searchController,
                         serchHintText:
                             'Search..by service name,subservice name,id',
@@ -237,13 +240,14 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                       _lastNameController.clear();
                                       _emailController.clear();
                                       _phoneController.clear();
-                                      _onTeamMemberAdded();
+
                                       Future.microtask(() {
                                         if (context.mounted) {
                                           context
                                               .pop(); // Ensure context is still valid
                                         }
                                       });
+                                      _onTeamMemberAdded();
                                       Utils.toastSuccessMessage(
                                           'Client Added SuccessFully');
                                     }
@@ -319,46 +323,41 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                     Row(
                                       children: [
                                         Expanded(
-                                            child: CustomTextItem(
-                                                inOneLinetext: true,
-                                                lable: 'Full Name',
-                                                value:
-                                                    '${data?.firstName ?? ''} ${data?.lastName ?? ''}')),
+                                          child: CustomTextItem(
+                                              lable: 'Id',
+                                              value: '#${data?.userId}'),
+                                        ),
                                         Expanded(
-                                            child: CustomTextItem(
-                                                lable: 'Id',
-                                                value: '#${data?.userId}'))
+                                          child: CustomTextItem(
+                                              lable: 'Status',
+                                              value: data?.status == true
+                                                  ? 'Active'
+                                                  : "Inactive"),
+                                        ),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                            child: CustomTextItem(
-                                                lable: 'Mobile',
-                                                value:
-                                                    '+${data?.countryCode} ${data?.mobile}')),
-                                        Expanded(
-                                            child: CustomTextItem(
-                                                lable: 'Assignee to',
-                                                value: '${data?.caName}')),
-                                      ],
-                                    ),
-                                    SizedBox(height: 20),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                            child: CustomTextItem(
-                                                lable: 'Acceptance',
-                                                value:
-                                                    '${data?.userResponse}')),
-                                        Expanded(
-                                            child: CustomTextItem(
-                                                lable: 'Status',
-                                                value: data?.status == true
-                                                    ? 'Active'
-                                                    : "Inactive")),
-                                      ],
-                                    ),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: 'Full Name',
+                                        value:
+                                            '${data?.firstName ?? ''} ${data?.lastName ?? ''}'),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: 'Mobile',
+                                        value:
+                                            '+${data?.countryCode} ${data?.mobile}'),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: 'Assignee to',
+                                        value: '${data?.caName}'),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: 'Acceptance',
+                                        value: '${data?.userResponse}'),
                                     SizedBox(height: 5),
                                     Row(
                                       mainAxisAlignment:
@@ -377,13 +376,35 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                                 extra: {'role': 'CA'});
                                           },
                                         ),
-                                        CommonButtonWidget(
-                                          buttonWidth: 100,
-                                          buttonTitle: 'View',
-                                          onTap: () {
-                                            context.push(
-                                                '/ca_dashboard/view_client');
+                                        BlocListener<AuthBloc, AuthState>(
+                                          listener: (context, state) {
+                                            if (state is GetUserByIdSuccess) {
+                                              selectedIndex = -1;
+                                            }
                                           },
+                                          child: CommonButtonWidget(
+                                            loader: state is AuthLoading &&
+                                                selectedIndex == index,
+                                            buttonWidth: 100,
+                                            buttonTitle: 'View',
+                                            onTap: () {
+                                              setState(() {
+                                                selectedIndex = index;
+                                              });
+                                              context.push(
+                                                  '/ca_dashboard/view_client',
+                                                  extra: {
+                                                    "userId":
+                                                        data?.userId.toString()
+                                                  }).then((onValue) {
+                                                debugPrint(
+                                                    ',,,,cvnmvnc,v,,,,nv,mnv,mnv,nn,nn,v,,,');
+                                                context
+                                                    .read<AuthBloc>()
+                                                    .add(GetUserByIdEvent());
+                                              });
+                                            },
+                                          ),
                                         )
                                       ],
                                     )

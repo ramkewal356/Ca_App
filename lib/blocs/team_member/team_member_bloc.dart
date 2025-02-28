@@ -10,7 +10,7 @@ part 'team_member_state.dart';
 
 class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
   int pageNumber = 0;
-  final int pageSize = 4;
+  final int pageSize = 10;
   bool isFetching = false;
   bool isLastPage = false;
   final _myRepo = TeamRepository();
@@ -36,8 +36,8 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
     Map<String, dynamic> query = {
       "caId": userId,
       "search": event.searchText,
-      "pageNumber": pageNumber,
-      "pageSize": pageSize,
+      "pageNumber": event.pageNumber ?? pageNumber,
+      "pageSize": event.pagesize ?? pageSize,
       "filter": event.filterText
     };
     try {
