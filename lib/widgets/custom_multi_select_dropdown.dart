@@ -160,7 +160,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
   List<String> filterList = [];
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     filterList = widget.items;
   }
@@ -268,6 +268,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
   void _updatePopupMenu() {
     _hidePopupMenu();
     Future.delayed(Duration(milliseconds: 20), () {
+      // ignore: use_build_context_synchronously
       _showPopupMenu(context);
     });
   }

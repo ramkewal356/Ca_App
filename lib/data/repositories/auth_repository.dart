@@ -1,4 +1,5 @@
 
+import 'package:ca_app/data/models/deactive_user_model.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
 import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
@@ -192,6 +193,26 @@ class AuthRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('getUserResponse ${response?.data}');
       return UserModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+  //**** Deactive User API ****//
+  Future<ActiveDeactiveUserModel?> activeDeactiveUserApi(
+      {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.deactiveUserUrl,
+        body: body,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('getDeactiveResponse ${response?.data}');
+      return ActiveDeactiveUserModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

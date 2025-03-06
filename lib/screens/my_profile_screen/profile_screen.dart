@@ -4,7 +4,6 @@ import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
-import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_dropdown_button.dart';
@@ -184,6 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onChanged: (p0) {
                         setState(() {
                           selectedGender = p0;
+                          debugPrint('BBNdjhfdhjdhjj$selectedGender');
                         });
                       },
                       validator: (value) {

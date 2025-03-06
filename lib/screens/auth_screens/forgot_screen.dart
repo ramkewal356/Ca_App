@@ -5,7 +5,6 @@ import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
-import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';

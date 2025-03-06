@@ -65,6 +65,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
 
   Future<void> _fetchCustomersData({bool isFilter = false}) async {
     int? useId = await SharedPrefsClass().getUserId();
+    // ignore: use_build_context_synchronously
     BlocProvider.of<CustomerBloc>(context).add(GetCustomerByCaIdEvent(
         caId: useId.toString(),
         searchText: '',
@@ -243,12 +244,19 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "imgUrl": Icons.history_sharp,
                 "label": "Logs History",
                 "onTap": () {
-                  // context.pop();
+                  context.push('/ca_dashboard/logs_history');
                 }
               },
             ],
           ),
-          body: ((customerSate is CustomerLoading &&
+          body: state is AuthErrorState
+              ? Center(
+                  child: Text(
+                    'No Data Found',
+                    style: AppTextStyle().redText,
+                  ),
+                )
+              : ((customerSate is CustomerLoading &&
                       customerSate is! GetCustomerByCaIdSuccess) ||
                   documentState is! RecentDocumentSuccess)
               ? Center(
@@ -256,7 +264,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                     color: ColorConstants.buttonColor,
                   ),
                 )
-              : SingleChildScrollView(
+                  : SingleChildScrollView(
                   child: Column(
                     children: [
                       Stack(
@@ -353,6 +361,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                             side: BorderSide(
                                 // ignore: deprecated_member_use
                                 color:
+                                        // ignore: deprecated_member_use
                                     ColorConstants.darkGray.withOpacity(0.6)),
                             borderRadius: BorderRadius.circular(10)),
                         child: Padding(

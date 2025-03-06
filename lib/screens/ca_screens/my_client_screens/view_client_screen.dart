@@ -4,10 +4,10 @@ import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/widgets/active_deactive_widget.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
-import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,9 +22,7 @@ class ViewClientScreen extends StatefulWidget {
 }
 
 class _ViewClientScreenState extends State<ViewClientScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _descriptionController = TextEditingController();
+  
   @override
   void initState() {
     context.read<AuthBloc>().add(GetUserByIdEvent(userId: widget.userId));
@@ -42,7 +40,7 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {},
           builder: (context, state) {
-            if (state is AuthLoading || state is! GetUserByIdSuccess) {
+            if (state is AuthLoading) {
               return Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.buttonColor,
@@ -96,17 +94,28 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                               ), // Custom icon
                               onSelected: (value) {
                                 debugPrint("Selected: $value");
-                                if (value == 'Deactive') {
-                                  _showModalBottomSheet();
+                                if (value == 'Deactive' || value == 'Active') {
+                                  _showModalBottomSheet(
+                                      context: context,
+                                      actionUponId: data?.id.toString() ?? '',
+                                      action: value);
+                                } else if (value == 'Logs') {
+                                  context.push('/ca_dashboard/logs_history',
+                                      extra: {"uponId": data?.id.toString()});
                                 }
                               },
                               itemBuilder: (BuildContext context) =>
                                   <PopupMenuEntry<String>>[
                                 PopupMenuItem<String>(
                                     height: 45,
-                                    value: 'Deactive',
+                                    value: data?.status == true
+                                        ? 'Deactive'
+                                        : 'Active',
                                     child: SizedBox(
-                                        width: 120, child: Text('Deactive'))),
+                                        width: 120,
+                                        child: Text(data?.status == true
+                                            ? 'Deactive'
+                                            : 'Active'))),
                                 PopupMenuItem<String>(
                                     height: 45,
                                     value: 'Logs',
@@ -190,7 +199,7 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                                   lable: 'Status',
                                   value: data?.status == true
                                       ? 'Active'
-                                      : "Inactive"),
+                                      : "In-Active"),
                             ],
                           ),
                         ),
@@ -302,7 +311,10 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
     );
   }
 
-  Future<void> _showModalBottomSheet() {
+  Future<void> _showModalBottomSheet(
+      {required BuildContext context,
+      required String actionUponId,
+      required String action}) {
     return showModalBottomSheet(
         context: context,
         isDismissible: false,
@@ -321,65 +333,9 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                   bottom: MediaQuery.of(context).viewInsets.bottom),
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                            onPressed: () {
-                              context.pop();
-                            },
-                            icon: Icon(
-                              Icons.close,
-                              color: ColorConstants.darkRedColor,
-                            )),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text.rich(TextSpan(children: [
-                            TextSpan(
-                                text: 'Note : ',
-                                style: AppTextStyle().cardLableText),
-                            TextSpan(
-                                text: 'Are you sure you want to ',
-                                style: AppTextStyle().cardValueText),
-                            TextSpan(
-                                text: 'Deactive ?',
-                                style: AppTextStyle().getredText)
-                          ]))),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        child: TextformfieldWidget(
-                          maxLines: 3,
-                          minLines: 3,
-                          controller: _descriptionController,
-                          hintText: 'Reason...',
-                          validator: (p0) {
-                            if (p0 == null || p0.isEmpty) {
-                              return 'Please enter reason';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: CommonButtonWidget(
-                          buttonTitle: 'De-Active',
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {}
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      )
-                    ],
-                  ),
+                child: ActiveDeactiveWidget(
+                  actionUponId: actionUponId,
+                  action: action,
                 ),
               ),
             );

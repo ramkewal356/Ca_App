@@ -1,4 +1,4 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -19,6 +19,7 @@ class SendOtpEvent extends AuthEvent {
   @override
   List<Object> get props => [email];
 }
+
 //**** Send Otp Event ****//
 class ReSendOtpEvent extends AuthEvent {
   final String email;
@@ -27,6 +28,7 @@ class ReSendOtpEvent extends AuthEvent {
   @override
   List<Object> get props => [email];
 }
+
 //**** Verify Otp Event ****//
 class VerifyOtpEvent extends AuthEvent {
   final String email;
@@ -35,6 +37,7 @@ class VerifyOtpEvent extends AuthEvent {
   @override
   List<Object> get props => [email, otp];
 }
+
 //**** Verify Otp For User Event ****//
 class VerifyOtpForUserEvent extends AuthEvent {
   final String email;
@@ -127,8 +130,30 @@ class AddUserEvent extends AuthEvent {
 //**** GetUserById Event ****//
 class GetUserByIdEvent extends AuthEvent {
   final String? userId;
-  
+
   const GetUserByIdEvent({this.userId});
   @override
   List<Object> get props => [userId ?? ''];
+}
+
+//**** Deactive User Event ****//
+class DeactiveUserEvent extends AuthEvent {
+  // final String actionPerformerId;
+  final String actionUponId;
+  final String reason;
+  final String action;
+
+  const DeactiveUserEvent(
+      {
+      // required this.actionPerformerId,
+      required this.actionUponId,
+      required this.reason,
+      required this.action});
+  @override
+  List<Object> get props => [
+        // actionPerformerId,
+        actionUponId,
+        reason,
+        action
+      ];
 }

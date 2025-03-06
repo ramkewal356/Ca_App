@@ -45,3 +45,22 @@ class GetViewDocumentEvent extends DocumentEvent {
         pagesize ?? 0
       ];
 }
+
+class DownloadDocumentEvent extends DocumentEvent {
+  final String docUrl;
+  final String docName;
+
+  const DownloadDocumentEvent({required this.docUrl, required this.docName});
+  @override
+  List<Object> get props => [docUrl, docName];
+}
+
+class DownloadDocumentFileEvent extends DocumentEvent {
+  final String docUrl;
+  final String docName;
+
+  const DownloadDocumentFileEvent(
+      {required this.docUrl, required this.docName});
+  @override
+  List<Object> get props => [docUrl, docName];
+}

@@ -409,6 +409,8 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                                         .read<AuthBloc>()
                                                         .add(
                                                             GetUserByIdEvent());
+                                                    _fetchTeamMembers(
+                                                        isFilter: true);
                                                   });
                                                 },
                                               );

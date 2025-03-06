@@ -27,8 +27,8 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
   String searchQuery = '';
   Map<String, bool> filters = {
     "All": false,
-    "Active": false,
-    "Inactive": false,
+    "General": false,
+    "Service": false,
   };
 
   @override
@@ -70,6 +70,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
   void _onFilterChanged(String value) {
     setState(() {
       selectedFilter = value;
+      debugPrint('selected Item $selectedFilter');
     });
     _getViewDocument(isFilter: true);
   }
@@ -101,7 +102,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
                   CustomFilterPopup(
                       // filterTitle: '',
                       filterIcon: Icon(Icons.filter_list_rounded),
-                      filterItems: ['All', 'Active', 'Inactive'],
+                      filterItems: ['All', 'General', 'Service'],
                       selectedFilters: filters,
                       onFilterChanged: _onFilterChanged),
                 ])),

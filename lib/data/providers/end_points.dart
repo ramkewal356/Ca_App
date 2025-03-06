@@ -8,7 +8,7 @@ class EndPoints {
   static const resendOtpForUsersUrl = '/users/send_reset_otp';
   static const verifyOtpUrl = '/verify_reset_password_otp';
   static const verifyOtpForUserUrl = '/verify_otp';
-
+  static const deactiveUserUrl = '/users/activate_deactivate_user';
   static const updateUserUrl = '/users/update_user';
   //Team member
   static const getSubCaByCaId = '/sub_ca/get_subCA_by_CAId';
@@ -19,6 +19,18 @@ class EndPoints {
   static var getRecentDocumentUrl =
       '/ca/get_recent_document_uploaded_by_customer';
   static var getViewDocumentUrl = '/document/get_document_by_userId';
+  //Logs Url
+  static var getActiveDeactiveLogByCaIdUrl =
+      '/active_deactive_logs/get_all_active_deActive_logs';
+  static var getActiveDeactiveLogByUponIdUrl =
+      '/active_deactive_logs/get_active_deActive_logs_by_actionUponId';
+  // Services url
+  static var getServicesListUrl = '/caServices/get_ca_service_list';
+  static var getServiceDropdownListUrl = '/service/get_distinct_service';
+  static var getSubServiceByServiceNameListUrl =
+      '/service/get_subService_by_serviceName';
+  static var addServiceUrl = '/caServices/select_service';
+  static var createNewServiceUrl = '/caServices/request_service';
   //sate url
   static var stateBaseUrl = 'https://countriesnow.space';
   static var getStateNameUrl = '/api/v0.1/countries/states';

@@ -2,6 +2,7 @@ import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/screens/auth_screens/forgot_screen.dart';
 import 'package:ca_app/screens/ca_screens/all_raise_history/all_raise_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/customer_allocation/customer_allocation.dart';
+import 'package:ca_app/screens/ca_screens/logs_history/logs_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/my_client_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_client_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_document_screen.dart';
@@ -85,7 +86,6 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
         path: '/myProfile',
         builder: (context, state) {
-         
           return ProfileScreen();
         },
       ),
@@ -252,6 +252,17 @@ final GoRouter goRouter = GoRouter(
               path: 'all_raise_history',
               builder: (context, state) {
                 return AllRaiseHistoryScreen();
+              },
+            ),
+            GoRoute(
+              path: 'logs_history',
+              builder: (context, state) {
+                var data = state.extra != null
+                    ? state.extra as Map<String, dynamic>
+                    : {};
+                return LogsHistoryScreen(
+                  uponId: data["uponId"],
+                );
               },
             ),
           ]),

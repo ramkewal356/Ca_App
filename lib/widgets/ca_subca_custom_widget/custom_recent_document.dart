@@ -12,6 +12,7 @@ class CustomRecentDocument extends StatelessWidget {
   final String category;
   final String subCategory;
   final String postedDate;
+  final bool downloadLoader;
   final VoidCallback onTapDownload;
   final VoidCallback onTapReRequest;
 
@@ -23,6 +24,7 @@ class CustomRecentDocument extends StatelessWidget {
       required this.category,
       required this.subCategory,
       required this.postedDate,
+      this.downloadLoader = false,
       required this.onTapDownload,
       required this.onTapReRequest});
 
@@ -33,8 +35,7 @@ class CustomRecentDocument extends StatelessWidget {
         CustomTextInfo(flex1: 2, flex2: 3, lable: 'ID', value: id),
         CustomTextInfo(
             flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: clientName),
-        CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'CATEGORY', value: category),
+        CustomTextInfo(flex1: 2, flex2: 3, lable: 'CATEGORY', value: category),
         CustomTextInfo(
             flex1: 2, flex2: 3, lable: 'SUBCATEGORY', value: subCategory),
         CustomTextInfo(
@@ -42,13 +43,16 @@ class CustomRecentDocument extends StatelessWidget {
         CustomTextInfo(
             inOneLinetext: true,
             maxLine: 2,
-            flex1: 2, flex2: 3, lable: 'DOCUMENT NAME', value: documentName),
-       
+            flex1: 2,
+            flex2: 3,
+            lable: 'DOCUMENT NAME',
+            value: documentName),
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CommonButtonWidget(
+                loader: downloadLoader,
                 buttonColor: ColorConstants.white,
                 buttonBorderColor: ColorConstants.greenColor,
                 tileStyle: AppTextStyle().getgreenText,

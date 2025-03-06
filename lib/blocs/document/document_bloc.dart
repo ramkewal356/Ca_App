@@ -22,6 +22,8 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   DocumentBloc() : super(DocumentInitial()) {
     on<GetRecentDocumentEvent>(_getRecentDocumentApi);
     on<GetViewDocumentEvent>(_getViewDocumentApi);
+    on<DownloadDocumentEvent>(_downloadDocument);
+    on<DownloadDocumentFileEvent>(_downloadDocumentFile);
   }
   Future<void> _getRecentDocumentApi(
       GetRecentDocumentEvent event, Emitter<DocumentState> emit) async {
@@ -121,6 +123,36 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       emit(DocumentError(errorMessage: e.toString()));
     } finally {
       isFetching1 = false;
+    }
+  }
+
+  Future<void> _downloadDocument(
+      DownloadDocumentEvent event, Emitter<DocumentState> emit) async {
+    try {
+      emit(DocumentDownloading());
+      await _myRepo.downloadFile(docUrl: event.docUrl, docName: event.docName);
+
+      emit(DownloadDocumentSuccess());
+      await Future.delayed(Duration(milliseconds: 500));
+      emit(DocumentInitial());
+    } catch (e) {
+      emit(DocumentError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _downloadDocumentFile(
+      DownloadDocumentFileEvent event, Emitter<DocumentState> emit) async {
+    try {
+      emit(DocumentDownloading());
+      await _myRepo.downloadDocumentFile(
+          docUrl: event.docUrl, docName: event.docName);
+
+      emit(DownloadDocumentFileSuccess());
+
+      // emit(DocumentInitial());
+    } catch (e) {
+      // emit(DocumentInitial());
+      emit(DocumentError(errorMessage: e.toString()));
     }
   }
 }

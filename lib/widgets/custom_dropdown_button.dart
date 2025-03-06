@@ -28,17 +28,19 @@ class CustomDropdownButton extends StatelessWidget {
     return BlocConsumer<CustomDropdownBloc, CustomDropdownState>(
       listener: (context, state) {},
       builder: (context, state) {
+        List<String> uniqueDropdownItems = dropdownItems.toSet().toList();
         String? selectedValue = (state is CustomDropdownSelected &&
-                dropdownItems.contains(formatValue(state.value)))
-            ? formatValue(state.value)
-            : dropdownItems.contains(formatValue(initialValue))
-                ? formatValue(initialValue)
+                uniqueDropdownItems.contains(state.value))
+            ? state.value
+            : (initialValue != null &&
+                    uniqueDropdownItems.contains(initialValue))
+                ? initialValue
                 : null;
         return FormField<String>(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             initialValue:
-                dropdownItems.contains(formatValue(selectedValue))
-                ? formatValue(selectedValue)
+                uniqueDropdownItems.contains(selectedValue)
+                ? selectedValue
                 : null,
             validator: validator,
             builder: (FormFieldState<String> fieldState) {
@@ -53,10 +55,9 @@ class CustomDropdownButton extends StatelessWidget {
                     value: selectedValue,
                     // disabledHint: Text('data'),
                     underline: SizedBox.shrink(),
-                    items: dropdownItems.map((value) {
+                    items: uniqueDropdownItems.map((value) {
                       return DropdownMenuItem(
-                          value: formatValue(value),
-                          child: Text(formatValue(value)));
+                          value: value, child: Text(value));
                     }).toList(),
                     buttonStyleData: ButtonStyleData(
                       height: 50,

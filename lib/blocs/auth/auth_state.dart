@@ -82,6 +82,7 @@ class UpdateUserSuccess extends AuthState {
   List<Object> get props => [updateUser ?? []];
 }
 
+
 /// GetUserById Success State///
 class GetUserByIdSuccess extends AuthState {
   final UserModel? getUserByIdData;
@@ -89,6 +90,12 @@ class GetUserByIdSuccess extends AuthState {
   @override
   List<Object> get props => [getUserByIdData ?? []];
 }
+/// Deactive Loading  State///
+class DeactiveLoading extends AuthState {}
+
+/// Deactive user Success State///
+class DeactiveUserSucess extends AuthState {}
+
 /////////////////**** End Success State ****////////////////
 
 ///////////////**** Fail State ****////////////////

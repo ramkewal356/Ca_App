@@ -24,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<UpdateProfileImageEvent>(_uploadProfileImageApi);
 
     on<GetUserByIdEvent>(_getUserById);
+    on<DeactiveUserEvent>(_activeDeactiveUser);
   }
   //**** Call AuthUser API ****//
   Future<void> _authUser(
@@ -225,5 +226,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthErrorState(erroMessage: e.toString()));
     }
     return null;
+  }
+
+  Future<void> _activeDeactiveUser(
+      DeactiveUserEvent event, Emitter<AuthState> emit) async {
+    try {
+      emit(DeactiveLoading());
+      int? userId = await SharedPrefsClass().getUserId();
+      Map<String, dynamic> body = {
+        "actionPerformerId": userId,
+        "actionUponId": event.actionUponId,
+        "reason": event.reason,
+        "action": event.action
+      };
+      var resp = await _myRepo.activeDeactiveUserApi(body: body);
+      if (resp?.status?.httpCode == '200') {
+        emit(DeactiveUserSucess());
+      }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
   }
 }

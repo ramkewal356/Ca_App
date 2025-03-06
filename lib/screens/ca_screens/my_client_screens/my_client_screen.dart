@@ -402,6 +402,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                                 context
                                                     .read<AuthBloc>()
                                                     .add(GetUserByIdEvent());
+                                                _fetchCustomer(isFilter: true);
                                               });
                                             },
                                           ),

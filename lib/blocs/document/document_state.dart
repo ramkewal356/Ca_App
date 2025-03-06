@@ -8,7 +8,7 @@ sealed class DocumentState extends Equatable {
 }
 
 final class DocumentInitial extends DocumentState {}
-
+final class DocumentDownloading extends DocumentState {}
 final class DocumentLoading extends DocumentState {}
 
 class RecentDocumentSuccess extends DocumentState {
@@ -31,6 +31,9 @@ class ViewDocumentSuccess extends DocumentState {
   @override
   List<Object> get props => [viewDocumnets ?? [], isLastPage, totalDocument];
 }
+class DownloadDocumentSuccess extends DocumentState {}
+
+class DownloadDocumentFileSuccess extends DocumentState {}
 
 final class DocumentError extends DocumentState {
   final String errorMessage;
