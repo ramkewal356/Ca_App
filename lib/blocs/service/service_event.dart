@@ -11,13 +11,18 @@ class GetCaServiceListEvent extends ServiceEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
+  final int? pageNumber;
+  final int? pageSize;
 
   const GetCaServiceListEvent(
       {required this.isSearch,
       required this.searchText,
-      required this.isPagination});
+      required this.isPagination,
+      this.pageNumber,
+      this.pageSize});
   @override
-  List<Object> get props => [isSearch, searchText, isPagination];
+  List<Object> get props =>
+      [isSearch, searchText, isPagination, pageNumber ?? 0, pageSize ?? 0];
 }
 
 class GetServiceListEvent extends ServiceEvent {}
@@ -49,4 +54,25 @@ class CreateServiceEvent extends ServiceEvent {
       required this.serviceDesc});
   @override
   List<Object> get props => [serviceName, subService, serviceDesc];
+}
+
+class DeleteServiceEvent extends ServiceEvent {
+  final String serviceId;
+
+  const DeleteServiceEvent({required this.serviceId});
+  @override
+  List<Object> get props => [serviceId];
+}
+
+class GetViewServiceEvent extends ServiceEvent {
+  final bool isPagination;
+  final bool isSearch;
+  final String searchText;
+
+  const GetViewServiceEvent(
+      {required this.isPagination,
+      required this.isSearch,
+      required this.searchText});
+  @override
+  List<Object> get props => [isPagination, isSearch, searchText];
 }

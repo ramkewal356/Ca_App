@@ -3,9 +3,11 @@ import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
+import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
+import 'package:ca_app/data/models/get_services_list_model.dart';
 import 'package:ca_app/data/models/recent_document_model.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
@@ -55,12 +57,22 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
     await _fetchCustomersData();
     await _getRecentDocument();
     _fetchTeamMembers(isFilter: true);
+    _fetchService();
   }
 
   Future<void> _getRecentDocument({bool isPagination = false}) async {
     context
         .read<DocumentBloc>()
         .add(GetRecentDocumentEvent(isPagination: isPagination));
+  }
+
+  void _fetchService() {
+    context.read<ServiceBloc>().add(GetCaServiceListEvent(
+        isSearch: true,
+        searchText: '',
+        isPagination: false,
+        pageNumber: -1,
+        pageSize: -1));
   }
 
   Future<void> _fetchCustomersData({bool isFilter = false}) async {
@@ -113,7 +125,11 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             documentState is RecentDocumentSuccess
                 ? documentState.recentDocumnets
                 : [];
-
+        var serviceState = context.watch<ServiceBloc>().state;
+        List<ServicesListData> getServiceData =
+            (serviceState is GetCaServiceListSuccess
+                ? (serviceState).getCaServicesList
+                : []);
         return Scaffold(
           backgroundColor: ColorConstants.white,
           appBar: CustomAppbar(
@@ -162,7 +178,9 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "imgUrl": Icons.miscellaneous_services_outlined,
                 "label": "Services",
                 "onTap": () {
-                  context.push('/ca_dashboard/services');
+                  context.push('/ca_dashboard/services').then((onValue) {
+                    _getUserDetails();
+                  });
                 }
               },
               {
@@ -257,269 +275,309 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                   ),
                 )
               : ((customerSate is CustomerLoading &&
-                      customerSate is! GetCustomerByCaIdSuccess) ||
-                  documentState is! RecentDocumentSuccess)
-              ? Center(
-                  child: CircularProgressIndicator(
-                    color: ColorConstants.buttonColor,
-                  ),
-                )
+                          customerSate is! GetCustomerByCaIdSuccess) ||
+                      documentState is! RecentDocumentSuccess)
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: ColorConstants.buttonColor,
+                      ),
+                    )
                   : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Stack(
+                      child: Column(
                         children: [
-                          Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                                color: ColorConstants.buttonColor,
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(40),
-                                    bottomRight: Radius.circular(40))),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(
-                              child: Wrap(
-                                  alignment: WrapAlignment.center,
-                                  runAlignment: WrapAlignment.center,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  spacing: 10,
-                                  runSpacing: 10,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .push('/ca_dashboard/my_client')
-                                            .then((onValue) async {
-                                          await _fetchCustomersData(
-                                              isFilter: true);
-                                        });
-                                      },
-                                      child: DashboardCard(
-                                        icon: Icon(
-                                          Icons.groups_3,
-                                          color: ColorConstants.white,
-                                        ),
-                                        total: '$totalCustomers',
-                                        lable: 'Total Client',
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .push('/ca_dashboard/team_member')
-                                            .then((onValue) async {
-                                          debugPrint(
-                                              'bnbmnbm??????????????????????');
-                                          await _fetchCustomersData(
-                                              isFilter: true);
-                                          _fetchTeamMembers(isFilter: true);
-                                        });
-                                      },
-                                      child: BlocConsumer<TeamMemberBloc,
-                                          TeamMemberState>(
-                                        listener: (context, state) {},
-                                        builder: (context, state) {
-                                          int totalTeam = 0;
-                                          if (state is GetTeamMemberSuccess) {
-                                            totalTeam = state.getTeamMemberModel
-                                                    ?.length ??
-                                                0;
-                                          }
-                                          return DashboardCard(
+                          Stack(
+                            children: [
+                              Container(
+                                height: 100,
+                                decoration: BoxDecoration(
+                                    color: ColorConstants.buttonColor,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(40),
+                                        bottomRight: Radius.circular(40))),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Center(
+                                  child: Wrap(
+                                      alignment: WrapAlignment.center,
+                                      runAlignment: WrapAlignment.center,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      spacing: 10,
+                                      runSpacing: 10,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .push('/ca_dashboard/my_client')
+                                                .then((onValue) async {
+                                              await _fetchCustomersData(
+                                                  isFilter: true);
+                                            });
+                                          },
+                                          child: DashboardCard(
                                             icon: Icon(
-                                              Icons.groups,
+                                              Icons.groups_3,
                                               color: ColorConstants.white,
                                             ),
-                                            total: '$totalTeam',
-                                            lable: 'Team Member',
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: DashboardCard(
-                                        icon: Icon(
-                                          Icons.format_list_numbered_outlined,
-                                          color: ColorConstants.white,
+                                            total: '$totalCustomers',
+                                            lable: 'Total Client',
+                                          ),
                                         ),
-                                        total: '0',
-                                        lable: 'Services Opted',
-                                      ),
-                                    ),
-                                  ]),
-                            ),
-                          )
-                        ],
-                      ),
-                      Card(
-                        margin: EdgeInsets.all(10),
-                        color: ColorConstants.white,
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                // ignore: deprecated_member_use
-                                color:
+                                        GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .push(
+                                                    '/ca_dashboard/team_member')
+                                                .then((onValue) async {
+                                              debugPrint(
+                                                  'bnbmnbm??????????????????????');
+                                              await _fetchCustomersData(
+                                                  isFilter: true);
+                                              _fetchTeamMembers(isFilter: true);
+                                            });
+                                          },
+                                          child: BlocConsumer<TeamMemberBloc,
+                                              TeamMemberState>(
+                                            listener: (context, state) {},
+                                            builder: (context, state) {
+                                              int totalTeam = 0;
+                                              if (state
+                                                  is GetTeamMemberSuccess) {
+                                                totalTeam = state
+                                                        .getTeamMemberModel
+                                                        ?.length ??
+                                                    0;
+                                              }
+                                              return DashboardCard(
+                                                icon: Icon(
+                                                  Icons.groups,
+                                                  color: ColorConstants.white,
+                                                ),
+                                                total: '$totalTeam',
+                                                lable: 'Team Member',
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .push('/ca_dashboard/services')
+                                                .then((onValue) {
+                                              _getUserDetails();
+                                            });
+                                          },
+                                          child: DashboardCard(
+                                            icon: Icon(
+                                              Icons
+                                                  .format_list_numbered_outlined,
+                                              color: ColorConstants.white,
+                                            ),
+                                            total: '${getServiceData.length}',
+                                            lable: 'Services Opted',
+                                          ),
+                                        ),
+                                      ]),
+                                ),
+                              )
+                            ],
+                          ),
+                          Card(
+                            margin: EdgeInsets.all(10),
+                            color: ColorConstants.white,
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    // ignore: deprecated_member_use
+                                    color:
                                         // ignore: deprecated_member_use
-                                    ColorConstants.darkGray.withOpacity(0.6)),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: SizedBox(
-                            height: 250.h,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                        ColorConstants.darkGray
+                                            .withOpacity(0.6)),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                height: 250.h,
+                                child: Column(
                                   children: [
-                                    Text(
-                                      'Client',
-                                      style: AppTextStyle().subheadingtext,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Client',
+                                          style: AppTextStyle().subheadingtext,
+                                        ),
+                                        CustomTextButton(
+                                            buttonTitle: 'View All',
+                                            onTap: () {
+                                              context
+                                                  .push(
+                                                      '/ca_dashboard/my_client')
+                                                  .then((onValue) async {
+                                                await _fetchCustomersData(
+                                                    isFilter: true);
+                                              });
+                                            })
+                                      ],
                                     ),
-                                    CustomTextButton(
-                                        buttonTitle: 'View All',
-                                        onTap: () {
-                                          context
-                                              .push('/ca_dashboard/my_client')
-                                              .then((onValue) async {
-                                            await _fetchCustomersData(
-                                                isFilter: true);
-                                          });
-                                        })
+                                    Expanded(
+                                      child: (getCustomers == null ||
+                                              getCustomers.isEmpty)
+                                          ? Center(
+                                              child: Text(
+                                                'No Client Available',
+                                                style: AppTextStyle().redText,
+                                              ),
+                                            )
+                                          : ListView.builder(
+                                              itemCount:
+                                                  (getCustomers.length) > 6
+                                                      ? 6
+                                                      : getCustomers.length,
+                                              itemBuilder: (context, index) {
+                                                return Column(
+                                                  children: [
+                                                    ListTile(
+                                                      dense: true,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10),
+                                                      horizontalTitleGap: 10,
+                                                      leading: CircleAvatar(
+                                                        radius: 25,
+                                                        backgroundColor:
+                                                            ColorConstants
+                                                                .buttonColor,
+                                                        child: Text(
+                                                          '${getCustomers[index].firstName?[0]}${getCustomers[index].lastName?[0]}',
+                                                          style: AppTextStyle()
+                                                              .buttontext,
+                                                        ),
+                                                      ),
+                                                      title: Text(
+                                                          '${getCustomers[index].firstName} ${getCustomers[index].lastName}',
+                                                          style: AppTextStyle()
+                                                              .textButtonStyle),
+                                                      subtitle: Text(
+                                                          '${getCustomers[index].email}'),
+                                                      trailing: Text(DateFormat(
+                                                              'dd/MM/yyyy')
+                                                          .format(DateTime
+                                                              .fromMillisecondsSinceEpoch(
+                                                                  getCustomers[
+                                                                              index]
+                                                                          .createdDate ??
+                                                                      0))),
+                                                    ),
+                                                    Divider()
+                                                  ],
+                                                );
+                                              },
+                                              // separatorBuilder: (context, index) {
+                                              //   return Divider();
+                                              // },
+                                            ),
+                                    )
                                   ],
                                 ),
-                                Expanded(
-                                  child: (getCustomers == null ||
-                                          getCustomers.isEmpty)
-                                      ? Center(
-                                          child: Text(
-                                            'No Client Available',
-                                            style: AppTextStyle().redText,
-                                          ),
-                                        )
-                                      : ListView.builder(
-                                          itemCount: (getCustomers.length) > 6
-                                              ? 6
-                                              : getCustomers.length,
-                                          itemBuilder: (context, index) {
-                                            return Column(
-                                              children: [
-                                                ListTile(
-                                                  dense: true,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 10),
-                                                  horizontalTitleGap: 10,
-                                                  leading: CircleAvatar(
-                                                    radius: 25,
-                                                    backgroundColor:
-                                                        ColorConstants
-                                                            .buttonColor,
-                                                    child: Text(
-                                                      '${getCustomers[index].firstName?[0]}${getCustomers[index].lastName?[0]}',
-                                                      style: AppTextStyle()
-                                                          .buttontext,
-                                                    ),
-                                                  ),
-                                                  title: Text(
-                                                      '${getCustomers[index].firstName} ${getCustomers[index].lastName}',
-                                                      style: AppTextStyle()
-                                                          .textButtonStyle),
-                                                  subtitle: Text(
-                                                      '${getCustomers[index].email}'),
-                                                  trailing: Text(DateFormat(
-                                                          'dd/MM/yyyy')
-                                                      .format(DateTime
-                                                          .fromMillisecondsSinceEpoch(
-                                                              getCustomers[
-                                                                          index]
-                                                                      .createdDate ??
-                                                                  0))),
-                                                ),
-                                                Divider()
-                                              ],
-                                            );
-                                          },
-                                          // separatorBuilder: (context, index) {
-                                          //   return Divider();
-                                          // },
-                                        ),
-                                )
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Recent document',
+                                  style: AppTextStyle().headingtext,
+                                ),
+                                CustomTextButton(
+                                    buttonTitle: 'View All',
+                                    onTap: () {
+                                      context
+                                          .push('/recent_document')
+                                          .then((onValue) async {
+                                        await _getRecentDocument();
+                                      });
+                                    })
                               ],
                             ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Recent document',
-                              style: AppTextStyle().headingtext,
-                            ),
-                            CustomTextButton(
-                                buttonTitle: 'View All',
-                                onTap: () {
-                                  context
-                                      .push('/recent_document')
-                                      .then((onValue) async {
-                                    await _getRecentDocument();
-                                  });
-                                })
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: (getRecentDocument ?? []).isEmpty
-                            ? Container(
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                height: 100.h,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: ColorConstants.darkGray),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Center(
-                                    child: Text(
-                                  'No Document Available',
-                                  style: AppTextStyle().redText,
-                                )),
-                              )
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: (getRecentDocument?.length ?? 0) > 6
-                                    ? 6
-                                    : getRecentDocument?.length,
-                                itemBuilder: (context, index) {
-                                  var data = getRecentDocument?[index];
-                                  return CustomCard(
-                                      child: CustomRecentDocument(
-                                    id: '#${data?.uuid ?? ''}',
-                                    clientName: '${data?.customerName}',
-                                    documentName: '${data?.docName}',
-                                    category: data?.serviceName ?? 'N/A',
-                                    subCategory: data?.subService ?? 'N/A',
-                                    postedDate: DateFormat('dd/MM/yyyy').format(
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                            data?.createdDate ?? 0)),
-                                    onTapDownload: () {},
-                                    onTapReRequest: () {
-                                      context.push('/raise_request',
-                                          extra: {'role': 'CA'});
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: (getRecentDocument ?? []).isEmpty
+                                ? Container(
+                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    height: 100.h,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: ColorConstants.darkGray),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Center(
+                                        child: Text(
+                                      'No Document Available',
+                                      style: AppTextStyle().redText,
+                                    )),
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        (getRecentDocument?.length ?? 0) > 6
+                                            ? 6
+                                            : getRecentDocument?.length,
+                                    itemBuilder: (context, index) {
+                                      var data = getRecentDocument?[index];
+                                      return CustomCard(
+                                          child: BlocBuilder<
+                                          DownloadDocumentBloc, DocumentState>(
+                                        builder: (context, state) {
+                                          return CustomRecentDocument(
+                                            id: '#${data?.uuid ?? ''}',
+                                            clientName: '${data?.customerName}',
+                                            documentName: '${data?.docName}',
+                                            category:
+                                                data?.serviceName ?? 'N/A',
+                                            subCategory:
+                                                data?.subService ?? 'N/A',
+                                            postedDate: DateFormat('dd/MM/yyyy')
+                                                .format(DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        data?.createdDate ??
+                                                            0)),
+                                            downloadLoader:
+                                                state is DocumentDownloading &&
+                                                    (state.docName ==
+                                                        data?.docName),
+                                            onTapDownload: () {
+                                              context
+                                                  .read<DownloadDocumentBloc>()
+                                                  .add(
+                                                      DownloadDocumentFileEvent(
+                                                          docUrl:
+                                                              data?.docUrl ??
+                                                                  '',
+                                                          docName:
+                                                              data?.docName ??
+                                                                  ''));
+                                            },
+                                            onTapReRequest: () {
+                                              context.push('/raise_request',
+                                                  extra: {'role': 'CA'});
+                                            },
+                                          );
+                                        },
+                                      ));
                                     },
-                                  ));
-                                },
-                              ),
-                      )
-                    ],
-                  ),
-                ),
+                                  ),
+                          )
+                        ],
+                      ),
+                    ),
         );
       },
     );

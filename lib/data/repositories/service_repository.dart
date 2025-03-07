@@ -2,6 +2,7 @@ import 'package:ca_app/data/models/add_service_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
+import 'package:ca_app/data/models/get_view_service_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
@@ -92,7 +93,7 @@ class ServiceRepository {
     }
   }
 
-  //****  Add Services  API ****//
+  //****  Create Services  API ****//
   Future<CreateNewServiceModel> createServiceApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
@@ -106,6 +107,47 @@ class ServiceRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('CreateServiceResponse ${response?.data}');
       return CreateNewServiceModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Create Services  API ****//
+  Future<bool> removeServiceApi({required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.deleteServiceUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('CreateServiceResponse ${response?.data}');
+      return true;
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Get View Services  API ****//
+  Future<GetViewServiceModel> getViewServiceByCaIdApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getViewServiceUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('CreateServiceResponse ${response?.data}');
+      return GetViewServiceModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => DocumentBloc()),
         BlocProvider(create: (_) => LogsBloc()),
         BlocProvider(create: (_) => ServiceBloc()),
-        // BlocProvider(create: (_) => AddServiceBloc()),
+        BlocProvider(create: (_) => DownloadDocumentBloc()),
 
 
 

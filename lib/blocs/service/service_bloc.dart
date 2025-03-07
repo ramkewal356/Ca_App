@@ -4,6 +4,7 @@ import 'package:ca_app/data/models/add_service_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
+import 'package:ca_app/data/models/get_view_service_model.dart';
 import 'package:ca_app/data/repositories/service_repository.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -14,7 +15,7 @@ part 'service_state.dart';
 
 class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   int pageNumber = 0;
-  final int pageSize = 10;
+  final int pageSize = 4;
   bool isFetching = false;
   bool isLastPage = false;
   bool isFetchingSubService = false;
@@ -24,7 +25,9 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     on<GetServiceListEvent>(_getServiceListApi);
     on<GetSubServiceListEvent>(_getSubServiceListApi);
     on<AddServiceEvent>(_addServiceApi);
+    on<DeleteServiceEvent>(_deleteServiceApi);
     on<CreateServiceEvent>(_createServiceApi);
+    on<GetViewServiceEvent>(_getViewService);
   }
   Future<void> _getCaServiceListApi(
       GetCaServiceListEvent event, Emitter<ServiceState> emit) async {
@@ -43,8 +46,8 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     Map<String, dynamic> query = {
       "caId": userId,
       "search": event.searchText,
-      "pageNumber": pageNumber,
-      "pageSize": pageSize,
+      "pageNumber": event.pageNumber ?? pageNumber,
+      "pageSize": event.pageSize ?? pageSize,
     };
     try {
       var resp = await _myRepo.getServicesListApi(query: query);
@@ -161,6 +164,68 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       Utils.toastSuccessMessage('Service Added Successfully');
     } catch (e) {
       emit(ServiceError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _deleteServiceApi(
+      DeleteServiceEvent event, Emitter<ServiceState> emit) async {
+    Map<String, dynamic> query = {"id": event.serviceId};
+    try {
+      var resp = await _myRepo.removeServiceApi(query: query);
+      if (state is GetCaServiceListSuccess) {
+        emit((state as GetCaServiceListSuccess).copyWith(deleteService: resp));
+      } else {
+        emit(GetCaServiceListSuccess(
+            getServicesList: [],
+            getCaServicesList:
+                (state as GetCaServiceListSuccess).getCaServicesList,
+            getSubServiceList: [],
+            isLastPage: false));
+      }
+    } catch (e) {
+      emit(DeleteServiceError());
+    }
+  }
+
+  Future<void> _getViewService(
+      GetViewServiceEvent event, Emitter<ServiceState> emit) async {
+    if (isFetching) return;
+
+    if (event.isSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(ServiceLoading()); // Show loading only for the first page
+    }
+
+    if (isLastPage) return;
+    isFetching = true;
+    int? userId = await SharedPrefsClass().getUserId();
+    Map<String, dynamic> query = {
+      "caId": userId,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+      "search": event.searchText,
+      "filter": ''
+    };
+    try {
+      var resp = await _myRepo.getViewServiceByCaIdApi(query: query);
+      List<ViewServiceData> newData = resp.data ?? [];
+      List<ViewServiceData> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetViewServiceSuccess
+                  ? (state as GetViewServiceSuccess).getViewServiceList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetViewServiceSuccess(
+          getViewServiceList: allData, isLastPage: isLastPage));
+      pageNumber++;
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
     }
   }
 }

@@ -31,6 +31,9 @@ class EndPoints {
       '/service/get_subService_by_serviceName';
   static var addServiceUrl = '/caServices/select_service';
   static var createNewServiceUrl = '/caServices/request_service';
+  static var deleteServiceUrl = '/caServices/remove_service';
+  static var getViewServiceUrl = '/caServices/get_request_service_by_caId';
+
   //sate url
   static var stateBaseUrl = 'https://countriesnow.space';
   static var getStateNameUrl = '/api/v0.1/countries/states';

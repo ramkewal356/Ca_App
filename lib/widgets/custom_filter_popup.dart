@@ -28,50 +28,7 @@ class _CustomFilterPopupState extends State<CustomFilterPopup> {
     super.initState();
     selectedFilters = Map.from(widget.selectedFilters);
   }
-// void _updateSelection(String filter, bool? value, StateSetter setStatePopup,
-//       List<String> filterItems) {
-//     bool newValue = value ?? false;
 
-//     if (filter == "All") {
-//       selectedFilters.updateAll((key, _) => newValue);
-//     } else {
-//       // Deselect "All" when selecting specific filters
-//       selectedFilters["All"] = false;
-//       selectedFilters[filter] = newValue;
-
-//       // If all specific filters are selected, check "All"
-//       bool allSelected = filterItems
-//           .where((item) => item != "All")
-//           .every((item) => selectedFilters[item] == true);
-//       selectedFilters["All"] = allSelected;
-//     }
-
-//     setStatePopup(() {});
-//     setState(() {});
-
-//     // Apply and update filter title
-//     _applyFilters(filterItems);
-//     _updateFilterTitle(filterItems);
-//   }
-
-// void _updateFilterTitle(List<String> filterItems) {
-//     _filterTitle = filterItems.firstWhere(
-//       (filter) => selectedFilters[filter] == true,
-//       orElse: () => "All",
-//     );
-//   }
-
-// void _applyFilters(List<String> filterItems) {
-//     if (selectedFilters["All"] == true) {
-//       widget.onFilterChanged(""); // All selected
-//     } else {
-//       String selected = filterItems.firstWhere(
-//         (filter) => selectedFilters[filter] == true,
-//         orElse: () => "",
-//       );
-//       widget.onFilterChanged(selected);
-//     }
-//   }
   void _updateSelection(String filter, bool? value, StateSetter setStatePopup) {
     if (filter == "All") {
       bool newValue = value ?? false;

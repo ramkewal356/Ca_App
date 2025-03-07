@@ -19,7 +19,7 @@ class GetViewDocumentEvent extends DocumentEvent {
   final String userId;
   final String searchText;
   final bool isPagination;
-  final String filterText;
+  final int filterText;
   final bool isFilter;
   final bool isSearch;
   final int? pageNumber;

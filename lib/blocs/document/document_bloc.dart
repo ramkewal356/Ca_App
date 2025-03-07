@@ -18,12 +18,13 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   final int pageSize1 = 6;
   bool isFetching1 = false;
   bool isLastPage1 = false;
+  bool isLoading = false;
   final _myRepo = DocumentRepository();
   DocumentBloc() : super(DocumentInitial()) {
     on<GetRecentDocumentEvent>(_getRecentDocumentApi);
     on<GetViewDocumentEvent>(_getViewDocumentApi);
     on<DownloadDocumentEvent>(_downloadDocument);
-    on<DownloadDocumentFileEvent>(_downloadDocumentFile);
+    // on<DownloadDocumentFileEvent>(_downloadDocumentFile);
   }
   Future<void> _getRecentDocumentApi(
       GetRecentDocumentEvent event, Emitter<DocumentState> emit) async {
@@ -129,7 +130,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   Future<void> _downloadDocument(
       DownloadDocumentEvent event, Emitter<DocumentState> emit) async {
     try {
-      emit(DocumentDownloading());
+      // emit(DocumentDownloading());
       await _myRepo.downloadFile(docUrl: event.docUrl, docName: event.docName);
 
       emit(DownloadDocumentSuccess());
@@ -140,18 +141,32 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     }
   }
 
+  // Future<void> _downloadDocumentFile(
+  //     DownloadDocumentFileEvent event, Emitter<DocumentState> emit) async {
+  //   try {
+  //     // Perform the download
+  //     await _myRepo.downloadDocumentFile(
+  //         docUrl: event.docUrl, docName: event.docName);
+  //   } catch (e) {
+  //     emit(DocumentError(errorMessage: e.toString()));
+  //   }
+  // }
+}
+
+class DownloadDocumentBloc extends Bloc<DocumentEvent, DocumentState> {
+  final _myRepo = DocumentRepository();
+  DownloadDocumentBloc() : super(DocumentInitial()) {
+    on<DownloadDocumentFileEvent>(_downloadDocumentFile);
+  }
   Future<void> _downloadDocumentFile(
       DownloadDocumentFileEvent event, Emitter<DocumentState> emit) async {
     try {
-      emit(DocumentDownloading());
+      emit(DocumentDownloading(docName: event.docName));
+      // await Future.delayed(Duration(seconds: 3));
       await _myRepo.downloadDocumentFile(
           docUrl: event.docUrl, docName: event.docName);
-
-      emit(DownloadDocumentFileSuccess());
-
-      // emit(DocumentInitial());
+      emit(DownloadDocumentFileSuccess(docName: event.docName));
     } catch (e) {
-      // emit(DocumentInitial());
       emit(DocumentError(errorMessage: e.toString()));
     }
   }

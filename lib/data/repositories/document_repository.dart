@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DocumentRepository {
@@ -86,51 +87,53 @@ class DocumentRepository {
 
   Future<void> downloadDocumentFile(
       {required String docUrl, required String docName}) async {
-    // final status = await Permission.storage.request();
-
+    // Request permission
     final status = await Permission.manageExternalStorage.request();
-
-    if (status.isGranted) {
-      final directory = Directory('/storage/emulated/0/Download');
-
-      if (!directory.existsSync()) {
-        directory.createSync(recursive: true);
-      }
-
-      final filePath = "${directory.path}/$docName";
-      final file = File(filePath);
-
-      if (file.existsSync()) {
-        await file.delete();
-        debugPrint("Existing file deleted: $docName");
-      }
-
-      final taskId = await FlutterDownloader.enqueue(
-        url: docUrl,
-        savedDir: directory.path,
-        fileName: docName,
-        showNotification: true,
-        openFileFromNotification: true,
-      );
-      // if (await File(filePath).exists()) {
-      //   OpenFilex.open(filePath).then((result) {
-      //     debugPrint("File opened: ${result.message}");
-      //   }).catchError((e) {
-      //     debugPrint("Error opening file: $e");
-      //   });
-      // } else {
-      //   debugPrint("Error: File does not exist!");
-      // }
-      // if (taskId != null) {
-      //   downloadTasks[taskId] = filePath;
-      //   debugPrint("Download started: $taskId");
-      // }
-
-      debugPrint("Download started: $taskId");
-    } else {
+    // final status = await Permission.storage.request();
+    if (!status.isGranted) {
       debugPrint("Storage permission denied!");
       openAppSettings();
+      return;
     }
+
+    // Get Download directory
+    final directory = await getExternalStorageDirectory();
+    final savedDir = directory?.path ?? "/storage/emulated/0/Download";
+
+    // Ensure directory exists
+    final dir = Directory(savedDir);
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
+
+    // Delete existing file if exists
+    final filePath = "$savedDir/$docName";
+    final file = File(filePath);
+    if (file.existsSync()) {
+      await file.delete();
+      debugPrint("Existing file deleted: $docName");
+    }
+
+    // Start download with notification enabled
+    final taskId = await FlutterDownloader.enqueue(
+      url: docUrl,
+      savedDir: savedDir,
+      fileName: docName,
+      showNotification: true, // ✅ Enables foreground notification
+      openFileFromNotification: true,
+      requiresStorageNotLow: true, // ✅ Prevents stopping on low storage
+    );
+    // if (await File(filePath).exists()) {
+    //   OpenFilex.open(filePath).then((result) {
+    //     debugPrint("File opened: ${result.message}");
+    //   }).catchError((e) {
+    //     debugPrint("Error opening file: $e");
+    //   });
+    // } else {
+    //   debugPrint("Error: File does not exist!");
+    // }
+    debugPrint("Download started: $taskId");
+   
   }
 
   // // **✅ Static Callback Fix**

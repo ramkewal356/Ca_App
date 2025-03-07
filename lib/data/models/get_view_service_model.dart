@@ -12,7 +12,7 @@ String getViewServiceModelToJson(GetViewServiceModel data) =>
 
 class GetViewServiceModel {
   Status? status;
-  List<Datum>? data;
+  List<ViewServiceData>? data;
 
   GetViewServiceModel({
     this.status,
@@ -24,7 +24,8 @@ class GetViewServiceModel {
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null
             ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+            : List<ViewServiceData>.from(
+                json["data"]!.map((x) => ViewServiceData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,7 +36,7 @@ class GetViewServiceModel {
       };
 }
 
-class Datum {
+class ViewServiceData {
   int? id;
   String? serviceName;
   String? serviceDesc;
@@ -47,7 +48,7 @@ class Datum {
   String? serviceResponse;
   dynamic comment;
 
-  Datum({
+  ViewServiceData({
     this.id,
     this.serviceName,
     this.serviceDesc,
@@ -60,7 +61,8 @@ class Datum {
     this.comment,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory ViewServiceData.fromJson(Map<String, dynamic> json) =>
+      ViewServiceData(
         id: json["id"],
         serviceName: json["serviceName"],
         serviceDesc: json["serviceDesc"],

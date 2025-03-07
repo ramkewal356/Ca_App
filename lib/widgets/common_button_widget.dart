@@ -16,6 +16,7 @@ class CommonButtonWidget extends StatefulWidget {
   final Widget? buttonIcon;
   final Function()? onTap;
   final Color? buttonBorderColor;
+  final Color? loaderColor;
   const CommonButtonWidget(
       {super.key,
       this.buttonWidth,
@@ -28,6 +29,7 @@ class CommonButtonWidget extends StatefulWidget {
       this.loader = false,
       this.disable = false,
       this.buttonBorderColor,
+      this.loaderColor,
       required this.onTap});
 
   @override
@@ -58,7 +60,7 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
           child: Center(
               child: widget.loader
                   ? CircularProgressIndicator(
-                      color: ColorConstants.white,
+                      color: widget.loaderColor ?? ColorConstants.white,
                    
                     )
                   : Row(

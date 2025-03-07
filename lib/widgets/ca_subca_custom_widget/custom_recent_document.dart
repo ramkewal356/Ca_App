@@ -56,6 +56,7 @@ class CustomRecentDocument extends StatelessWidget {
                 buttonColor: ColorConstants.white,
                 buttonBorderColor: ColorConstants.greenColor,
                 tileStyle: AppTextStyle().getgreenText,
+                loaderColor: ColorConstants.greenColor,
                 buttonWidth: 120,
                 buttonTitle: 'Download',
                 onTap: onTapDownload),

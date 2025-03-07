@@ -297,18 +297,37 @@ class _ServiceScreen1State extends State<ServiceScreen1> {
                                     flex2: 3,
                                     lable: 'Services Description',
                                     value: '${data.serviceDesc}'),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: CommonButtonWidget(
-                                    buttonWidth: 100,
-                                    buttonheight: 45,
-                                    buttonBorderColor:
-                                        ColorConstants.darkRedColor,
-                                    tileStyle: AppTextStyle().getredText,
-                                    buttonColor: ColorConstants.white,
-                                    buttonTitle: 'Delete',
-                                    onTap: () {},
-                                  ),
+                                BlocConsumer<ServiceBloc, ServiceState>(
+                                  listener: (context, state) {
+                                    if (state is GetCaServiceListSuccess) {
+                                      if (state.deleteService == true) {
+                                        _fetchService(isSearch: true);
+                                      }
+                                    } else if (state is DeleteServiceError) {
+                                      _fetchService(isSearch: true);
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    return Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: CommonButtonWidget(
+                                        loader: state is DeleteServiceLoading,
+                                        buttonWidth: 100,
+                                        buttonheight: 45,
+                                        buttonBorderColor:
+                                            ColorConstants.darkRedColor,
+                                        tileStyle: AppTextStyle().getredText,
+                                        buttonColor: ColorConstants.white,
+                                        buttonTitle: 'Delete',
+                                        onTap: () {
+                                          context.read<ServiceBloc>().add(
+                                              DeleteServiceEvent(
+                                                  serviceId:
+                                                      data.id.toString()));
+                                        },
+                                      ),
+                                    );
+                                  },
                                 )
                               ],
                             ));
