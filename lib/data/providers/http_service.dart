@@ -70,7 +70,9 @@ class HttpService<T> {
     switch (this.bodyType) {
       case HttpBodyType.FormData:
         this.headers?.addAll({
-          'Content-Type': 'application/x-www-form-urlencoded',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "multipart/form-data",
+
         });
         bodyData = this.body != null ? FormData.fromMap(this.body!) : null;
         break;

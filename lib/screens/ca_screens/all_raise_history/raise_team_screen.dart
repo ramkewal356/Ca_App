@@ -1,8 +1,14 @@
+import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
+import 'package:ca_app/utils/constanst/colors.dart';
+import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RaiseTeamScreen extends StatefulWidget {
   const RaiseTeamScreen({super.key});
@@ -13,46 +19,128 @@ class RaiseTeamScreen extends StatefulWidget {
 
 class _RaiseTeamScreenState extends State<RaiseTeamScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  String searchText = '';
+  @override
+  void initState() {
+    _fetchRequestOfTeam(isSearch: true);
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _fetchRequestOfTeam({isPagination = false, isSearch = false}) {
+    context.read<RaiseRequestBloc>().add(GetRequestOfTeamEvent(
+        isPagination: isPagination,
+        isSearch: isSearch,
+        searchText: searchText));
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      _fetchRequestOfTeam(isPagination: true);
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      searchText = value;
+    });
+    _fetchRequestOfTeam(isSearch: true);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         CustomSearchField(
-            controller: _searchController, serchHintText: 'search'),
-        Expanded(
-          child: ListView.builder(
-            itemCount: 6,
-            itemBuilder: (context, index) {
-              return CustomCard(
-                  child: Column(
-                children: [
-                  CustomTextInfo(
-                      flex1: 2, flex2: 3, lable: 'ID', value: '#234'),
-                  CustomTextInfo(
-                      flex1: 2,
-                      flex2: 3,
-                      lable: 'CLIENT(RECEIVER)',
-                      value: '#234'),
-                  CustomTextInfo(
-                      flex1: 2, flex2: 3, lable: 'CA(SENDER)', value: '#234'),
-                  CustomTextInfo(
-                      flex1: 2, flex2: 3, lable: 'DATE', value: '#234'),
-                  CustomTextInfo(
-                      flex1: 2, flex2: 3, lable: 'DESCRIPTION', value: '#234'),
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: CommonButtonWidget(
-                      buttonWidth: 100,
-                      buttonTitle: 'View',
-                      onTap: () {},
-                    ),
-                  )
-                ],
+          controller: _searchController,
+          serchHintText: 'search',
+          onChanged: _onSearchChanged,
+        ),
+        BlocBuilder<RaiseRequestBloc, RaiseRequestState>(
+          builder: (context, state) {
+            if (state is RaiseRequestLoading) {
+              return Expanded(
+                  child: Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.buttonColor,
+                ),
               ));
-            },
-          ),
+            } else if (state is GetYourRequestListSuccess) {
+              return Expanded(
+                child: state.requestData.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No Data Found',
+                          style: AppTextStyle().redText,
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: state.requestData.length +
+                            (state.isLastPage ? 0 : 1),
+                        itemBuilder: (context, index) {
+                          if (index == state.requestData.length) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: ColorConstants.buttonColor,
+                              ),
+                            );
+                          }
+                          var data = state.requestData[index];
+                          return CustomCard(
+                              child: Column(
+                            children: [
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
+                                  lable: 'ID',
+                                  value: '#${data.requestId}'),
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
+                                  lable: 'CLIENT(RECEIVER)',
+                                  value:
+                                      '${data.receiverName}(#${data.receiverId})'),
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
+                                  lable: 'CA(SENDER)',
+                                  value:
+                                      '${data.senderName}(#${data.senderId})'),
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
+                                  lable: 'DATE',
+                                  value: dateFormate(data.createdDate)),
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
+                                  lable: 'DESCRIPTION',
+                                  value: '${data.text}'),
+                              SizedBox(height: 10),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: CommonButtonWidget(
+                                  buttonWidth: 100,
+                                  buttonTitle: 'View',
+                                  onTap: () {
+                                    context.push('/request_details', extra: {
+                                      "requestId": data.requestId
+                                    }).then((onValue) {
+                                      _fetchRequestOfTeam(isSearch: true);
+                                    });
+                                  },
+                                ),
+                              )
+                            ],
+                          ));
+                        },
+                      ),
+              );
+            }
+            return Container();
+          },
         )
       ],
     );

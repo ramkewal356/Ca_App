@@ -8,6 +8,8 @@ import 'package:ca_app/screens/ca_screens/my_client_screens/view_client_screen.d
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_document_screen.dart';
 import 'package:ca_app/screens/ca_screens/services_screens/services_screen.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/task_allocation_screen.dart';
+import 'package:ca_app/screens/ca_screens/task_allocation/upload_document_screen.dart';
+import 'package:ca_app/screens/ca_screens/task_allocation/view_task_screen.dart';
 import 'package:ca_app/screens/ca_screens/team_member/team_member_screen.dart';
 import 'package:ca_app/screens/ca_screens/team_member/view_team_member_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support.dart';
@@ -106,14 +108,20 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
         path: '/view_history',
         builder: (context, state) {
-          return HelpAndSupportViewScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return HelpAndSupportViewScreen(
+            contactId: data["contactId"],
+          );
         },
       ),
       // CA AND SUBCA COMMON MODULE ROUTES
       GoRoute(
         path: '/recent_document',
         builder: (context, state) {
-          return RecentDocumentScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return RecentDocumentScreen(
+            role: data['role'],
+          );
         },
       ),
       // CLIENT AND SUBCA COMMON MODULE ROUTES
@@ -149,7 +157,10 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
         path: '/request_details',
         builder: (context, state) {
-          return RequestDetailsScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return RequestDetailsScreen(
+            requestId: data["requestId"],
+          );
         },
       ),
       // CUSTOMER MODULE ROUTES
@@ -252,6 +263,22 @@ final GoRouter goRouter = GoRouter(
               path: 'all_raise_history',
               builder: (context, state) {
                 return AllRaiseHistoryScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_task',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewTaskScreen(taskId: data['taskId']);
+              },
+            ),
+            GoRoute(
+              path: 'upload_task_document',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return UploadTaskDocumentScreen(
+                  taskId: data["taskId"],
+                );
               },
             ),
             GoRoute(

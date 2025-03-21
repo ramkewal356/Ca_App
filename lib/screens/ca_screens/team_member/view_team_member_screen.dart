@@ -5,6 +5,7 @@ import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/active_deactive_widget.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
@@ -63,7 +64,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
   @override
   Widget build(BuildContext context) {
     var currentSatate = context.watch<CustomerBloc>().state;
-    List<Datum>? customers = currentSatate is GetCustomerBySubCaIdSuccess
+    List<CustomerData>? customers = currentSatate is GetCustomerBySubCaIdSuccess
         ? currentSatate.customers
         : [];
     int currentPage = currentSatate is GetCustomerBySubCaIdSuccess
@@ -112,17 +113,70 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                       
+                        SizedBox(height: 10),
+                        Stack(
                           children: [
-                            Text(
-                              '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
-                              style: AppTextStyle().headingtext,
+                            Row(
+                              children: [
+                                Container(
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      color: ColorConstants.buttonColor,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: (data?.profileUrl ?? '').isNotEmpty
+                                      ? Image.network(
+                                          data?.profileUrl ?? '',
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Center(
+                                          child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              data?.firstName?[0]
+                                                      .toUpperCase() ??
+                                                  '',
+                                              style:
+                                                  AppTextStyle().largWhitetext,
+                                            ),
+                                            Text(
+                                              data?.lastName?[0]
+                                                      .toUpperCase() ??
+                                                  '',
+                                              style: AppTextStyle()
+                                                  .mediumWhitetext,
+                                            ),
+                                          ],
+                                        )),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
+                                      style: AppTextStyle().textButtonStyle,
+                                    ),
+                                    subTitle(Icons.email, data?.email ?? ''),
+                                    subTitle(Icons.call,
+                                        '+${data?.countryCode ?? ''} ${data?.mobile ?? ''}'),
+                                    (data?.address ?? '').isNotEmpty
+                                        ? subTitle(Icons.location_on,
+                                            data?.address ?? '')
+                                        : SizedBox.shrink(),
+                                  ],
+                                )),
+                              ],
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: ColorConstants.buttonColor,
-                                  borderRadius: BorderRadius.circular(8)),
+                            Positioned(
+                              right: 0,
+                              top: -10,
                               child: PopupMenuButton<String>(
                                 position: PopupMenuPosition.under,
                                 color: ColorConstants.white,
@@ -132,13 +186,10 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                 offset: Offset(0, 0),
                                 icon: Row(
                                   children: [
-                                    Text(
-                                      'More options',
-                                      style: AppTextStyle().buttontext,
-                                    ),
+                                  
                                     Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: ColorConstants.white,
+                                      Icons.more_vert_rounded,
+                                      color: ColorConstants.buttonColor,
                                     )
                                   ],
                                 ), // Custom icon
@@ -177,51 +228,6 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                  color: ColorConstants.buttonColor,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Center(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    data?.firstName?[0].toUpperCase() ?? '',
-                                    style: AppTextStyle().largWhitetext,
-                                  ),
-                                  Text(
-                                    data?.lastName?[0].toUpperCase() ?? '',
-                                    style: AppTextStyle().mediumWhitetext,
-                                  ),
-                                ],
-                              )),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
-                                  style: AppTextStyle().textButtonStyle,
-                                ),
-                                subTitle(Icons.email, data?.email ?? ''),
-                                subTitle(Icons.call,
-                                    '+${data?.countryCode ?? ''} ${data?.mobile ?? ''}'),
-                                (data?.address ?? '').isNotEmpty
-                                    ? subTitle(
-                                        Icons.location_on, data?.address ?? '')
-                                    : SizedBox.shrink(),
-                              ],
-                            ))
-                          ],
-                        ),
                         SizedBox(height: 15),
                         Container(
                           decoration: BoxDecoration(
@@ -242,9 +248,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                         '${data?.aadhaarCardNumber ?? '__'}'),
                                 textItem(
                                     lable: 'Created Date',
-                                    value: DateFormat('dd/MM/yyyy').format(
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                            data?.createdDate ?? 0))),
+                                    value: dateFormate(data?.createdDate)),
                                 textItem(
                                     lable: 'Gender',
                                     value: data?.gender ?? '__'),
@@ -524,7 +528,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
 }
 
 class CustomerDataSource extends DataTableSource {
-  final List<Datum> customerList;
+  final List<CustomerData> customerList;
 
   CustomerDataSource(this.customerList);
   @override

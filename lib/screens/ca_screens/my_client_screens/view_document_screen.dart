@@ -1,6 +1,7 @@
 import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
@@ -199,11 +200,8 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
                                             flex1: 2,
                                             flex2: 3,
                                             lable: 'CREATED DATE',
-                                            value: DateFormat('dd/MM/yyyy')
-                                                .format(DateTime
-                                                    .fromMillisecondsSinceEpoch(
-                                                        data?.createdDate ??
-                                                            0))),
+                                            value:
+                                                dateFormate(data?.createdDate)),
                                         SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:

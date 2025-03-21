@@ -1,6 +1,7 @@
 import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
@@ -138,9 +139,7 @@ class _ViewPreviousScreenState extends State<ViewPreviousScreen> {
                             flex1: 2,
                             flex2: 3,
                             lable: 'Created date',
-                            value: DateFormat('dd/MM/yyyy').format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    data.createdDate ?? 0))),
+                            value: dateFormate(data.createdDate)),
                         CustomTextInfo(
                             flex1: 2,
                             flex2: 3,

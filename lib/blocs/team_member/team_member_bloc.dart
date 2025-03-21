@@ -16,6 +16,15 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
   final _myRepo = TeamRepository();
   TeamMemberBloc() : super(TeamMemberInitial()) {
     on<GetTeamMemberEvent>(_getTeamMemberApi);
+    on<GetVerifiedSubCaByCaIdEvent>(_getVerifiedSubCaByCaIdApi);
+    on<UpdateSubCaNameEvent>((event, emit) {
+      if (state is GetVerifiedSubCaByCaIdSuccess) {
+        emit(GetVerifiedSubCaByCaIdSuccess(
+            getTeamMemberModel:
+                (state as GetVerifiedSubCaByCaIdSuccess).getTeamMemberModel,
+            selectedSubCaName: event.selectedSubCaName));
+      }
+    });
   }
   Future<void> _getTeamMemberApi(
       GetTeamMemberEvent event, Emitter<TeamMemberState> emit) async {
@@ -67,6 +76,23 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
       emit(TeamMemberError(errorMessage: e.toString()));
     } finally {
       isFetching = false;
+    }
+  }
+
+  Future<void> _getVerifiedSubCaByCaIdApi(
+      GetVerifiedSubCaByCaIdEvent event, Emitter<TeamMemberState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {
+      "caId": userId,
+    };
+    try {
+      var resp = await _myRepo.getVerifiedSubCaByCaId(query: query);
+      emit(GetVerifiedSubCaByCaIdSuccess(
+          getTeamMemberModel: resp.data ?? [],
+          selectedSubCaName: event.selectedSubCaName));
+    } catch (e) {
+      emit(TeamMemberError(errorMessage: e.toString()));
     }
   }
 }

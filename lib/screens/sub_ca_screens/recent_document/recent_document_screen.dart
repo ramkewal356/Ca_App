@@ -1,21 +1,22 @@
-
-
 import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/ca_subca_custom_widget/custom_recent_document.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:intl/intl.dart';
+
 
 // import 'package:path_provider/path_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 class RecentDocumentScreen extends StatefulWidget {
-  const RecentDocumentScreen({super.key});
+  final String role;
+  const RecentDocumentScreen({super.key, required this.role});
 
   @override
   State<RecentDocumentScreen> createState() => _RecentDocumentScreenState();
@@ -45,8 +46,6 @@ class _RecentDocumentScreenState extends State<RecentDocumentScreen> {
       _getRecentDocument(isPagination: true);
     }
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -83,19 +82,15 @@ class _RecentDocumentScreenState extends State<RecentDocumentScreen> {
                   }
                   var data = state.recentDocumnets?[index];
                   return BlocBuilder<DownloadDocumentBloc, DocumentState>(
-                  
                     builder: (context, state) {
-                    
                       return CustomCard(
                           child: CustomRecentDocument(
                         id: '#${data?.uuid ?? 0}',
                         clientName: '${data?.customerName}',
                         documentName: data?.docName ?? 'N/A',
-                        category: data?.serviceName ?? 'N/A',
-                        subCategory: data?.subService ?? 'N/A',
-                        postedDate: DateFormat('dd/MM/yyyy').format(
-                            DateTime.fromMillisecondsSinceEpoch(
-                                data?.createdDate ?? 0)),
+                        category: data?.serviceName ?? 'General',
+                        subCategory: data?.subService ?? 'General',
+                        postedDate: dateFormate(data?.createdDate),
                         downloadLoader: state is DocumentDownloading &&
                             (state.docName == data?.docName),
                         onTapDownload: () {
@@ -103,9 +98,11 @@ class _RecentDocumentScreenState extends State<RecentDocumentScreen> {
                               DownloadDocumentFileEvent(
                                   docUrl: data?.docUrl ?? '',
                                   docName: data?.docName ?? ''));
-                        
                         },
-                        onTapReRequest: () {},
+                        onTapReRequest: () {
+                          context.push('/raise_request',
+                              extra: {'role': widget.role});
+                        },
                       ));
                     },
                   );

@@ -12,7 +12,7 @@ String getCustomerBySubCaIdModelToJson(GetCustomerModel data) =>
 
 class GetCustomerModel {
   Status? status;
-  List<Datum>? data;
+  List<CustomerData>? data;
 
   GetCustomerModel({
     this.status,
@@ -24,7 +24,8 @@ class GetCustomerModel {
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null
             ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+            : List<CustomerData>.from(
+                json["data"]!.map((x) => CustomerData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,7 +36,7 @@ class GetCustomerModel {
       };
 }
 
-class Datum {
+class CustomerData {
   int? id;
   int? userId;
   int? caId;
@@ -57,7 +58,7 @@ class Datum {
   bool? status;
   String? countryCode;
 
-  Datum({
+  CustomerData({
     this.id,
     this.userId,
     this.caId,
@@ -80,7 +81,7 @@ class Datum {
     this.countryCode,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory CustomerData.fromJson(Map<String, dynamic> json) => CustomerData(
         id: json["id"],
         userId: json["userId"],
         caId: json["caId"],

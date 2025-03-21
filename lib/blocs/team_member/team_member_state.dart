@@ -20,6 +20,15 @@ final class GetTeamMemberSuccess extends TeamMemberState {
   List<Object> get props => [getTeamMemberModel ?? [], isLastPage];
 }
 
+final class GetVerifiedSubCaByCaIdSuccess extends TeamMemberState {
+  final List<Datum> getTeamMemberModel;
+  final String selectedSubCaName;
+  const GetVerifiedSubCaByCaIdSuccess(
+      {required this.getTeamMemberModel, required this.selectedSubCaName});
+  @override
+  List<Object> get props => [getTeamMemberModel, selectedSubCaName];
+}
+
 final class TeamMemberError extends TeamMemberState {
   final String errorMessage;
 

@@ -8,6 +8,7 @@ class CustomTextInfo extends StatelessWidget {
   final int maxLine;
   final int flex1;
   final int flex2;
+  final TextStyle? textStyle;
   const CustomTextInfo(
       {super.key,
       required this.lable,
@@ -15,7 +16,8 @@ class CustomTextInfo extends StatelessWidget {
       this.maxLine = 1,
       this.inOneLinetext = false,
       this.flex1 = 1,
-      this.flex2 = 1});
+      this.flex2 = 1,
+      this.textStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class CustomTextInfo extends StatelessWidget {
             maxLines: inOneLinetext ? maxLine : maxLine,
             overflow: inOneLinetext ? TextOverflow.ellipsis : null,
             value,
-            style: AppTextStyle().cardValueText,
+            style: textStyle ?? AppTextStyle().cardValueText,
           ),
         )
       ],

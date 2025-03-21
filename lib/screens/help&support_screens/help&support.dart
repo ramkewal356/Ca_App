@@ -1,4 +1,4 @@
-
+import 'package:ca_app/blocs/help_and_support/help_and_support_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -7,6 +7,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HelpAndSupport extends StatefulWidget {
@@ -22,16 +23,17 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
-  List<String> items = [
-    'vinay',
-    'mohan',
-    'aman',
-    'vishal',
-    'varun',
-    'ram',
-    'ramkewal'
-  ];
-  List<String> selectedItems = [];
+  final FocusNode _focusNode1 = FocusNode();
+  final FocusNode _focusNode2 = FocusNode();
+  final FocusNode _focusNode3 = FocusNode();
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _subjectController.dispose();
+    _messageController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -57,12 +59,12 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
-              
                 SizedBox(height: 20),
                 widget.isLogin
                     ? SizedBox.shrink()
                     : TextformfieldWidget(
                         controller: _emailController,
+                        focusNode: _focusNode1,
                         hintText: 'Email',
                         validator: (email) {
                           return ValidatorClass.validateEmail(email);
@@ -71,6 +73,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                 widget.isLogin ? SizedBox.shrink() : SizedBox(height: 20),
                 TextformfieldWidget(
                   controller: _subjectController,
+                  focusNode: _focusNode2,
                   hintText: 'Subject',
                   validator: (p0) {
                     if (p0 == null || p0.isEmpty) {
@@ -84,6 +87,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                   maxLines: 5,
                   minLines: 5,
                   controller: _messageController,
+                  focusNode: _focusNode3,
                   hintText: 'Message',
                   validator: (p0) {
                     if (p0 == null || p0.isEmpty) {
@@ -96,12 +100,36 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CommonButtonWidget(
-                        buttonWidth: 160,
-                        buttonTitle: 'Send Message',
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {}
-                        }),
+                    BlocConsumer<HelpAndSupportBloc, HelpAndSupportState>(
+                      listener: (context, state) {
+                        if (state is AddContactSuccess) {
+                          _formKey.currentState!.reset();
+                          _emailController.clear();
+                          _subjectController.clear();
+                          _messageController.clear();
+                          _focusNode1.unfocus();
+                          _focusNode2.unfocus();
+                          _focusNode3.unfocus();
+                        }
+                      },
+                      builder: (context, state) {
+                        return CommonButtonWidget(
+                            buttonWidth: 160,
+                            buttonTitle: 'Send Message',
+                            loader: state is HelpAndSupportLoading,
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<HelpAndSupportBloc>().add(
+                                    AddContactEvent(
+                                        email: _emailController.text,
+                                        subject: _subjectController.text,
+                                        message: _messageController.text,
+                                        isAuthorize:
+                                            widget.isLogin ? true : false));
+                              }
+                            });
+                      },
+                    ),
                     widget.isLogin ? Spacer() : SizedBox.shrink(),
                     widget.isLogin
                         ? CommonButtonWidget(

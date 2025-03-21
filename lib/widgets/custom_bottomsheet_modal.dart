@@ -9,9 +9,11 @@ class CustomBottomsheetModal extends StatefulWidget {
   final Widget child;
   final bool buttonIcon;
   final VoidCallback? onTap;
+  final bool isFlotingButton;
   const CustomBottomsheetModal(
       {super.key,
       required this.buttonTitle,
+      this.isFlotingButton = false,
       this.buttonWidth,
       this.buttonHieght,
       required this.child,
@@ -25,7 +27,24 @@ class CustomBottomsheetModal extends StatefulWidget {
 class _CustomBottomsheetModalState extends State<CustomBottomsheetModal> {
   @override
   Widget build(BuildContext context) {
-    return CommonButtonWidget(
+    return widget.isFlotingButton
+        ? FloatingActionButton(
+            backgroundColor: ColorConstants.buttonColor,
+            // ignore: sort_child_properties_last
+            child: Icon(
+              Icons.add,
+              color: ColorConstants.white,
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            onPressed: () {
+              _showModalBottomSheet(context);
+              if (widget.onTap != null) {
+                widget.onTap!();
+              }
+            },
+          )
+        : CommonButtonWidget(
       buttonWidth: widget.buttonWidth,
       buttonheight: widget.buttonHieght,
       buttonTitle: widget.buttonTitle,

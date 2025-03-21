@@ -12,6 +12,7 @@ import 'package:ca_app/data/models/recent_document_model.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/ca_subca_custom_widget/custom_recent_document.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
@@ -114,9 +115,10 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             ? state.getUserByIdData // Cast to GetUserByIdModel?
             : null;
         var customerSate = context.watch<CustomerBloc>().state;
-        List<Datum>? getCustomers = customerSate is GetCustomerByCaIdSuccess
-            ? customerSate.getCustomers
-            : null;
+        List<CustomerData>? getCustomers =
+            customerSate is GetCustomerByCaIdSuccess
+                ? customerSate.getCustomers
+                : null;
         int totalCustomers = customerSate is GetCustomerByCaIdSuccess
             ? customerSate.totalCustomer
             : 0;
@@ -187,7 +189,11 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "imgUrl": Icons.add_photo_alternate_outlined,
                 "label": "Recent Document",
                 "onTap": () {
-                  context.push('/recent_document');
+                  context.push('/recent_document', extra: {'role': 'CA'}).then(
+                      (onValue) async {
+                    await _fetchCustomersData(isFilter: true);
+                  });
+                  ;
                 }
               },
               {
@@ -218,21 +224,32 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "imgUrl": Icons.help,
                 "label": "Customer Allocation",
                 "onTap": () {
-                  context.push('/ca_dashboard/customer_allocation');
+                  context
+                      .push('/ca_dashboard/customer_allocation')
+                      .then((onValue) async {
+                    await _fetchCustomersData(isFilter: true);
+                  });
                 }
               },
               {
                 "imgUrl": Icons.task,
                 "label": "Task Allocation",
                 "onTap": () {
-                  context.push('/ca_dashboard/task_allocation');
+                  context
+                      .push('/ca_dashboard/task_allocation')
+                      .then((onValue) async {
+                    await _fetchCustomersData(isFilter: true);
+                  });
                 }
               },
               {
                 "imgUrl": Icons.star,
                 "label": "Raise Request",
                 "onTap": () {
-                  context.push('/raise_request', extra: {'role': 'CA'});
+                  context.push('/raise_request', extra: {'role': 'CA'}).then(
+                      (onValue) async {
+                    await _fetchCustomersData(isFilter: true);
+                  });
                 }
               },
               {
@@ -450,11 +467,23 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                                         backgroundColor:
                                                             ColorConstants
                                                                 .buttonColor,
-                                                        child: Text(
+                                                        child: (getCustomers[
+                                                                            index]
+                                                                        .profileUrl ??
+                                                                    '')
+                                                                .isEmpty
+                                                            ? Text(
                                                           '${getCustomers[index].firstName?[0]}${getCustomers[index].lastName?[0]}',
                                                           style: AppTextStyle()
                                                               .buttontext,
-                                                        ),
+                                                              )
+                                                            : ClipOval(
+                                                                child: Image.network(
+                                                                    getCustomers[
+                                                                            index]
+                                                                        .profileUrl
+                                                                        .toString()),
+                                                              ),
                                                       ),
                                                       title: Text(
                                                           '${getCustomers[index].firstName} ${getCustomers[index].lastName}',
@@ -462,14 +491,10 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                                               .textButtonStyle),
                                                       subtitle: Text(
                                                           '${getCustomers[index].email}'),
-                                                      trailing: Text(DateFormat(
-                                                              'dd/MM/yyyy')
-                                                          .format(DateTime
-                                                              .fromMillisecondsSinceEpoch(
-                                                                  getCustomers[
+                                                      trailing: Text(dateFormate(
+                                                          getCustomers[
                                                                               index]
-                                                                          .createdDate ??
-                                                                      0))),
+                                                              .createdDate)),
                                                     ),
                                                     Divider()
                                                   ],
@@ -498,7 +523,9 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                     buttonTitle: 'View All',
                                     onTap: () {
                                       context
-                                          .push('/recent_document')
+                                          .push('/recent_document', extra: {
+                                        "role": "CA"
+                                      })
                                           .then((onValue) async {
                                         await _getRecentDocument();
                                       });
@@ -532,8 +559,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                             : getRecentDocument?.length,
                                     itemBuilder: (context, index) {
                                       var data = getRecentDocument?[index];
-                                      return CustomCard(
-                                          child: BlocBuilder<
+                                      return CustomCard(child: BlocBuilder<
                                           DownloadDocumentBloc, DocumentState>(
                                         builder: (context, state) {
                                           return CustomRecentDocument(
@@ -541,14 +567,11 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                             clientName: '${data?.customerName}',
                                             documentName: '${data?.docName}',
                                             category:
-                                                data?.serviceName ?? 'N/A',
+                                                data?.serviceName ?? 'General',
                                             subCategory:
-                                                data?.subService ?? 'N/A',
-                                            postedDate: DateFormat('dd/MM/yyyy')
-                                                .format(DateTime
-                                                    .fromMillisecondsSinceEpoch(
-                                                        data?.createdDate ??
-                                                            0)),
+                                                data?.subService ?? 'General',
+                                            postedDate:
+                                                dateFormate(data?.createdDate),
                                             downloadLoader:
                                                 state is DocumentDownloading &&
                                                     (state.docName ==

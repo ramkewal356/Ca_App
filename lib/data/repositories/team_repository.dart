@@ -25,4 +25,25 @@ class TeamRepository {
       rethrow;
     }
   }
+  //**** Get Verified subCa by CA Id API ****//
+  Future<GetTeamMemberModel> getVerifiedSubCaByCaId(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getVerifiedSubCaByCaId,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('teamResponse ${response?.data}');
+      return GetTeamMemberModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
 }

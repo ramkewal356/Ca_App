@@ -1,8 +1,10 @@
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
+import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 
 class CustomRecentDocument extends StatelessWidget {
@@ -32,14 +34,20 @@ class CustomRecentDocument extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextInfo(flex1: 2, flex2: 3, lable: 'ID', value: id),
+        // CustomTextInfo(flex1: 2, flex2: 3, lable: 'ID', value: id),
+        Row(
+          children: [
+            Expanded(child: CustomTextItem(lable: 'ID', value: id)),
+            Text(postedDate)
+          ],
+        ),
         CustomTextInfo(
             flex1: 2, flex2: 3, lable: 'CLIENT NAME', value: clientName),
         CustomTextInfo(flex1: 2, flex2: 3, lable: 'CATEGORY', value: category),
         CustomTextInfo(
             flex1: 2, flex2: 3, lable: 'SUBCATEGORY', value: subCategory),
-        CustomTextInfo(
-            flex1: 2, flex2: 3, lable: 'POSTED DATE', value: postedDate),
+        // CustomTextInfo(
+        //     flex1: 2, flex2: 3, lable: 'POSTED DATE', value: postedDate),
         CustomTextInfo(
             inOneLinetext: true,
             maxLine: 2,
@@ -57,11 +65,18 @@ class CustomRecentDocument extends StatelessWidget {
                 buttonBorderColor: ColorConstants.greenColor,
                 tileStyle: AppTextStyle().getgreenText,
                 loaderColor: ColorConstants.greenColor,
-                buttonWidth: 120,
-                buttonTitle: 'Download',
+                buttonWidth: 80,
+                buttonheight: 45,
+                buttonTitle: '',
+                buttonIconVisible: true,
+                buttonIcon: Icon(
+                  Icons.download_rounded,
+                  color: ColorConstants.greenColor,
+                ),
                 onTap: onTapDownload),
             CommonButtonWidget(
-                buttonWidth: 130,
+                buttonWidth: 120,
+                buttonheight: 45,
                 buttonTitle: 'Re-Request',
                 onTap: onTapReRequest)
           ],

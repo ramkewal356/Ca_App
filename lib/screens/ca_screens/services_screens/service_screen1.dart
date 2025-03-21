@@ -3,6 +3,7 @@ import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_modal.dart';
 import 'package:ca_app/widgets/custom_card.dart';
@@ -267,19 +268,20 @@ class _ServiceScreen1State extends State<ServiceScreen1> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                        flex: 2,
-                                        child: CustomTextItem(
-                                            lable: 'Id',
-                                            value: '#${data.serviceId}')),
-                                    Expanded(
-                                        flex: 3,
-                                        child: CustomTextItem(
-                                            lable: 'Created date',
-                                            value: DateFormat('dd/MM/yyyy')
-                                                .format(DateTime
-                                                    .fromMillisecondsSinceEpoch(
-                                                        data.createdDate ??
-                                                            0))))
+                                      child: CustomTextItem(
+                                          lable: 'Id',
+                                          value: '#${data.serviceId}'),
+                                    ),
+                                    Text(dateFormate(data.createdDate))
+                                    // Expanded(
+                                    //     flex: 3,
+                                    //     child: CustomTextItem(
+                                    //         lable: 'Created date',
+                                    //         value: DateFormat('dd/MM/yyyy')
+                                    //             .format(DateTime
+                                    //                 .fromMillisecondsSinceEpoch(
+                                    //                     data.createdDate ??
+                                    //                         0))))
                                   ],
                                 ),
                                 CustomTextInfo(

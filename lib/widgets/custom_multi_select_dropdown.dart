@@ -160,9 +160,19 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
   List<String> filterList = [];
   @override
   void initState() {
-    
     super.initState();
-    filterList = widget.items;
+    filterList = List.from(widget.items);
+    _searchController.addListener(_filterItems);
+  }
+
+  /// Function to filter dropdown items based on search input
+  void _filterItems() {
+    setState(() {
+      filterList = widget.items
+          .where((item) =>
+              item.toLowerCase().contains(_searchController.text.toLowerCase()))
+          .toList();
+    });
   }
 
   void _showPopupMenu(BuildContext context) {
@@ -205,7 +215,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
                         CustomSearchField(
                           controller: _searchController,
                           serchHintText: 'search',
-                          onChanged: (value) async {
+                          onChanged: (value) {
                             setStatePopup(() {
                               filterList = widget.items
                                   .where((item) => item
@@ -223,6 +233,8 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
                               bool isSelected = widget.selectedItems
                                   .contains(filterList[index]);
                               return CheckboxListTile(
+                                contentPadding: EdgeInsets.zero,
+                                visualDensity: VisualDensity(horizontal: -4),
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
                                 activeColor: ColorConstants.buttonColor,
@@ -281,6 +293,8 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
 
   @override
   Widget build(BuildContext context) {
+    filterList = widget.items;
+    debugPrint('filter list ${filterList}');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

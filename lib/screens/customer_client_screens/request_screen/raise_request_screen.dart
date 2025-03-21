@@ -1,5 +1,7 @@
-
+import 'package:ca_app/blocs/customer/customer_bloc.dart';
+import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
+import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -10,6 +12,7 @@ import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_multi_select_dropdown.dart';
 import 'package:ca_app/widgets/file_picker_widget.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +29,9 @@ class RaiseRequestScreen extends StatefulWidget {
 class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController = TextEditingController();
-
+  final FocusNode _focusNode = FocusNode();
   List<String> selectedItems = [];
+  List<int> selectedUserIds = [];
   List<PlatformFile> documentList = [];
   String? selectedCa;
   final List<String> items = [
@@ -40,6 +44,14 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
     'hgfhjhgjhg',
     'hghjgvvbv'
   ];
+  @override
+  void initState() {
+    context
+        .read<CustomerBloc>()
+        .add(GetLogincutomerEvent(selectedClientName: ''));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -96,57 +108,44 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                             return null;
                           },
                         )
-                      : MultiSelectSearchableDropdown(
-                          hintText: 'Select client',
-                          items: items,
-                          selectedItems: selectedItems,
-                          onChanged: (newSelection) {
-                            setState(() {
-                              selectedItems = newSelection;
-                            });
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select client';
+                      : BlocBuilder<CustomerBloc, CustomerState>(
+                          builder: (context, state) {
+                            List<CustomerData> customers = [];
+                            if (state is GetLoginCustomerSuccess) {
+                              customers = state.getLoginCustomers;
+                              print(
+                                  'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}').toList()}');
                             }
-                            return null;
+                            return MultiSelectSearchableDropdown(
+                              hintText: 'Select client',
+                              items: customers
+                                  .map((toElement) =>
+                                      '${toElement.firstName} ${toElement.lastName}')
+                                  .toList(),
+                              selectedItems: selectedItems,
+                              onChanged: (newSelection) {
+                                selectedUserIds = customers
+                                    .where((customer) => newSelection.contains(
+                                        '${customer.firstName} ${customer.lastName}'))
+                                    .map((customer) => customer.userId ?? 0)
+                                    .toList();
+                                setState(() {
+                                  selectedItems = newSelection;
+                                  debugPrint('selectedItems $selectedUserIds');
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select client';
+                                }
+                                return null;
+                              },
+                            );
                           },
                         ),
-                  // : MultiSelectDropdownWidget(
-                  //     items: items,
-                  //     hintText: 'Select items',
-                  //     onSelectionChange: (value) {
-                  //       setState(() {
-                  //         selectedItem = value;
-                  //       });
-                  //       debugPrint('slectedItem,,,,,$selectedItem');
-                  //     },
-                  //     validator: (p0) {
-                  //       if (p0 == null || p0.isEmpty) {
-                  //         return 'Please select item';
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
+
                   SizedBox(height: 10),
-                  // BlocBuilder<MultiSelectDropdownBloc,
-                  //     MultiSelectDropdownState>(
-                  //   builder: (context, state) {
-                  //     selectedItem = state is MultiSelectDropdownLoaded
-                  //         ? state.selectedItems
-                  //         : [];
-                  //     return CustomMultiSelectDropdown(
-                  //       items: items,
-                  //       hintText: 'Select client',
-                  //       validator: (p0) {
-                  //         if (selectedItem.isEmpty) {
-                  //           return 'Please select items';
-                  //         }
-                  //         return null;
-                  //       },
-                  //     );
-                  //   },
-                  // ),
+
                   Text(
                     'Upload Documents (Optional)',
                     style: AppTextStyle().menuUnselectedText,
@@ -169,6 +168,7 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                   TextformfieldWidget(
                     minLines: 4,
                     maxLines: 4,
+                    focusNode: _focusNode,
                     controller: _descriptionController,
                     hintText: 'Description',
                     validator: (value) {
@@ -179,12 +179,42 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  CommonButtonWidget(
-                      buttonTitle: 'Raise',
-                      onTap: () {
-                        debugPrint('vcnvbbnmxbdxnm$selectedItems');
-                        if (_formKey.currentState!.validate()) {}
-                      })
+                  BlocConsumer<RaiseRequestBloc, RaiseRequestState>(
+                    listener: (context, state) {
+                      if (state is SendRaiseRequestSuccess) {
+                        _formKey.currentState!.reset();
+                        selectedItems.clear();
+                        _descriptionController.clear();
+                        _focusNode.unfocus();
+                        context
+                            .read<UploadDocumentBloc>()
+                            .add(ResetDocumentEvent());
+                      }
+                    },
+                    builder: (context, state) {
+                      return CommonButtonWidget(
+                          buttonTitle:
+                              widget.userRole == 'CA' ? 'Send' : 'Raise',
+                          loader: state is RaiseRequestLoading,
+                          onTap: () async {
+                            debugPrint('vcnvbbnmxbdxnm$selectedItems');
+                            if (_formKey.currentState!.validate()) {
+                              List<MultipartFile> multipartFiles = [];
+                              for (var file in documentList) {
+                                multipartFiles.add(
+                                  await MultipartFile.fromFile(file.path!,
+                                      filename: file.name),
+                                );
+                              }
+                              context.read<RaiseRequestBloc>().add(
+                                  SendRaiseRequestEvent(
+                                      description: _descriptionController.text,
+                                      receiverId: selectedUserIds,
+                                      files: multipartFiles));
+                            }
+                          });
+                    },
+                  )
                 ],
               ),
             ),

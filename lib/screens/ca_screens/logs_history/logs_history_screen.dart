@@ -1,5 +1,6 @@
 import 'package:ca_app/blocs/logs/logs_bloc.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_log_screen.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
@@ -94,9 +95,7 @@ class _LogsHistoryScreenState extends State<LogsHistoryScreen> {
                                 performerEmail: '${data?.actionPerformerEmail}',
                                 uponName: '${data?.actionUponName}',
                                 uponEmail: '${data?.actionUponEmail}',
-                                createdDate: DateFormat('dd/MM/yyyy').format(
-                                    DateTime.fromMillisecondsSinceEpoch(
-                                        data?.createdDate ?? 0)),
+                                createdDate: dateFormate(data?.createdDate),
                                 reason: '${data?.reason}',
                               ));
                             },

@@ -101,7 +101,7 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                 "imgUrl": Icons.add_photo_alternate_outlined,
                 "label": "Recent Document",
                 "onTap": () {
-                  context.push('/recent_document');
+                  context.push('/recent_document', extra: {'role': 'SUBCA'});
                 }
               },
               {

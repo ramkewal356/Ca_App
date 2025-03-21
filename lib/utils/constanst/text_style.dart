@@ -75,6 +75,10 @@ class AppTextStyle {
       color: ColorConstants.greenColor,
       fontSize: 14,
       fontWeight: FontWeight.w500);
+  TextStyle getYellowText = GoogleFonts.roboto(
+      color: ColorConstants.yellowColor,
+      fontSize: 14,
+      fontWeight: FontWeight.w500);
   TextStyle getredText = GoogleFonts.roboto(
       color: ColorConstants.redColor,
       fontSize: 14,

@@ -24,8 +24,7 @@ class GetTeamMemberEvent extends TeamMemberEvent {
       this.pageNumber,
       this.pagesize});
   @override
-  List<Object> get props =>
-      [
+  List<Object> get props => [
         searchText,
         filterText,
         isPagination,
@@ -34,4 +33,20 @@ class GetTeamMemberEvent extends TeamMemberEvent {
         pageNumber ?? 0,
         pagesize ?? 0
       ];
+}
+
+class GetVerifiedSubCaByCaIdEvent extends TeamMemberEvent {
+  final String selectedSubCaName;
+
+  const GetVerifiedSubCaByCaIdEvent({required this.selectedSubCaName});
+  @override
+  List<Object> get props => [selectedSubCaName];
+}
+
+class UpdateSubCaNameEvent extends TeamMemberEvent {
+  final String selectedSubCaName;
+
+  const UpdateSubCaNameEvent({required this.selectedSubCaName});
+  @override
+  List<Object> get props => [selectedSubCaName];
 }

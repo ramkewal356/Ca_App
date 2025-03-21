@@ -16,6 +16,12 @@ class TaskAllocationScreen extends StatefulWidget {
 
 class _TaskAllocationScreenState extends State<TaskAllocationScreen> {
   int selectedIndex = 0;
+
+  void switchToAssignTaskScreen() {
+    setState(() {
+      selectedIndex = 0;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(

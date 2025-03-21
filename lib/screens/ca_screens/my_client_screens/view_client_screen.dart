@@ -4,6 +4,7 @@ import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/active_deactive_widget.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
@@ -62,17 +63,66 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Text(
+                      //       '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
+                      //       style: AppTextStyle().headingtext,
+                      //     ),
+
+                      //   ],
+                      // ),
+                      SizedBox(height: 10),
+                      Stack(
                         children: [
-                          Text(
-                            '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
-                            style: AppTextStyle().headingtext,
+                          Row(
+                            children: [
+                              Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: ColorConstants.buttonColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${data?.firstName?[0]}',
+                                      style: AppTextStyle().largWhitetext,
+                                    ),
+                                    Text(
+                                      '${data?.lastName?[0]}',
+                                      style: AppTextStyle().mediumWhitetext,
+                                    ),
+                                  ],
+                                )),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
+                                    style: AppTextStyle().textButtonStyle,
+                                  ),
+                                  subTitle(Icons.email, data?.email ?? ''),
+                                  subTitle(Icons.call,
+                                      '+${data?.countryCode ?? ''} ${data?.mobile ?? ''}'),
+                                  (data?.address ?? '').isEmpty
+                                      ? SizedBox.shrink()
+                                      : subTitle(Icons.location_on,
+                                          data?.address ?? ''),
+                                ],
+                              ))
+                            ],
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: ColorConstants.buttonColor,
-                                borderRadius: BorderRadius.circular(8)),
+                          Positioned(
+                            right: 0,
+                            top: -10,
                             child: PopupMenuButton<String>(
                               position: PopupMenuPosition.under,
                               color: ColorConstants.white,
@@ -80,18 +130,10 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                               constraints:
                                   BoxConstraints(minWidth: 90, maxWidth: 140),
                               offset: Offset(0, 0),
-                              icon: Row(
-                                children: [
-                                  Text(
-                                    'More options',
-                                    style: AppTextStyle().buttontext,
-                                  ),
-                                  Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: ColorConstants.white,
-                                  )
-                                ],
-                              ), // Custom icon
+                              icon: Icon(
+                                Icons.more_vert_rounded,
+                                color: ColorConstants.buttonColor,
+                              ),
                               onSelected: (value) {
                                 debugPrint("Selected: $value");
                                 if (value == 'Deactive' || value == 'Active') {
@@ -126,51 +168,6 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: ColorConstants.buttonColor,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                                child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '${data?.firstName?[0]}',
-                                  style: AppTextStyle().largWhitetext,
-                                ),
-                                Text(
-                                  '${data?.lastName?[0]}',
-                                  style: AppTextStyle().mediumWhitetext,
-                                ),
-                              ],
-                            )),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${data?.firstName ?? ''} ${data?.lastName ?? ''}',
-                                style: AppTextStyle().textButtonStyle,
-                              ),
-                              subTitle(Icons.email, data?.email ?? ''),
-                              subTitle(Icons.call,
-                                  '+${data?.countryCode ?? ''} ${data?.mobile ?? ''}'),
-                              (data?.address ?? '').isEmpty
-                                  ? SizedBox.shrink()
-                                  : subTitle(
-                                      Icons.location_on, data?.address ?? ''),
-                            ],
-                          ))
-                        ],
-                      ),
                       SizedBox(height: 15),
                       Container(
                         decoration: BoxDecoration(
@@ -190,9 +187,7 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                                   value: '${data?.aadhaarCardNumber ?? '__'}'),
                               textItem(
                                   lable: 'Created Date',
-                                  value: DateFormat('dd/MM/yyyy').format(
-                                      DateTime.fromMillisecondsSinceEpoch(
-                                          data?.createdDate ?? 0))),
+                                  value: dateFormate(data?.createdDate)),
                               textItem(
                                   lable: 'Gender', value: data?.gender ?? '__'),
                               textItem(
@@ -240,10 +235,10 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                           ),
                           CommonButtonWidget(
                             buttonWidth: 150,
-                            buttonColor: ColorConstants.white,
-                            buttonBorderColor: ColorConstants.buttonColor,
-                            tileStyle: AppTextStyle().textMediumButtonStyle,
-                            buttonTitle: 'Document Request',
+                            // buttonColor: ColorConstants.white,
+                            // buttonBorderColor: ColorConstants.buttonColor,
+                            // tileStyle: AppTextStyle().textMediumButtonStyle,
+                            buttonTitle: 'Raise Request',
                             onTap: () {
                               context.push('/raise_request',
                                   extra: {'role': 'CA'});

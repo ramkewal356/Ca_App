@@ -18,7 +18,7 @@ class CustomTextItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 2),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             lable,
@@ -32,7 +32,7 @@ class CustomTextItem extends StatelessWidget {
           SizedBox(width: 5),
           Expanded(
             child: Text(
-              maxLines: inOneLinetext ? 1 : maxLine,
+              maxLines: inOneLinetext ? maxLine : 1,
               overflow: inOneLinetext ? TextOverflow.ellipsis : null,
               value,
               style: AppTextStyle().cardValueText,

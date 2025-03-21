@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ValidatorClass {
   static String? validatePassword(String password) {
     // Check if the password length is less than 8 characters
@@ -50,7 +52,8 @@ class ValidatorClass {
     final regex = RegExp(r'^(\+91[\s-]?)?[6-9]\d{9}$');
     return regex.hasMatch(number);
   }
-static bool isValidPanCard(String pan) {
+
+  static bool isValidPanCard(String pan) {
     final RegExp panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
     return panRegex.hasMatch(pan);
   }
@@ -71,4 +74,9 @@ extension StringExtension on String {
         ? this[0].toUpperCase() + substring(1).toLowerCase()
         : this;
   }
+}
+
+String dateFormate(int? date) {
+  return DateFormat('dd/MM/yyyy')
+      .format(DateTime.fromMillisecondsSinceEpoch(date ?? 0));
 }

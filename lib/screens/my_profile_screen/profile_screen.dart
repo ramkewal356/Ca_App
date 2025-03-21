@@ -71,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _emailController.text = data?.email ?? '';
           countryCode = data?.countryCode ?? '91';
           _phoneController.text = data?.mobile ?? '';
-          selectedGender = data?.gender ?? selectedGender;
+          selectedGender = data?.gender;
           imageUrl = data?.profileUrl ?? '';
           _pancardController.text = data?.panCardNumber ?? '';
           _adharcardController.text = data?.aadhaarCardNumber ?? '';

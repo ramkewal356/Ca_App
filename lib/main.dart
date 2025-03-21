@@ -2,9 +2,12 @@ import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
+import 'package:ca_app/blocs/help_and_support/help_and_support_bloc.dart';
 import 'package:ca_app/blocs/logs/logs_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
+import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
+import 'package:ca_app/blocs/task/task_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/data/repositories/document_repository.dart';
@@ -42,9 +45,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => LogsBloc()),
         BlocProvider(create: (_) => ServiceBloc()),
         BlocProvider(create: (_) => DownloadDocumentBloc()),
-
-
-
+        BlocProvider(create: (_) => AssigneCustomerBloc()),
+        BlocProvider(create: (_) => TaskBloc()),
+        BlocProvider(create: (_) => CreateNewTaskBloc()),
+        BlocProvider(create: (_) => ActionOnTaskBloc()),
+        BlocProvider(create: (_) => HelpAndSupportBloc()),
+        BlocProvider(create: (_) => RaiseRequestBloc()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
