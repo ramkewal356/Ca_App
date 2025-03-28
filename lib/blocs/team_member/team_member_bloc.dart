@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/data/models/degination_model.dart';
 import 'package:ca_app/data/models/get_team_member_model.dart';
 import 'package:ca_app/data/repositories/team_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -16,6 +17,7 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
   final _myRepo = TeamRepository();
   TeamMemberBloc() : super(TeamMemberInitial()) {
     on<GetTeamMemberEvent>(_getTeamMemberApi);
+    on<GetSubCaByCaIdEvent>(_getSubCaByCaIdApi);
     on<GetVerifiedSubCaByCaIdEvent>(_getVerifiedSubCaByCaIdApi);
     on<UpdateSubCaNameEvent>((event, emit) {
       if (state is GetVerifiedSubCaByCaIdSuccess) {
@@ -79,6 +81,19 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
     }
   }
 
+  Future<void> _getSubCaByCaIdApi(
+      GetSubCaByCaIdEvent event, Emitter<TeamMemberState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {"caId": userId, "search": event.searhText};
+    try {
+      var resp = await _myRepo.getSubCaByCaIdApi(query: query);
+      emit(GetSubCaListSuccess(getTeamMembers: resp.data ?? []));
+    } catch (e) {
+      emit(TeamMemberError(errorMessage: e.toString()));
+    }
+  }
+
   Future<void> _getVerifiedSubCaByCaIdApi(
       GetVerifiedSubCaByCaIdEvent event, Emitter<TeamMemberState> emit) async {
     int? userId = await SharedPrefsClass().getUserId();
@@ -91,6 +106,22 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
       emit(GetVerifiedSubCaByCaIdSuccess(
           getTeamMemberModel: resp.data ?? [],
           selectedSubCaName: event.selectedSubCaName));
+    } catch (e) {
+      emit(TeamMemberError(errorMessage: e.toString()));
+    }
+  }
+}
+
+class GetDeginationBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
+  final _myRepo = TeamRepository();
+  GetDeginationBloc() : super(TeamMemberInitial()) {
+    on<GetDeginationEvent>(_getDeginationList);
+  }
+  Future<void> _getDeginationList(
+      GetDeginationEvent event, Emitter<TeamMemberState> emit) async {
+    try {
+      var resp = await _myRepo.getDeginationList();
+      emit(GetDeginationListSuccess(deginationList: resp));
     } catch (e) {
       emit(TeamMemberError(errorMessage: e.toString()));
     }

@@ -14,3 +14,4 @@ class DropdownSelectedEvent extends CustomDropdownEvent {
   @override
   List<Object> get props => [value];
 }
+class DropdownResetEvent extends CustomDropdownEvent {}

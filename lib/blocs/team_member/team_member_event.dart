@@ -35,6 +35,14 @@ class GetTeamMemberEvent extends TeamMemberEvent {
       ];
 }
 
+class GetSubCaByCaIdEvent extends TeamMemberEvent {
+  final String searhText;
+
+  const GetSubCaByCaIdEvent({required this.searhText});
+  @override
+  List<Object> get props => [searhText];
+}
+
 class GetVerifiedSubCaByCaIdEvent extends TeamMemberEvent {
   final String selectedSubCaName;
 
@@ -50,3 +58,5 @@ class UpdateSubCaNameEvent extends TeamMemberEvent {
   @override
   List<Object> get props => [selectedSubCaName];
 }
+
+class GetDeginationEvent extends TeamMemberEvent {}

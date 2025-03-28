@@ -286,7 +286,8 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                       CustomTextButton(
                           buttonTitle: 'View All',
                           onTap: () {
-                            context.push('/recent_document');
+                            context.push('/recent_document',
+                                extra: {'role': 'SUBCA'});
                           })
                     ],
                   ),

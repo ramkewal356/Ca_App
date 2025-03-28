@@ -6,11 +6,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CustomDropdownButton extends StatelessWidget {
+class CustomDropdownButton extends StatefulWidget {
   final List<String> dropdownItems;
   final String? initialValue;
   final String hintText;
-
+  final bool initialStateSelected;
   final Function(String?)? onChanged;
   final String? Function(String?)? validator;
   final Color? fillColor;
@@ -19,45 +19,67 @@ class CustomDropdownButton extends StatelessWidget {
       required this.dropdownItems,
       required this.initialValue,
       required this.hintText,
+      this.initialStateSelected = false,
       this.onChanged,
       this.validator,
       this.fillColor});
 
   @override
+  State<CustomDropdownButton> createState() => _CustomDropdownButtonState();
+}
+
+class _CustomDropdownButtonState extends State<CustomDropdownButton> {
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<CustomDropdownBloc, CustomDropdownState>(
       listener: (context, state) {},
       builder: (context, state) {
-        List<String> uniqueDropdownItems = dropdownItems.toSet().toList();
-        String? selectedValue = (state is CustomDropdownSelected &&
+        List<String> uniqueDropdownItems =
+            widget.dropdownItems.toSet().toList();
+        String? selectedValue = (widget.initialStateSelected)
+            ? ((state is CustomDropdownSelected &&
                 uniqueDropdownItems.contains(state.value))
             ? state.value
-            : (initialValue != null &&
-                    uniqueDropdownItems.contains(initialValue))
-                ? initialValue
+                : (state is CustomDropdownInitial) // Reset state
+                    ? null
+                    : (widget.initialValue != null &&
+                            uniqueDropdownItems.contains(widget.initialValue))
+                        ? widget.initialValue
+                        : null)
+            : (state is CustomDropdownSelected &&
+                    uniqueDropdownItems.contains(state.value))
+                ? state.value
+                : (widget.initialValue != null &&
+                        uniqueDropdownItems.contains(widget.initialValue))
+                    ? widget.initialValue
                 : null;
+        // String? selectedValue = (state is CustomDropdownSelected &&
+        //         uniqueDropdownItems.contains(state.value))
+        //     ? state.value
+        //     : (widget.initialValue != null &&
+        //             uniqueDropdownItems.contains(widget.initialValue))
+        //         ? widget.initialValue
+        //         : null;
         return FormField<String>(
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            initialValue:
-                uniqueDropdownItems.contains(selectedValue)
+            initialValue: uniqueDropdownItems.contains(selectedValue)
                 ? selectedValue
                 : null,
-            validator: validator,
+            validator: widget.validator,
             builder: (FormFieldState<String> fieldState) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DropdownButton2(
                     hint: Text(
-                      hintText,
+                      widget.hintText,
                       style: AppTextStyle().hintText,
                     ),
                     value: selectedValue,
                     // disabledHint: Text('data'),
                     underline: SizedBox.shrink(),
                     items: uniqueDropdownItems.map((value) {
-                      return DropdownMenuItem(
-                          value: value, child: Text(value));
+                      return DropdownMenuItem(value: value, child: Text(value));
                     }).toList(),
                     buttonStyleData: ButtonStyleData(
                       height: 50,
@@ -67,7 +89,7 @@ class CustomDropdownButton extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: ColorConstants.darkGray),
-                        color: fillColor,
+                        color: widget.fillColor,
                       ),
                       elevation: 0,
                     ),
@@ -106,8 +128,8 @@ class CustomDropdownButton extends StatelessWidget {
                         BlocProvider.of<CustomDropdownBloc>(context)
                             .add(DropdownSelectedEvent(value: value));
                       }
-                      if (onChanged != null) {
-                        onChanged!(value);
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(value);
                       }
                       fieldState.didChange(value);
                     },

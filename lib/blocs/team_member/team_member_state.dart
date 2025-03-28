@@ -29,6 +29,22 @@ final class GetVerifiedSubCaByCaIdSuccess extends TeamMemberState {
   List<Object> get props => [getTeamMemberModel, selectedSubCaName];
 }
 
+class GetSubCaListSuccess extends TeamMemberState {
+  final List<Datum> getTeamMembers;
+
+  const GetSubCaListSuccess({required this.getTeamMembers});
+  @override
+  List<Object> get props => [getTeamMembers];
+}
+
+class GetDeginationListSuccess extends TeamMemberState {
+  final DeginationModel deginationList;
+
+  const GetDeginationListSuccess({required this.deginationList});
+  @override
+  List<Object> get props => [deginationList];
+}
+
 final class TeamMemberError extends TeamMemberState {
   final String errorMessage;
 

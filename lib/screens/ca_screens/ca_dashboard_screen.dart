@@ -2,10 +2,12 @@ import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
+import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/data/models/get_ca_dashboard_model.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
 import 'package:ca_app/data/models/recent_document_model.dart';
@@ -55,10 +57,11 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
 
   Future<void> _getUserDetails() async {
     BlocProvider.of<AuthBloc>(context).add(GetUserByIdEvent());
-    await _fetchCustomersData();
+    await _fetchCustomersData(isFilter: true);
     await _getRecentDocument();
-    _fetchTeamMembers(isFilter: true);
-    _fetchService();
+    // _fetchTeamMembers(isFilter: true);
+    // _fetchService();
+    context.read<DashboardBloc>().add(GetCaDashboardEvent());
   }
 
   Future<void> _getRecentDocument({bool isPagination = false}) async {
@@ -67,14 +70,14 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
         .add(GetRecentDocumentEvent(isPagination: isPagination));
   }
 
-  void _fetchService() {
-    context.read<ServiceBloc>().add(GetCaServiceListEvent(
-        isSearch: true,
-        searchText: '',
-        isPagination: false,
-        pageNumber: -1,
-        pageSize: -1));
-  }
+  // void _fetchService() {
+  //   context.read<ServiceBloc>().add(GetCaServiceListEvent(
+  //       isSearch: true,
+  //       searchText: '',
+  //       isPagination: false,
+  //       pageNumber: -1,
+  //       pageSize: -1));
+  // }
 
   Future<void> _fetchCustomersData({bool isFilter = false}) async {
     int? useId = await SharedPrefsClass().getUserId();
@@ -90,21 +93,21 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
         isSearch: false));
   }
 
-  void _fetchTeamMembers(
-      {bool isPagination = false,
-      bool isFilter = false,
-      bool isSearch = false}) {
-    context.read<TeamMemberBloc>().add(
-          GetTeamMemberEvent(
-              searchText: '',
-              filterText: '',
-              isPagination: isPagination,
-              isFilter: isFilter,
-              isSearch: isSearch,
-              pageNumber: -1,
-              pagesize: -1),
-        );
-  }
+  // void _fetchTeamMembers(
+  //     {bool isPagination = false,
+  //     bool isFilter = false,
+  //     bool isSearch = false}) {
+  //   context.read<TeamMemberBloc>().add(
+  //         GetTeamMemberEvent(
+  //             searchText: '',
+  //             filterText: '',
+  //             isPagination: isPagination,
+  //             isFilter: isFilter,
+  //             isSearch: isSearch,
+  //             pageNumber: -1,
+  //             pagesize: -1),
+  //       );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -119,19 +122,24 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             customerSate is GetCustomerByCaIdSuccess
                 ? customerSate.getCustomers
                 : null;
-        int totalCustomers = customerSate is GetCustomerByCaIdSuccess
-            ? customerSate.totalCustomer
-            : 0;
+        // int totalCustomers = customerSate is GetCustomerByCaIdSuccess
+        //     ? customerSate.totalCustomer
+        //     : 0;
         var documentState = context.watch<DocumentBloc>().state;
         List<Content>? getRecentDocument =
             documentState is RecentDocumentSuccess
                 ? documentState.recentDocumnets
                 : [];
-        var serviceState = context.watch<ServiceBloc>().state;
-        List<ServicesListData> getServiceData =
-            (serviceState is GetCaServiceListSuccess
-                ? (serviceState).getCaServicesList
-                : []);
+        var dashboardState = context.watch<DashboardBloc>().state;
+        GetCaDashboardDataModel? getCaDashboardData =
+            (dashboardState is GetCaDashboardSuccess)
+                ? dashboardState.getCaDashboardData
+                : null;
+        // var serviceState = context.watch<ServiceBloc>().state;
+        // List<ServicesListData> getServiceData =
+        //     (serviceState is GetCaServiceListSuccess
+        //         ? (serviceState).getCaServicesList
+        //         : []);
         return Scaffold(
           backgroundColor: ColorConstants.white,
           appBar: CustomAppbar(
@@ -216,7 +224,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                       .then((onValue) async {
                     debugPrint('bnbmnbm??????????????????????');
                     await _fetchCustomersData(isFilter: true);
-                    _fetchTeamMembers(isFilter: true);
+                    // _fetchTeamMembers(isFilter: true);
                   });
                 }
               },
@@ -238,6 +246,15 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                   context
                       .push('/ca_dashboard/task_allocation')
                       .then((onValue) async {
+                    await _fetchCustomersData(isFilter: true);
+                  });
+                }
+              },
+              {
+                "imgUrl": Icons.notifications,
+                "label": "Reminders",
+                "onTap": () {
+                  context.push('/ca_dashboard/reminders').then((onValue) async {
                     await _fetchCustomersData(isFilter: true);
                   });
                 }
@@ -338,7 +355,8 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                               Icons.groups_3,
                                               color: ColorConstants.white,
                                             ),
-                                            total: '$totalCustomers',
+                                            total:
+                                                '${getCaDashboardData?.data?.totalClient}',
                                             lable: 'Total Client',
                                           ),
                                         ),
@@ -350,33 +368,22 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                                 .then((onValue) async {
                                               debugPrint(
                                                   'bnbmnbm??????????????????????');
-                                              await _fetchCustomersData(
-                                                  isFilter: true);
-                                              _fetchTeamMembers(isFilter: true);
+                                                _getUserDetails();
+                                                // await _fetchCustomersData(
+                                                //     isFilter: true);
+                                                // _fetchTeamMembers(isFilter: true);
                                             });
                                           },
-                                          child: BlocConsumer<TeamMemberBloc,
-                                              TeamMemberState>(
-                                            listener: (context, state) {},
-                                            builder: (context, state) {
-                                              int totalTeam = 0;
-                                              if (state
-                                                  is GetTeamMemberSuccess) {
-                                                totalTeam = state
-                                                        .getTeamMemberModel
-                                                        ?.length ??
-                                                    0;
-                                              }
-                                              return DashboardCard(
+                                            child: DashboardCard(
                                                 icon: Icon(
                                                   Icons.groups,
                                                   color: ColorConstants.white,
                                                 ),
-                                                total: '$totalTeam',
+                                              total:
+                                                  '${getCaDashboardData?.data?.totalTeamMember}',
                                                 lable: 'Team Member',
-                                              );
-                                            },
-                                          ),
+                                            )
+                                           
                                         ),
                                         GestureDetector(
                                           onTap: () {
@@ -392,7 +399,8 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                                   .format_list_numbered_outlined,
                                               color: ColorConstants.white,
                                             ),
-                                            total: '${getServiceData.length}',
+                                            total:
+                                                '${getCaDashboardData?.data?.totalServiceOpted}',
                                             lable: 'Services Opted',
                                           ),
                                         ),
@@ -473,9 +481,9 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                                                     '')
                                                                 .isEmpty
                                                             ? Text(
-                                                          '${getCustomers[index].firstName?[0]}${getCustomers[index].lastName?[0]}',
-                                                          style: AppTextStyle()
-                                                              .buttontext,
+                                                                '${getCustomers[index].firstName?[0]}${getCustomers[index].lastName?[0]}',
+                                                                style: AppTextStyle()
+                                                                    .buttontext,
                                                               )
                                                             : ClipOval(
                                                                 child: Image.network(
@@ -492,8 +500,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                                       subtitle: Text(
                                                           '${getCustomers[index].email}'),
                                                       trailing: Text(dateFormate(
-                                                          getCustomers[
-                                                                              index]
+                                                          getCustomers[index]
                                                               .createdDate)),
                                                     ),
                                                     Divider()
@@ -522,11 +529,9 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                 CustomTextButton(
                                     buttonTitle: 'View All',
                                     onTap: () {
-                                      context
-                                          .push('/recent_document', extra: {
+                                      context.push('/recent_document', extra: {
                                         "role": "CA"
-                                      })
-                                          .then((onValue) async {
+                                      }).then((onValue) async {
                                         await _getRecentDocument();
                                       });
                                     })
@@ -590,7 +595,12 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                             },
                                             onTapReRequest: () {
                                               context.push('/raise_request',
-                                                  extra: {'role': 'CA'});
+                                                  extra: {
+                                                    'role': 'CA'
+                                                  }).then((onValue) async {
+                                                await _fetchCustomersData(
+                                                    isFilter: true);
+                                              });
                                             },
                                           );
                                         },

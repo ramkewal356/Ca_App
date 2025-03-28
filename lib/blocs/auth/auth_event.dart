@@ -1,5 +1,7 @@
 // import 'dart:io';
 
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
@@ -49,11 +51,11 @@ class VerifyOtpForUserEvent extends AuthEvent {
 
 //**** Udate Profile Event ****//
 class UpdateProfileImageEvent extends AuthEvent {
-  final MultipartFile imageUrl;
-
-  const UpdateProfileImageEvent({required this.imageUrl});
+  final File? imageUrl;
+  final File? companyLogo;
+  const UpdateProfileImageEvent({this.imageUrl, this.companyLogo});
   @override
-  List<Object> get props => [imageUrl];
+  List<Object> get props => [imageUrl!, companyLogo!];
 }
 
 //**** Udate User Event ****//
@@ -113,18 +115,29 @@ class AddUserEvent extends AuthEvent {
   final String countryCode;
   final String mobile;
   final String role;
-
+  final String? addharNumber;
+  final String? degination;
   const AddUserEvent(
       {required this.firstName,
       required this.lastName,
       required this.email,
       required this.countryCode,
       required this.mobile,
-      required this.role});
+      required this.role,
+      this.addharNumber,
+      this.degination});
 
   @override
-  List<Object> get props =>
-      [firstName, lastName, email, countryCode, mobile, role];
+  List<Object> get props => [
+        firstName,
+        lastName,
+        email,
+        countryCode,
+        mobile,
+        role,
+        addharNumber ?? '',
+        degination ?? ''
+      ];
 }
 
 //**** GetUserById Event ****//

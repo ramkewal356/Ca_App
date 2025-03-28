@@ -4,6 +4,7 @@ import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/repositories/auth_repository.dart';
 import 'package:ca_app/utils/utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -80,7 +81,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         "mobile": event.mobile,
         "email": event.email,
         "role": event.role,
-        "countryCode": event.countryCode
+        "countryCode": event.countryCode,
+        if ((event.addharNumber ?? '').isNotEmpty)
+          "aadhaarCardNumber": event.addharNumber,
+        if ((event.degination ?? '').isNotEmpty) "designation": event.degination
       };
       emit(AuthLoading());
       var userResp = await _myRepo.addNewUser(body: body);
@@ -187,11 +191,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 //**** Call Upload profile image API ****//
   Future<void> _uploadProfileImageApi(
       UpdateProfileImageEvent event, Emitter<AuthState> emit) async {
+    MultipartFile? companyImage;
+    MultipartFile? selectedImage;
+    if (event.companyLogo != null ||
+        (event.companyLogo?.path ?? '').isNotEmpty) {
+      companyImage =
+          await MultipartFile.fromFile(event.companyLogo?.path ?? '');
+    } else if (event.imageUrl != null ||
+        (event.imageUrl?.path ?? '').isNotEmpty) {
+      selectedImage = await MultipartFile.fromFile(event.imageUrl?.path ?? '');
+    }
+    debugPrint('bnxcnxcnmxbcmnbxcmncbm${selectedImage?.filename}');
+    debugPrint('bnxcnxcnmxbcmnbxcmncbm ${companyImage?.filename}');
+
     int? userId = await SharedPrefsClass().getUserId();
     debugPrint('userId.,.,.,.,.,.,., $userId');
     Map<String, dynamic> body = {
       "userId": userId,
-      "image": event.imageUrl,
+      "image": selectedImage,
+      "companyLogo": companyImage
     };
     try {
       emit(AuthLoading());

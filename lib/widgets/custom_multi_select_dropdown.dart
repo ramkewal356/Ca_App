@@ -113,10 +113,12 @@ class MultiSelectSearchableDropdown extends FormField<List<String>> {
     required List<String> selectedItems,
     required Function(List<String>) onChanged,
     FormFieldValidator<List<String>>? validator,
+    bool openInModal = false,
   }) : super(
           key: key,
           initialValue: selectedItems,
           validator: validator,
+          
           autovalidateMode: AutovalidateMode.onUserInteraction,
           builder: (FormFieldState<List<String>> state) {
             return CustomDropdownSerchable(
@@ -128,6 +130,7 @@ class MultiSelectSearchableDropdown extends FormField<List<String>> {
                 onChanged(value);
               },
               errorText: state.errorText,
+              openInModal: openInModal,
             );
           },
         );
@@ -139,6 +142,7 @@ class CustomDropdownSerchable extends StatefulWidget {
   final List<String> selectedItems;
   final Function(List<String>) onChanged;
   final String? errorText;
+  final bool openInModal;
   const CustomDropdownSerchable({
     super.key,
     required this.hintText,
@@ -146,6 +150,7 @@ class CustomDropdownSerchable extends StatefulWidget {
     required this.selectedItems,
     required this.onChanged,
     this.errorText,
+      this.openInModal = false
   });
 
   @override
@@ -194,74 +199,89 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
           ),
           Positioned(
             left: offset.dx,
-            top: offset.dy + buttonHeight + 5, // Adjust dynamically
+            top: offset.dy +
+                buttonHeight +
+                5 -
+                (widget.openInModal
+                    ? MediaQuery.of(context).viewInsets.bottom
+                    : 0), // Adjust dynamically
             width: renderBox.size.width,
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(8),
-              child: StatefulBuilder(
-                builder: (context, setStatePopup) {
-                  return Container(
-                    height: 300,
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CustomSearchField(
-                          controller: _searchController,
-                          serchHintText: 'search',
-                          onChanged: (value) {
-                            setStatePopup(() {
-                              filterList = widget.items
-                                  .where((item) => item
-                                      .toLowerCase()
-                                      .contains(value.toLowerCase()))
-                                  .toList();
-                            });
-                          },
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: filterList.length,
-                            itemBuilder: (context, index) {
-                              bool isSelected = widget.selectedItems
-                                  .contains(filterList[index]);
-                              return CheckboxListTile(
-                                contentPadding: EdgeInsets.zero,
-                                visualDensity: VisualDensity(horizontal: -4),
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                activeColor: ColorConstants.buttonColor,
-                                title: Text(filterList[index]),
-                                value: isSelected,
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value == true) {
-                                      widget.selectedItems
-                                          .add(filterList[index]);
-                                    } else {
-                                      widget.selectedItems
-                                          .remove(filterList[index]);
-                                    }
-                                    _updatePopupMenu(); // Refresh dropdown position
-                                    widget.onChanged(widget.selectedItems);
-                                  });
-                                  setStatePopup(() {});
-                                },
-                              );
+
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(8),
+                child: StatefulBuilder(
+                  builder: (context, setStatePopup) {
+                    return Container(
+                      height: 300,
+                      // constraints: BoxConstraints(
+                      //   maxHeight: MediaQuery.of(context).size.height *
+                      //       0.5, // Limit height dynamically
+                      // ),
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomSearchField(
+                            controller: _searchController,
+                            serchHintText: 'search',
+                            onChanged: (value) {
+                              setStatePopup(() {
+                                filterList = widget.items
+                                    .where((item) => item
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase()))
+                                    .toList();
+                              });
                             },
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                          Expanded(
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: filterList.length,
+                              itemBuilder: (context, index) {
+                                bool isSelected = widget.selectedItems
+                                    .contains(filterList[index]);
+                                return CheckboxListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  visualDensity: VisualDensity(horizontal: -4),
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  activeColor: ColorConstants.buttonColor,
+                                  title: Text(filterList[index]),
+                                  value: isSelected,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        widget.selectedItems
+                                            .add(filterList[index]);
+                                      } else {
+                                        widget.selectedItems
+                                            .remove(filterList[index]);
+                                      }
+                                      _updatePopupMenu(); // Refresh dropdown position
+                                      widget.onChanged(widget.selectedItems);
+                                    });
+                                    setStatePopup(() {});
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -270,6 +290,9 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
     );
 
     Overlay.of(context).insert(_overlayEntry!);
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _updatePopupMenu();
+    // });
   }
 
   void _hidePopupMenu() {

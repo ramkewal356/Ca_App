@@ -31,15 +31,15 @@ class GetYourRequestListSuccess extends RaiseRequestState {
   List<Object> get props => [requestData, isLastPage];
 }
 
-// class GetRequestOfClientSuccess extends RaiseRequestState {
-//   final List<RequestData> requestData;
-//   final bool isLastPage;
+class GetRequestByRecieverIdSuccess extends RaiseRequestState {
+  final List<GetRequestData> requestData;
+  final bool isLastPage;
 
-//   const GetRequestOfClientSuccess(
-//       {required this.requestData, required this.isLastPage});
-//   @override
-//   List<Object> get props => [requestData, isLastPage];
-// }
+  const GetRequestByRecieverIdSuccess(
+      {required this.requestData, required this.isLastPage});
+  @override
+  List<Object> get props => [requestData, isLastPage];
+}
 
 // class GetRequestOfTeamSuccess extends RaiseRequestState {
 //   final List<RequestData> requestData;

@@ -48,6 +48,9 @@ class Datum {
   String? profileUrl;
   String? profileName;
   bool? status;
+  String? designation;
+  String? aadhaarCardNumber;
+  String? gender;
 
   Datum({
     this.id,
@@ -62,6 +65,9 @@ class Datum {
     this.profileUrl,
     this.profileName,
     this.status,
+    this.designation,
+    this.aadhaarCardNumber,
+    this.gender,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -77,6 +83,9 @@ class Datum {
         profileUrl: json["profileUrl"],
         profileName: json["profileName"],
         status: json["status"],
+        designation: json["designation"],
+        aadhaarCardNumber: json["aadhaarCardNumber"],
+        gender: json["gender"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -92,6 +101,9 @@ class Datum {
         "profileUrl": profileUrl,
         "profileName": profileName,
         "status": status,
+        "designation": designation,
+        "aadhaarCardNumber": aadhaarCardNumber,
+        "gender": gender,
       };
 }
 

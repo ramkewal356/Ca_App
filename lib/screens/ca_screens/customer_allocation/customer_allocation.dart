@@ -40,11 +40,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
 
   int? selectedRowIndex; // Store the selected row index
   int? selectedSubCAId;
-  List<Map<String, String>> tableData = [
-    {"USERID": "#1234", "NAME": "Ramkewal", "MOBILE": "992954721"},
-    {"USERID": "#1235", "NAME": "Rahul", "MOBILE": "987654321"},
-    {"USERID": "#1236", "NAME": "John", "MOBILE": "999999999"},
-  ];
+
   String searchQuery = '';
   @override
   void initState() {
@@ -64,20 +60,10 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
     });
   }
 
-  void _fetchTeamMembers(
-      {bool isPagination = false,
-      bool isFilter = true,
-      bool isSearch = false}) {
-    context.read<TeamMemberBloc>().add(
-          GetTeamMemberEvent(
-              searchText: '',
-              filterText: '',
-              isPagination: isPagination,
-              isFilter: isFilter,
-              isSearch: isSearch,
-              pageNumber: -1,
-              pagesize: -1),
-        );
+  void _fetchTeamMembers() {
+    context
+        .read<TeamMemberBloc>()
+        .add(GetSubCaByCaIdEvent(searhText: searchQuery));
   }
 
   void _fetchCustomer({bool isPagination = false, bool isSearch = false}) {
@@ -85,7 +71,9 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
           GetCustomerByCaIdForTableEvent(
               searchText: searchQuery,
               isPagination: isPagination,
-              isSearch: isSearch),
+              isSearch: isSearch,
+              pageNumber: 0,
+              pageSize: 10),
         );
   }
 
@@ -127,8 +115,8 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                 SizedBox(height: 5),
                 BlocBuilder<TeamMemberBloc, TeamMemberState>(
                   builder: (context, state) {
-                    List<Datum> data = state is GetTeamMemberSuccess
-                        ? state.getTeamMemberModel ?? []
+                    List<Datum> data = state is GetSubCaListSuccess
+                        ? state.getTeamMembers
                         : [];
                     return CustomDropdownButton(
                       dropdownItems: data
@@ -194,6 +182,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                         return CommonButtonWidget(
                           buttonWidth: 120,
                           loader: state is AssignCustomerLoading,
+                     
                           buttonTitle: 'Assign',
                           onTap: () {
                             context.read<AssigneCustomerBloc>().add(
@@ -213,10 +202,14 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                     headingRowColor:
                         WidgetStatePropertyAll(ColorConstants.buttonColor),
                     headingTextStyle: AppTextStyle().buttontext,
+                    columnSpacing: 20,
                     columns: [
-                      DataColumn(label: Text('USERID')),
-                      DataColumn(label: Text('NAME')),
-                      DataColumn(label: Text('MOBILE'))
+                      DataColumn(
+                          label: SizedBox(width: 70, child: Text('USER ID'))),
+                      DataColumn(
+                          label: SizedBox(width: 130, child: Text('NAME'))),
+                      DataColumn(
+                          label: SizedBox(width: 100, child: Text('MOBILE'))),
                     ],
                     rows: currentSatate is CustomerLoading
                         ? [
@@ -241,20 +234,29 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                                           activeColor:
                                               ColorConstants.buttonColor,
                                           visualDensity:
-                                              VisualDensity(horizontal: -4),
+                                              VisualDensity(
+                                              horizontal: -4, vertical: -4),
                                           value: selectedRowIndex ==
                                               toElement.userId,
                                           onChanged: (bool? value) {
                                             _onSelectRow(toElement.userId ?? 0);
                                           },
                                         ),
-                                        Text('#${toElement.userId}'),
+                                        Expanded(
+                                            child:
+                                                Text('#${toElement.userId}')),
                                       ],
                                     )),
-                                    DataCell(Text(
-                                        '${toElement.firstName}${toElement.lastName}' ??
-                                            'N/A')),
-                                    DataCell(Text(toElement.mobile ?? 'N/A')),
+                                    DataCell(SizedBox(
+                                      width: 130,
+                                      child: Text(
+                                          '${toElement.firstName} ${toElement.lastName}' ??
+                                              'N/A'),
+                                    )),
+                                    DataCell(SizedBox(
+                                        width: 100,
+                                        child:
+                                            Text(toElement.mobile ?? 'N/A'))),
                                   ],
                                 );
                               }).toList()

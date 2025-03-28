@@ -19,8 +19,8 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
   }
   Future<void> _getLogsApi(GetLogsEvent event, Emitter<LogsState> emit) async {
     if (isFetching) return;
-
-    if (!event.isPagination) {
+    bool isSortOrFilter = (event.isFilter && event.isSort);
+    if (isSortOrFilter || !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(LogsLoading());
@@ -36,6 +36,8 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
       "caId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
+      "action": event.action,
+      "sortDirection": event.sorthing
     };
     Map<String, dynamic> query1 = {
       "actionUponId": event.uponId,

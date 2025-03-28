@@ -1,12 +1,18 @@
-
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_event.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
+import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
+import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_drawer.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -33,193 +39,259 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _getUser();
+  }
+
+  void _getUser() {
+    BlocProvider.of<AuthBloc>(context).add(GetUserByIdEvent());
+    _getRequest();
+  }
+
+  void _getRequest() {
+    context.read<RaiseRequestBloc>().add(GetRequestByReceiverIdEvent(
+        isPagination: false, isSearch: true, searchText: ''));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstants.white,
-      appBar: CustomAppbar(
-        backIconVisible: true,
-        backIcon: Builder(builder: (BuildContext context) {
-          return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: Icon(
-                Icons.menu,
-                color: ColorConstants.white,
-              ));
-        }),
-        time: '${getLocalizedGreeting()}, ',
-        title: 'Client',
-        actionIcons: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications,
-                color: ColorConstants.white,
-              ))
-        ],
-      ),
-      drawer: CustomDrawer(
-        userName: 'xyz',
-        emailAddress: 'xyz@gmail.com',
-        profileUrl: '',
-        activeButton: true,
-        activeTex: 'Active',
-        // selectedIndex: selectedValue,
-        // onItemSelected: (index) {
-        //   setState(() {
-        //     selectedValue = index;
-        //   });
-        // },
-        menuItems: [
-          {
-            "imgUrl": Icons.dashboard,
-            "label": "Dashboard",
-            "onTap": () {
-              // context.pop();
-            }
-          },
-          {
-            "imgUrl": Icons.add_photo_alternate_outlined,
-            "label": "Upload Document",
-            "onTap": () {
-              // context.pop();
-              context.push('/customer_dashboard/upload_document');
-            }
-          },
-          {
-            "imgUrl": Icons.history,
-            "label": "History",
-            "onTap": () {
-              context.push('/customer_dashboard/history');
-            }
-          },
-          {
-            "imgUrl": Icons.star,
-            "label": "Request",
-            "onTap": () {
-              // context.pop();
-              context.push('/customer_dashboard/request');
-            }
-          },
-          {
-            "imgUrl": Icons.groups,
-            "label": "My CA",
-            "onTap": () {
-              context.push('/myCa');
-            }
-          },
-          {
-            "imgUrl": Icons.payment,
-            "label": "Payment",
-            "onTap": () {
-              context.push('/customer_dashboard/payment');
-            }
-          },
-          {
-            "imgUrl": Icons.account_circle_outlined,
-            "label": "My Profile",
-            "onTap": () {
-              context.push('/myProfile');
-            }
-          },
-          {
-            "imgUrl": Icons.help_sharp,
-            "label": "Help & Support",
-            "onTap": () {
-              context.push('/help&support', extra: true);
-            }
-          },
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  context.push('/customer_dashboard/upload_document');
-                },
-                child: _customcard(
-                    lable: 'Upload Documents',
-                    icon: Icon(
-                      Icons.format_list_numbered_outlined,
-                      size: 35,
-                    )),
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  context.push('/customer_dashboard/history');
-                },
-                child: _customcard(
-                    lable: 'History',
-                    icon: Icon(
-                      Icons.history,
-                      size: 35,
-                    )),
-              ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(
-                  'Recent Request',
-                  style: AppTextStyle().headingtext,
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: 6,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: CustomCard(
-                      // id: '1',
-                      // date: '23/01/2025',
-                      // senderCa: 'Vishal Singh',
-                      // description: 'fsdfsdf fsdfdfdf fdsdsfdff df',
-                      // onTap: () {},
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                  child:
-                                      CustomTextItem(lable: 'ID', value: '1')),
-                              Expanded(
-                                  child: CustomTextItem(
-                                      lable: 'DATE', value: '23/01/2023'))
-                            ],
-                          ),
-                          CustomTextItem(
-                              lable: 'SENDER(CA)', value: 'Vishal singh'),
-                          CustomTextItem(
-                              lable: 'DESCRIPTION',
-                              value: 'dhjbjhjdhvjdvjkdsvjjh'),
-                          SizedBox(height: 5),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: CommonButtonWidget(
-                                buttonWidth: 100,
-                                buttonheight: 50,
-                                buttonTitle: 'View',
-                                onTap: () {
-                                  context.push('/request_details');
-                                }),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              )
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        UserModel? userdata =
+            state is GetUserByIdSuccess ? state.getUserByIdData : null;
+
+        return Scaffold(
+          backgroundColor: ColorConstants.white,
+          appBar: CustomAppbar(
+            backIconVisible: true,
+            backIcon: Builder(builder: (BuildContext context) {
+              return IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  icon: Icon(
+                    Icons.menu,
+                    color: ColorConstants.white,
+                  ));
+            }),
+            time: '${getLocalizedGreeting()}, ',
+            title: 'Client',
+            actionIcons: [
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.notifications,
+                    color: ColorConstants.white,
+                  ))
             ],
           ),
-        ),
-      ),
+          drawer: CustomDrawer(
+            userName:
+                '${userdata?.data?.firstName} ${userdata?.data?.lastName}',
+            emailAddress: '${userdata?.data?.email}',
+            profileUrl: userdata?.data?.profileUrl ?? '',
+            activeButton: true,
+            activeTex: userdata?.data?.status == true ? 'Active' : 'Inactive',
+            // selectedIndex: selectedValue,
+            // onItemSelected: (index) {
+            //   setState(() {
+            //     selectedValue = index;
+            //   });
+            // },
+            menuItems: [
+              {
+                "imgUrl": Icons.dashboard,
+                "label": "Dashboard",
+                "onTap": () {
+                  // context.pop();
+                }
+              },
+              {
+                "imgUrl": Icons.add_photo_alternate_outlined,
+                "label": "Upload Document",
+                "onTap": () {
+                  // context.pop();
+                  context.push('/customer_dashboard/upload_document');
+                }
+              },
+              {
+                "imgUrl": Icons.history,
+                "label": "History",
+                "onTap": () {
+                  context.push('/customer_dashboard/history');
+                }
+              },
+              {
+                "imgUrl": Icons.star,
+                "label": "Request",
+                "onTap": () {
+                  // context.pop();
+                  context.push('/customer_dashboard/request');
+                }
+              },
+              {
+                "imgUrl": Icons.groups,
+                "label": "My CA",
+                "onTap": () {
+                  context.push('/myCa',
+                      extra: {"caId": userdata?.data?.caId}).then((onValue) {
+                    _getUser();
+                  });
+                }
+              },
+              {
+                "imgUrl": Icons.payment,
+                "label": "Payment",
+                "onTap": () {
+                  context.push('/customer_dashboard/payment',
+                      extra: {"caId": userdata?.data?.caId});
+                }
+              },
+              {
+                "imgUrl": Icons.account_circle_outlined,
+                "label": "My Profile",
+                "onTap": () {
+                  context.push('/myProfile');
+                }
+              },
+              {
+                "imgUrl": Icons.help_sharp,
+                "label": "Help & Support",
+                "onTap": () {
+                  context.push('/help&support', extra: true);
+                }
+              },
+            ],
+          ),
+          body: BlocBuilder<RaiseRequestBloc, RaiseRequestState>(
+            builder: (context, state) {
+              if (state is RaiseRequestLoading) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.buttonColor,
+                  ),
+                );
+              } else if (state is RaiseRequestError) {
+                return Center(
+                  child: Text(
+                    'No Data Found!',
+                    style: AppTextStyle().redText,
+                  ),
+                );
+              } else if (state is GetRequestByRecieverIdSuccess) {
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.push('/customer_dashboard/upload_document');
+                          },
+                          child: _customcard(
+                              lable: 'Upload Documents',
+                              icon: Icon(
+                                Icons.format_list_numbered_outlined,
+                                size: 35,
+                              )),
+                        ),
+                        SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () {
+                            context.push('/customer_dashboard/history');
+                          },
+                          child: _customcard(
+                              lable: 'History',
+                              icon: Icon(
+                                Icons.history,
+                                size: 35,
+                              )),
+                        ),
+                        SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Text(
+                            'Recent Request',
+                            style: AppTextStyle().headingtext,
+                          ),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: state.requestData.length >= 6
+                              ? 6
+                              : state.requestData.length,
+                          itemBuilder: (context, index) {
+                            var data = state.requestData[index];
+                            return GestureDetector(
+                              onTap: () {
+                                context.push('/request_details', extra: {
+                                  "requestId": data.requestId
+                                }).then((onValue) {
+                                  _getRequest();
+                                });
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: CustomCard(
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                              child: CustomTextItem(
+                                                  lable: 'ID',
+                                                  value: '#${data.requestId}')),
+                                          Text(dateFormate(data.createdDate)),
+                                        ],
+                                      ),
+                                      CustomTextItem(
+                                          lable: 'SENDER(CA)',
+                                          value:
+                                              '${data.senderName}(#${data.senderId})'),
+                                      CustomTextItem(
+                                          lable: 'DESCRIPTION',
+                                          value: '${data.text}'),
+                                      // SizedBox(height: 5),
+                                      // Align(
+                                      //   alignment: Alignment.bottomRight,
+                                      //   child: CommonButtonWidget(
+                                      //       buttonWidth: 100,
+                                      //       buttonheight: 50,
+                                      //       buttonTitle: 'View',
+                                      //       onTap: () {
+                                      //         context.push('/request_details',
+                                      //             extra: {
+                                      //               "requestId": data.requestId
+                                      //             }).then((onValue) {
+                                      //           _getRequest();
+                                      //         });
+                                      //       }),
+                                      // )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              return Container();
+            },
+          ),
+        );
+      },
     );
   }
 

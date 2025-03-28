@@ -212,100 +212,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                             value: '${data?.caName}'),
                                       )),
                                     );
-                                    // return CustomCard(
-                                    //     child: Column(
-                                    //   children: [
-                                    //     Row(
-                                    //       children: [
-                                    //         Expanded(
-                                    //           child: CustomTextItem(
-                                    //               lable: 'Id',
-                                    //               value: '#${data?.userId}'),
-                                    //         ),
-                                    //         Expanded(
-                                    //           child: CustomTextItem(
-                                    //               lable: 'Status',
-                                    //               value: data?.status == true
-                                    //                   ? 'Active'
-                                    //                   : "Inactive"),
-                                    //         ),
-                                    //       ],
-                                    //     ),
-                                    //     CustomTextInfo(
-                                    //         flex1: 2,
-                                    //         flex2: 3,
-                                    //         lable: 'Full Name',
-                                    //         value:
-                                    //             '${data?.firstName ?? ''} ${data?.lastName ?? ''}'),
-                                    //     CustomTextInfo(
-                                    //         flex1: 2,
-                                    //         flex2: 3,
-                                    //         lable: 'Mobile',
-                                    //         value:
-                                    //             '+${data?.countryCode} ${data?.mobile}'),
-                                    //     CustomTextInfo(
-                                    //         flex1: 2,
-                                    //         flex2: 3,
-                                    //         lable: 'Assignee to',
-                                    //         value: '${data?.caName}'),
-                                    //     CustomTextInfo(
-                                    //         flex1: 2,
-                                    //         flex2: 3,
-                                    //         lable: 'Acceptance',
-                                    //         value: '${data?.userResponse}'),
-                                    //     SizedBox(height: 5),
-                                    //     Row(
-                                    //       mainAxisAlignment:
-                                    //           MainAxisAlignment.spaceBetween,
-                                    //       children: [
-                                    //         CommonButtonWidget(
-                                    //           buttonBorderColor:
-                                    //               ColorConstants.buttonColor,
-                                    //           buttonColor: ColorConstants.white,
-                                    //           tileStyle: AppTextStyle()
-                                    //               .textMediumButtonStyle,
-                                    //           buttonWidth: 120,
-                                    //           buttonTitle: 'Request',
-                                    //           onTap: () {
-                                    //             context.push('/raise_request',
-                                    //                 extra: {'role': 'CA'});
-                                    //           },
-                                    //         ),
-                                    //         BlocListener<AuthBloc, AuthState>(
-                                    //           listener: (context, state) {
-                                    //             if (state is GetUserByIdSuccess) {
-                                    //               selectedIndex = -1;
-                                    //             }
-                                    //           },
-                                    //           child: CommonButtonWidget(
-                                    //             loader: state is AuthLoading &&
-                                    //                 selectedIndex == index,
-                                    //             buttonWidth: 100,
-                                    //             buttonTitle: 'View',
-                                    //             onTap: () {
-                                    //               setState(() {
-                                    //                 selectedIndex = index;
-                                    //               });
-                                    //               context.push(
-                                    //                   '/ca_dashboard/view_client',
-                                    //                   extra: {
-                                    //                     "userId":
-                                    //                         data?.userId.toString()
-                                    //                   }).then((onValue) {
-                                    //                 debugPrint(
-                                    //                     ',,,,cvnmvnc,v,,,,nv,mnv,mnv,nn,nn,v,,,');
-                                    //                 context
-                                    //                     .read<AuthBloc>()
-                                    //                     .add(GetUserByIdEvent());
-                                    //                 _fetchCustomer(isFilter: true);
-                                    //               });
-                                    //             },
-                                    //           ),
-                                    //         )
-                                    //       ],
-                                    //     )
-                                    //   ],
-                                    // ));
+                                  
                                   },
                                 ),
                         );
@@ -374,10 +281,12 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                 controller: _emailController,
                                 hintText: 'Enter email',
                                 validator: (p0) {
-                                  if (p0 == null || p0.isEmpty) {
-                                    return 'Please enter email';
-                                  }
-                                  return null;
+                                  // if (p0 == null || p0.isEmpty) {
+                                  //   return 'Please enter email';
+                                  //   dsf
+                                  // }
+                                  // return null;
+                                  return ValidatorClass.validateEmail(p0);
                                 },
                               ),
                               SizedBox(height: 10),

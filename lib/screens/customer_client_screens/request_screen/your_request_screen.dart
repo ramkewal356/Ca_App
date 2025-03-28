@@ -83,11 +83,18 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                   );
                 } else if (state is RaiseRequestError) {
                   return Center(
-                    child: Text('data'),
+                    child: Text('No Data Found'),
                   );
                 } else if (state is GetYourRequestListSuccess) {
                   return Expanded(
-                    child: ListView.builder(
+                    child: state.requestData.isEmpty
+                        ? Center(
+                            child: Text(
+                              'No Data Found',
+                              style: AppTextStyle().redText,
+                            ),
+                          )
+                        : ListView.builder(
                       controller: _scrollController,
                       itemCount:
                           state.requestData.length + (state.isLastPage ? 0 : 1),

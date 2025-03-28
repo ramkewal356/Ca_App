@@ -1,11 +1,14 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
+import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/blocs/help_and_support/help_and_support_bloc.dart';
+import 'package:ca_app/blocs/image_picker/image_picker_bloc.dart';
 import 'package:ca_app/blocs/logs/logs_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
 import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
+import 'package:ca_app/blocs/reminder/reminder_bloc.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/blocs/task/task_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc()),
-      
+        BlocProvider(create: (_) => DashboardBloc()),
         BlocProvider(create: (_) => CustomDropdownBloc()),
     
         BlocProvider(create: (_) => UploadDocumentBloc()),
@@ -51,6 +54,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => ActionOnTaskBloc()),
         BlocProvider(create: (_) => HelpAndSupportBloc()),
         BlocProvider(create: (_) => RaiseRequestBloc()),
+        BlocProvider(create: (_) => GetDeginationBloc()),
+        BlocProvider(create: (_) => ReminderBloc()),
+        BlocProvider(create: (_) => CreateReminderBloc()),
+        BlocProvider(create: (_) => ImagePickerBloc())
+
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),

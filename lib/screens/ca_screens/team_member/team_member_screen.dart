@@ -2,6 +2,7 @@ import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
+import 'package:ca_app/data/models/degination_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
@@ -10,6 +11,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_modal.dart';
 import 'package:ca_app/widgets/custom_card.dart';
+import 'package:ca_app/widgets/custom_dropdown_button.dart';
 import 'package:ca_app/widgets/custom_filter_popup.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_list_tile_card.dart';
@@ -35,9 +37,12 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _adharcardController = TextEditingController();
+  final FocusNode _addharFocus = FocusNode();
   final FocusNode _searchFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   String countryCode = '91';
+  String? selectedDegination;
   Map<String, bool> filters = {
     "All": false,
     "Active": false,
@@ -202,108 +207,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                                 letter:
                                                     '${data?.firstName?[0].capitalize()}${data?.lastName?[0]}')),
                                       );
-                                      // return CustomCard(
-                                      //     child: Column(
-                                      //   children: [
-                                      //     CustomTextInfo(
-                                      //         flex1: 2,
-                                      //         flex2: 4,
-                                      //         lable: 'UserId',
-                                      //         value: '# ${data?.userId}'),
-                                      //     CustomTextInfo(
-                                      //         flex1: 2,
-                                      //         flex2: 4,
-                                      //         lable: 'Full Name',
-                                      //         value:
-                                      //             '${data?.firstName} ${data?.lastName}'),
-                                      //     CustomTextInfo(
-                                      //         flex1: 2,
-                                      //         flex2: 4,
-                                      //         lable: 'Email',
-                                      //         value: '${data?.email}'),
-                                      //     CustomTextInfo(
-                                      //         flex1: 2,
-                                      //         flex2: 4,
-                                      //         lable: 'Mobile',
-                                      //         value: '+${data?.mobile}'),
-                                      //     CustomTextInfo(
-                                      //         flex1: 2,
-                                      //         flex2: 4,
-                                      //         lable: 'Acceptance',
-                                      //         value: '${data?.userResponse}'),
-                                      //     SizedBox(height: 5),
-                                      //     Row(
-                                      //       mainAxisAlignment:
-                                      //           MainAxisAlignment.spaceBetween,
-                                      //       children: [
-                                      //         Container(
-                                      //           decoration: BoxDecoration(
-                                      //               borderRadius:
-                                      //                   BorderRadius.circular(
-                                      //                       8),
-                                      //               color: data?.status == true
-                                      //                   ? ColorConstants
-                                      //                       .lightGreenColor
-                                      //                   : ColorConstants
-                                      //                       .lightRedColor),
-                                      //           height: 45,
-                                      //           width: 100,
-                                      //           child: Center(
-                                      //             child: Text(
-                                      //                 data?.status == true
-                                      //                     ? 'Active'
-                                      //                     : "Inactive",
-                                      //                 style:
-                                      //                     data?.status == true
-                                      //                         ? AppTextStyle()
-                                      //                             .getgreenText
-                                      //                         : AppTextStyle()
-                                      //                             .redText),
-                                      //           ),
-                                      //         ),
-                                      //         BlocConsumer<AuthBloc, AuthState>(
-                                      //           listener: (context, state) {
-                                      //             if (state
-                                      //                 is GetUserByIdSuccess) {
-                                      //               // Ensures navigation executes after widget build
-                                      //               selectedIndex = -1;
-                                      //             }
-                                      //           },
-                                      //           builder: (context, state) {
-                                      //             return CommonButtonWidget(
-                                      //               loader: state
-                                      //                       is AuthLoading &&
-                                      //                   selectedIndex == index,
-                                      //               buttonWidth: 100,
-                                      //               buttonheight: 45,
-                                      //               buttonTitle: 'View',
-                                      //               onTap: () {
-                                      //                 setState(() {
-                                      //                   selectedIndex = index;
-                                      //                 });
-
-                                      //                 context.push(
-                                      //                     '/ca_dashboard/view_team_member',
-                                      //                     extra: {
-                                      //                       "userId": data
-                                      //                           ?.userId
-                                      //                           .toString(),
-                                      //                     }).then((onValue) {
-                                      //                   context
-                                      //                       .read<AuthBloc>()
-                                      //                       .add(
-                                      //                           GetUserByIdEvent());
-                                      //                   _fetchTeamMembers(
-                                      //                       isFilter: true);
-                                      //                 });
-                                      //               },
-                                      //             );
-                                      //           },
-                                      //         )
-                                      //       ],
-                                      //     )
-                                      //   ],
-                                      // ));
+                                     
                                     },
                                   )
                                 : Center(
@@ -327,6 +231,12 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                       buttonTitle: 'TEAM',
                       isFlotingButton: true,
                       buttonIcon: true,
+                      onTap: () {
+                        debugPrint('gfdfn,mfn,mnm,nm,nknf');
+                        context
+                            .read<GetDeginationBloc>()
+                            .add(GetDeginationEvent());
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Form(
@@ -362,7 +272,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               Text('Last Name',
                                   style: AppTextStyle().labletext),
                               SizedBox(height: 5),
@@ -376,7 +286,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
                               Text('Email', style: AppTextStyle().labletext),
                               SizedBox(height: 5),
                               TextformfieldWidget(
@@ -389,7 +299,58 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 5),
+                              Text('Addhar Number',
+                                  style: AppTextStyle().labletext),
+                              SizedBox(height: 5),
+                              TextformfieldWidget(
+                                controller: _adharcardController,
+                                focusNode: _addharFocus,
+                                hintText: 'xxx-xxxx-yyyyy',
+                                validator: (p0) {
+                                  if (p0 == null || p0.isEmpty) {
+                                    return 'Please enter addhar card';
+                                  } else if (!ValidatorClass.isValidAadhaar(
+                                      p0)) {
+                                    return 'Please enter valid addhar card';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 5),
+                              Text('Designation',
+                                  style: AppTextStyle().labletext),
+                              SizedBox(height: 5),
+                              BlocBuilder<GetDeginationBloc, TeamMemberState>(
+                                builder: (context, state) {
+                                  List<DeginationData> deginationList = [];
+                                  if (state is GetDeginationListSuccess) {
+                                    deginationList =
+                                        state.deginationList.data ?? [];
+                                  }
+                                  return CustomDropdownButton(
+                                    dropdownItems: deginationList
+                                        .map((toElement) => toElement
+                                            .designationName
+                                            .toString())
+                                        .toList(),
+                                    hintText: 'Select degination',
+                                    initialValue: selectedDegination,
+                                    onChanged: (p0) {
+                                      selectedDegination = p0;
+                                      debugPrint(
+                                          'degination $selectedDegination');
+                                    },
+                                    validator: (p0) {
+                                      if (p0 == null || p0.isEmpty) {
+                                        return 'Please select degination';
+                                      }
+                                      return null;
+                                    },
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 5),
                               Text('Mobile No',
                                   style: AppTextStyle().labletext),
                               SizedBox(height: 5),
@@ -426,7 +387,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 15),
+                              SizedBox(height: 10),
                               BlocConsumer<AuthBloc, AuthState>(
                                 listener: (context, state) {
                                   if (state is AddUserSuccess) {
@@ -455,6 +416,9 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                                     _lastNameController.text,
                                                 email: _emailController.text,
                                                 countryCode: countryCode,
+                                                addharNumber:
+                                                    _adharcardController.text,
+                                                degination: selectedDegination,
                                                 mobile: _phoneController.text,
                                                 role: 'SUBCA'));
                                       }

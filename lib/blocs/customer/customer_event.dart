@@ -56,12 +56,17 @@ class GetCustomerByCaIdForTableEvent extends CustomerEvent {
   final String searchText;
   final bool isSearch;
   final bool isPagination;
+  final int pageNumber;
+  final int pageSize;
   const GetCustomerByCaIdForTableEvent(
       {required this.searchText,
       required this.isSearch,
-      required this.isPagination});
+      required this.isPagination,
+      required this.pageNumber,
+      required this.pageSize});
   @override
-  List<Object> get props => [searchText, isSearch, isPagination];
+  List<Object> get props =>
+      [searchText, isSearch, isPagination, pageNumber, pageNumber];
 }
 
 class NextPage extends CustomerEvent {}

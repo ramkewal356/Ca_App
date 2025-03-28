@@ -34,7 +34,7 @@ class Data {
   String? lastName;
   String? email;
   String? address;
-  dynamic mobile;
+  String? mobile;
   dynamic phone;
   String? role;
   String? otp;
@@ -45,14 +45,21 @@ class Data {
   String? profileUrl;
   String? profileName;
   String? gender;
-  dynamic panCardNumber;
-  dynamic aadhaarCardNumber;
+  String? panCardNumber;
+  String? aadhaarCardNumber;
   String? userResponse;
   String? countryCode;
   dynamic token;
   dynamic caEmail;
   dynamic caId;
   dynamic caName;
+  dynamic caMobile;
+  String? designation;
+  List<dynamic>? permissions;
+  dynamic companyName;
+  dynamic gst;
+  String? companyLogo;
+  List<dynamic>? services;
 
   Data({
     this.id,
@@ -79,6 +86,13 @@ class Data {
     this.caEmail,
     this.caId,
     this.caName,
+    this.caMobile,
+    this.designation,
+    this.permissions,
+    this.companyName,
+    this.gst,
+    this.companyLogo,
+    this.services,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -106,6 +120,17 @@ class Data {
         caEmail: json["caEmail"],
         caId: json["caId"],
         caName: json["caName"],
+        caMobile: json["caMobile"],
+        designation: json["designation"],
+        permissions: json["permissions"] == null
+            ? []
+            : List<dynamic>.from(json["permissions"]!.map((x) => x)),
+        companyName: json["companyName"],
+        gst: json["gst"],
+        companyLogo: json["companyLogo"],
+        services: json["services"] == null
+            ? []
+            : List<dynamic>.from(json["services"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
@@ -133,6 +158,16 @@ class Data {
         "caEmail": caEmail,
         "caId": caId,
         "caName": caName,
+        "caMobile": caMobile,
+        "designation": designation,
+        "permissions": permissions == null
+            ? []
+            : List<dynamic>.from(permissions!.map((x) => x)),
+        "companyName": companyName,
+        "gst": gst,
+        "companyLogo": companyLogo,
+        "services":
+            services == null ? [] : List<dynamic>.from(services!.map((x) => x)),
       };
 }
 

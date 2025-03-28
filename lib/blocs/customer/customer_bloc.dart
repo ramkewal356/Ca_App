@@ -12,11 +12,11 @@ part 'customer_state.dart';
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   List<CustomerData> allCustomers = [];
   int pageNumber = 0;
-  int rowsPerPage = 10;
+  int rowsPerPage = 7;
   final int pageSize = 10;
   int pageNumber1 = 0;
 
-  final int pageSize1 = 10;
+  final int pageSize1 = 7;
   bool isFetching = false;
   bool isLastPage = false;
   final _myRepo = CustomerRepository();
@@ -117,19 +117,19 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     Map<String, dynamic> query = {
       "caId": userId,
       "search": event.searchText,
-      "pageNumber": pageNumber1,
-      "pageSize": pageSize1,
+      "pageNumber": event.pageNumber,
+      "pageSize": event.pageSize,
       "filter": true
     };
     try {
       emit(CustomerLoading());
       var resp = await _myRepo.getCustomerByCaId(query: query);
       allCustomers = resp.data ?? [];
-      debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $allCustomers');
+      debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $resp');
       emit(GetCustomerByCaIdForTableSuccess(
-          customers: allCustomers.take(rowsPerPage).toList(),
-          currentPage: pageNumber1,
-          rowsPerPage: rowsPerPage,
+          customers: allCustomers,
+          currentPage: event.pageNumber,
+          rowsPerPage: event.pageSize,
           totalCustomer: allCustomers.length));
     } catch (e) {
       emit(CustomerError(errorMessage: e.toString()));
@@ -180,14 +180,20 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       int newPage = currentState.currentPage + 1;
 
       // Check if there are more pages
-      if (newPage * currentState.rowsPerPage < allCustomers.length) {
-        emit(currentState.copyWith(
-          customers: allCustomers
-              .skip(newPage * currentState.rowsPerPage)
-              .take(currentState.rowsPerPage)
-              .toList(),
-          currentPage: newPage,
-        ));
+      if (newPage * currentState.rowsPerPage < currentState.totalCustomer) {
+        // emit(currentState.copyWith(
+        //   customers: allCustomers
+        //       .skip(newPage * currentState.rowsPerPage)
+        //       .take(currentState.rowsPerPage)
+        //       .toList(),
+        //   currentPage: newPage,
+        // ));\
+        add(GetCustomerByCaIdForTableEvent(
+            searchText: '',
+            isSearch: false,
+            isPagination: false,
+            pageNumber: newPage,
+            pageSize: currentState.rowsPerPage));
       }
     }
   }
@@ -211,13 +217,19 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       int newPage = currentState.currentPage - 1;
 
       if (newPage >= 0) {
-        emit(currentState.copyWith(
-          customers: allCustomers
-              .skip(newPage * currentState.rowsPerPage)
-              .take(currentState.rowsPerPage)
-              .toList(),
-          currentPage: newPage,
-        ));
+        // emit(currentState.copyWith(
+        //   customers: allCustomers
+        //       .skip(newPage * currentState.rowsPerPage)
+        //       .take(currentState.rowsPerPage)
+        //       .toList(),
+        //   currentPage: newPage,
+        // ));
+        add(GetCustomerByCaIdForTableEvent(
+            searchText: '',
+            isSearch: false,
+            isPagination: false,
+            pageNumber: newPage,
+            pageSize: currentState.rowsPerPage));
       }
     }
   }

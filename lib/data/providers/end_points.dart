@@ -1,5 +1,6 @@
 class EndPoints {
   static const baseUrl = 'https://dev-api.cabaonline.in';
+  //Auth url
   static const loginUrl = '/login';
   static const addNewUserUrl = '/users/add_user';
   static const updateProfileImageUrl = '/users/upload_profile_by_userId';
@@ -10,9 +11,13 @@ class EndPoints {
   static const verifyOtpForUserUrl = '/verify_otp';
   static const deactiveUserUrl = '/users/activate_deactivate_user';
   static const updateUserUrl = '/users/update_user';
+  // dashboard url
+  static const getCaDashboardUrl = '/ca/ca_dashboard_stats';
   //Team member
   static const getSubCaByCaId = '/sub_ca/get_subCA_by_CAId';
+  static const getSubCaByCaIdUrl = '/sub_ca/get_subCa_by_caId';
   static const getVerifiedSubCaByCaId = '/sub_ca/get_verified_subCA_by_caId';
+  static const getDegination = '/designation/all_designation';
   //Customer Url
   static var getCustomerBySubCaId = '/customer/get_customer_by_subCaId';
   static var getCustomerByCaId = '/customer/get_customer_by_caId';
@@ -24,7 +29,7 @@ class EndPoints {
   static var getViewDocumentUrl = '/document/get_document_by_userId';
   //Logs Url
   static var getActiveDeactiveLogByCaIdUrl =
-      '/active_deactive_logs/get_all_active_deActive_logs';
+      '/active_deactive_logs/get_logs_by_caId';
   static var getActiveDeactiveLogByUponIdUrl =
       '/active_deactive_logs/get_active_deActive_logs_by_actionUponId';
   // Services url
@@ -50,12 +55,19 @@ class EndPoints {
       '/request/get_request_document_by_requestId';
   static var getRequestOfClientUrl = '/request/get_request_of_clients_by_caId';
   static var getRequestOfTeamUrl = '/request/get_requests_of_subCa_by_caId';
+  static var getRequestByReceiverId = '/request/get_request_by_receiverId';
 
 // Contact Url
   static var addContactUrl = '/contact/add_contact';
   static var getContactByUserIdUrl = '/contact/get_contact_by_userId';
   static var getContactByContactIdUrl = '/contact/get_contact_by_contactId';
-
+// Reminder Url
+  static var getReminderUrl = '/reminder/get_all_reminder_by_caId';
+  static var createReminderUrl = '/reminder/add_reminder';
+  static var getViewReminderByIdUrl = '/reminder/get_reminder';
+  static var updateReminderByIdUrl = '/reminder/update_reminder';
+  static var activeReminderUrl = '/reminder/activate_reminder';
+  static var deactiveReminderUrl = '/reminder/deactivate_reminder';
   //sate url
   static var stateBaseUrl = 'https://countriesnow.space';
   static var getStateNameUrl = '/api/v0.1/countries/states';

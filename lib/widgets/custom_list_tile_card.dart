@@ -29,7 +29,8 @@ class CustomListTileCard extends StatelessWidget {
         CircleAvatar(
           radius: 30,
           backgroundColor: ColorConstants.buttonColor,
-          child: ClipOval(
+          child: letter.isNotEmpty
+              ? ClipOval(
               child: imgUrl.isEmpty
                   ? Text(
                       letter,
@@ -38,7 +39,11 @@ class CustomListTileCard extends StatelessWidget {
                   : Image.network(
                       imgUrl,
                       fit: BoxFit.fill,
-                    )),
+                        ))
+              : Icon(
+                  Icons.notifications,
+                  color: ColorConstants.white,
+                ),
         ),
         SizedBox(width: 10),
         Expanded(
@@ -48,7 +53,7 @@ class CustomListTileCard extends StatelessWidget {
             children: [
               Text(title),
               Text(subtitle1),
-              Text(subtitle2),
+              subtitle2.isEmpty ? SizedBox.shrink() : Text(subtitle2),
               isSecondary ?? SizedBox.shrink()
             ],
           ),

@@ -67,3 +67,15 @@ class GetRequestDetailsEvent extends RaiseRequestEvent {
   @override
   List<Object> get props => [requestId];
 }
+class GetRequestByReceiverIdEvent extends RaiseRequestEvent {
+  final bool isPagination;
+  final bool isSearch;
+  final String searchText;
+
+  const GetRequestByReceiverIdEvent(
+      {required this.isPagination,
+      required this.isSearch,
+      required this.searchText});
+  @override
+  List<Object> get props => [isPagination, isSearch, searchText];
+}

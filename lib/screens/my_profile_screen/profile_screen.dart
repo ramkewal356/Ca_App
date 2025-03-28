@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
+import 'package:ca_app/blocs/image_picker/image_picker_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
+import 'package:ca_app/widgets/custom_bottomsheet_image_modal.dart';
 import 'package:ca_app/widgets/custom_dropdown_button.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_phone_field.dart';
@@ -35,7 +39,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String countryCode = '91';
   String? selectedGender;
   String imageUrl = '';
+  String companyLogoUrl = '';
   String userId = '';
+ 
   @override
   void initState() {
     getUser();
@@ -76,6 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _pancardController.text = data?.panCardNumber ?? '';
           _adharcardController.text = data?.aadhaarCardNumber ?? '';
           _locationController.text = data?.address ?? '';
+          companyLogoUrl = data?.companyLogo ?? '';
         }
         return CustomLayoutPage(
           appBar: CustomAppbar(
@@ -93,25 +100,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
-                    Center(
-                        child: ImagePickerWidget(
-                      userImg: imageUrl,
-                      initialImage: null,
-                      onImagePicked: (value) {
-                        if (value != null) {
-                          context
-                              .read<AuthBloc>()
-                              .add(UpdateProfileImageEvent(imageUrl: value));
-                          debugPrint(
-                              'dfdgsfdghsfdgsdgh ,,,,,,${value.toString()}');
-                        } else {
-                          debugPrint(
-                              'please select image ,,,,,,${value.toString()}');
-                        }
-                      },
-                    )),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
+                    SizedBox(
+                      height: 160,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            height: 130,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color:
+                                    ColorConstants.buttonColor.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                          Positioned(
+                              left: 8,
+                              top: 8,
+                              child: CircleAvatar(
+                                radius: 32,
+                                backgroundColor: ColorConstants.white,
+                                child: CircleAvatar(
+                                  radius: 30,
+                                  child: ClipOval(
+                                      child: Image.network(companyLogoUrl)),
+                                ),
+                              )),
+                          Positioned(
+                              right: 0,
+                              top: 0,
+                              child: IconButton(
+                                  onPressed: () {},
+                                  icon: Row(
+                                    children: [
+                                      Text(
+                                        'Edit Firm Logo..',
+                                        style: AppTextStyle().buttontext,
+                                      ),
+                                      CustomBottomsheetImageModal(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: ColorConstants.white,
+                                        ),
+                                      )
+                                    ],
+                                  ))),
+                          BlocConsumer<ImagePickerBloc, ImagePickerState>(
+                            listener: (context, state) {
+                              if (state is ImagePickedSuccess) {
+                                context.read<AuthBloc>().add(
+                                    UpdateProfileImageEvent(
+                                        companyLogo: state.companyImage,
+                                        imageUrl: state.imageFile));
+                              }
+                            },
+                            builder: (context, state) {
+                              return Positioned(
+                                top: 60,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                    child: Container(
+                                  height: 125,
+                                  width: 125,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          width: 4,
+                                          color: ColorConstants.white)),
+                                  child: ImagePickerWidget(
+                                    userImg: imageUrl,
+                                    initialImage: null,
+                                  ),
+                                )),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 80),
                     Text('First Name', style: AppTextStyle().labletext),
                     SizedBox(height: 5),
                     TextformfieldWidget(

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_document_by_requestid_model.dart';
+import 'package:ca_app/data/models/get_request_by_receiverId_model.dart';
 import 'package:ca_app/data/models/get_request_model.dart';
 import 'package:ca_app/data/repositories/raise_request_repository.dart';
 import 'package:ca_app/utils/utils.dart';
@@ -23,6 +24,7 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
     on<GetRequestDetailsEvent>(_getRequestDetails);
     on<GetRequestOfClientEvent>(_getRequestOfClientApi);
     on<GetRequestOfTeamEvent>(_getRequestOfTeamApi);
+    on<GetRequestByReceiverIdEvent>(_getRequestByReceiverIdApi);
   }
   Future<void> _sendRequestApi(
       SendRaiseRequestEvent event, Emitter<RaiseRequestState> emit) async {
@@ -174,6 +176,46 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       emit(GetRequestDetailsSuccess(getDocumentByRequestIdData: resp));
     } catch (e) {
       emit(RaiseRequestError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getRequestByReceiverIdApi(GetRequestByReceiverIdEvent event,
+      Emitter<RaiseRequestState> emit) async {
+    if (isFetching) return;
+    if (event.isSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(RaiseRequestLoading()); // Show loading only for the first page
+    }
+    if (isLastPage) return;
+    isFetching = true;
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('receiverId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {
+      "receiverId": userId,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+      "search": event.searchText
+    };
+    try {
+      var resp = await _myRepo.getRequestByReceiverIdApi(query: query);
+      List<GetRequestData> newData = resp.data ?? [];
+      List<GetRequestData> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetRequestByRecieverIdSuccess
+                  ? (state as GetRequestByRecieverIdSuccess).requestData
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetRequestByRecieverIdSuccess(
+          requestData: allData, isLastPage: isLastPage));
+      pageNumber++;
+    } catch (e) {
+      emit(RaiseRequestError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
     }
   }
 }

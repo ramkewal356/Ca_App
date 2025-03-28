@@ -6,6 +6,8 @@ import 'package:ca_app/screens/ca_screens/logs_history/logs_history_screen.dart'
 import 'package:ca_app/screens/ca_screens/my_client_screens/my_client_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_client_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_document_screen.dart';
+import 'package:ca_app/screens/ca_screens/reminders_screen/reminders_screen.dart';
+import 'package:ca_app/screens/ca_screens/reminders_screen/view_reminder_screen.dart';
 import 'package:ca_app/screens/ca_screens/services_screens/services_screen.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/task_allocation_screen.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/upload_document_screen.dart';
@@ -128,7 +130,10 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
         path: '/myCa',
         builder: (context, state) {
-          return MyCaScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return MyCaScreen(
+            caId: data["caId"],
+          );
         },
       ),
       // CA,SUBCA AND CLIENT  COMMON MODULE ROUTES
@@ -185,7 +190,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'payment',
               builder: (context, state) {
-                return PaymentScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return PaymentScreen(
+                  caId: data["caId"],
+                );
               },
             ),
             GoRoute(
@@ -292,6 +300,19 @@ final GoRouter goRouter = GoRouter(
                 );
               },
             ),
+            GoRoute(
+              path: 'reminders',
+              builder: (context, state) {
+                return RemindersScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_reminder',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewReminderScreen(reminderId: data["reminderId"]);
+              },
+            )
           ]),
       // SUBCA MODULE ROUTES
       GoRoute(

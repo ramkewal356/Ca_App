@@ -7,7 +7,8 @@ import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final int caId;
+  const PaymentScreen({super.key, required this.caId});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
