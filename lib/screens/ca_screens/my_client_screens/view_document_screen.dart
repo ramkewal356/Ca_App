@@ -5,13 +5,11 @@ import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
-import 'package:ca_app/widgets/custom_filter_popup.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class ViewDocumentScreen extends StatefulWidget {
   final String userId;
@@ -24,7 +22,7 @@ class ViewDocumentScreen extends StatefulWidget {
 class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  int selectedFilter = 0;
+  String selectedFilter = '';
   String searchQuery = '';
   Map<String, bool> filters = {
     "All": false,
@@ -68,7 +66,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
     _getViewDocument(isSearch: true);
   }
 
-  void _onFilterChanged(int value) {
+  void _onFilterChanged(String value) {
     setState(() {
       selectedFilter = value;
       debugPrint('selected Item $selectedFilter');
@@ -267,7 +265,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
 }
 
 class FilterPopup extends StatefulWidget {
-  final ValueChanged<int> onFilterChanged;
+  final ValueChanged<String> onFilterChanged;
 
   const FilterPopup({super.key, required this.onFilterChanged});
 
@@ -302,16 +300,16 @@ class _FilterPopupState extends State<FilterPopup> {
   }
 
   void _applyFilters() {
-    int filterValue;
+    String filterValue;
 
     if (filters["All"] == true) {
-      filterValue = 0;
+      filterValue = '';
     } else if (filters["General"] == true) {
-      filterValue = -1;
+      filterValue = '-1';
     } else if (filters["Service"] == true) {
-      filterValue = 1;
+      filterValue = '1';
     } else {
-      filterValue = 0; // Default if no filter is selected
+      filterValue = ''; // Default if no filter is selected
     }
 
     // Callback to parent widget

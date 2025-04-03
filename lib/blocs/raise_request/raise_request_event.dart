@@ -10,7 +10,7 @@ sealed class RaiseRequestEvent extends Equatable {
 class SendRaiseRequestEvent extends RaiseRequestEvent {
   final String description;
 
-  final List<int> receiverId;
+  final List<String> receiverId;
   final List<MultipartFile> files;
 
   const SendRaiseRequestEvent(

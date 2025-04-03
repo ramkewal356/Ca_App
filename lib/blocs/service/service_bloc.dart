@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/add_service_model.dart';
+import 'package:ca_app/data/models/assign_service_to_user_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
@@ -51,7 +52,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     };
     try {
       var resp = await _myRepo.getServicesListApi(query: query);
-      List<ServicesListData> newData = resp.data ?? [];
+      List<ServicesListData> newData = resp.data?.content ?? [];
       List<ServicesListData> allData = (pageNumber == 0)
           ? newData
           : [
@@ -79,16 +80,16 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       "pageSize": -1,
     };
     try {
-      // emit(ServiceLoading());
+    
       var resp = await _myRepo.getServiceDropdownListApi(query: query);
-      // emit(GetServiceDropDownListSuccess(getServiceList: resp.data ?? []));
+    
 
       if (state is GetCaServiceListSuccess) {
         emit((state as GetCaServiceListSuccess)
-            .copyWith(getServicesList: resp.data));
+            .copyWith(getServicesList: resp.data?.content));
       } else {
         emit(GetCaServiceListSuccess(
-            getServicesList: resp.data ?? [],
+            getServicesList: resp.data?.content ?? [],
             getCaServicesList: [],
             getSubServiceList: [],
             isLastPage: false));
@@ -116,13 +117,13 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
 
       if (state is GetCaServiceListSuccess) {
         emit((state as GetCaServiceListSuccess).copyWith(
-          getSubServiceList: resp.data,
+          getSubServiceList: resp.data?.content,
         ));
       } else {
         emit(GetCaServiceListSuccess(
             getServicesList: (state as GetCaServiceListSuccess).getServicesList,
             getCaServicesList: [],
-            getSubServiceList: resp.data ?? [],
+            getSubServiceList: resp.data?.content ?? [],
             isLastPage: false));
       }
     } catch (e) {
@@ -209,7 +210,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     };
     try {
       var resp = await _myRepo.getViewServiceByCaIdApi(query: query);
-      List<ViewServiceData> newData = resp.data ?? [];
+      List<ViewServiceData> newData = resp.data?.content ?? [];
       List<ViewServiceData> allData = (pageNumber == 0)
           ? newData
           : [
@@ -230,23 +231,41 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   }
 }
 
-// class AddServiceBloc extends Bloc<ServiceEvent, ServiceState> {
-//   final _myRepo = ServiceRepository();
-//   AddServiceBloc() : super(ServiceInitial()) {
-//     on<AddServiceEvent>(_addServiceApi);
-//   }
-//   Future<void> _addServiceApi(
-//       AddServiceEvent event, Emitter<ServiceState> emit) async {
-//     int? userId = await SharedPrefsClass().getUserId();
-//     Map<String, dynamic> body = {"caId": userId, "serviceId": event.serviceId};
-//     try {
-//       emit(AddServiceLoading());
-//       var resp = await _myRepo.addServiceApi(body: body);
+class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
+  final _myRepo = ServiceRepository();
+  AssignServiceBloc() : super(ServiceInitial()) {
+    on<AssignServiceEvent>(_assignServiceToClient);
+    on<UpdateAssignServiceEvent>(_updateAssignServiceToClient);
+  }
+  Future<void> _assignServiceToClient(
+      AssignServiceEvent event, Emitter<ServiceState> emit) async {
+    Map<String, dynamic> body = {
+      "userIds": event.selectedClients,
+      "serviceIds": event.selectedServices
+    };
+    try {
+      emit(AddServiceLoading());
+      var resp = await _myRepo.assignServiceToClientApi(body: body);
+      Utils.toastSuccessMessage('${resp.data?.body}');
+      emit(AssignServiceToUserSuccess(assignServiceToClient: resp));
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    }
+  }
 
-//       emit(AddServiceSuccess(addServiceModel: resp));
-//       Utils.toastSuccessMessage('Service Added Successfully');
-//     } catch (e) {
-//       emit(ServiceError(errorMessage: e.toString()));
-//     }
-//   }
-// }
+  Future<void> _updateAssignServiceToClient(
+      UpdateAssignServiceEvent event, Emitter<ServiceState> emit) async {
+    Map<String, dynamic> body = {
+      "userId": event.clientId,
+      "serviceIds": event.serviceIds
+    };
+    try {
+      emit(AddServiceLoading());
+      var resp = await _myRepo.updateAssignServiceToClientApi(body: body);
+      Utils.toastSuccessMessage('Updated successfully');
+      emit(UpdateAssigneService(updatedAssignService: resp));
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    }
+  }
+}

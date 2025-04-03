@@ -43,6 +43,16 @@ class AddServiceEvent extends ServiceEvent {
   List<Object> get props => [serviceId];
 }
 
+class UpdateAssignServiceEvent extends ServiceEvent {
+  final String clientId;
+  final String serviceIds;
+
+  const UpdateAssignServiceEvent(
+      {required this.clientId, required this.serviceIds});
+  @override
+  List<Object> get props => [clientId, serviceIds];
+}
+
 class CreateServiceEvent extends ServiceEvent {
   final String serviceName;
   final String subService;
@@ -75,4 +85,14 @@ class GetViewServiceEvent extends ServiceEvent {
       required this.searchText});
   @override
   List<Object> get props => [isPagination, isSearch, searchText];
+}
+
+class AssignServiceEvent extends ServiceEvent {
+  final List<int> selectedClients;
+  final List<int> selectedServices;
+
+  const AssignServiceEvent(
+      {required this.selectedClients, required this.selectedServices});
+  @override
+  List<Object> get props => [selectedClients, selectedServices];
 }

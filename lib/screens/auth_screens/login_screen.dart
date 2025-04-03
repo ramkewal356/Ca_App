@@ -134,6 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       loader: state is AuthLoading,
                       buttonTitle: 'Sign In',
                       onTap: () {
+                        FocusScope.of(context).unfocus();
+                        _emailFocusNode.unfocus();
+                        _passFocusNode.unfocus();
                         if (_formKey.currentState!.validate()) {
                           debugPrint('jcxbxjnmxcnmc');
                           BlocProvider.of<AuthBloc>(context).add(LoginEvent(
@@ -148,15 +151,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // CustomTextButton(
-                    //   buttonTitle: 'Not User ?',
-                    //   onTap: () {},
-                    // ),
-                    Text(
-                      'Not User ?',
-                      style: AppTextStyle().cardLableText,
+                  
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Not User ?',
+                        style: AppTextStyle().cardLableText,
+                      ),
                     ),
-                    SizedBox(width: 10),
+                    // SizedBox(width: 5),
                     CustomTextButton(
                       buttonTitle: 'Already have an OTP ?',
                       onTap: () {

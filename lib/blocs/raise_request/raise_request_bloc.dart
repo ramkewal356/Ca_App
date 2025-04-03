@@ -30,10 +30,12 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       SendRaiseRequestEvent event, Emitter<RaiseRequestState> emit) async {
     int? userId = await SharedPrefsClass().getUserId();
     debugPrint('userId.,.,.,.,.,.,., $userId');
+    List<int> cleanedList =
+        event.receiverId.map((e) => int.tryParse(e.trim()) ?? 0).toList();
     Map<String, dynamic> body = {
       "text": event.description,
       "senderId": userId.toString(),
-      "receiverId": event.receiverId.toString(),
+      "receiverId": cleanedList,
       if (event.files.isNotEmpty) "file": event.files
     };
 
@@ -67,7 +69,7 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
     };
     try {
       var resp = await _myRepo.getRequestBySenderIdApi(query: query);
-      List<RequestData> newData = resp.data ?? [];
+      List<RequestData> newData = resp.data?.content ?? [];
       List<RequestData> allData = (pageNumber == 0)
           ? newData
           : [
@@ -107,7 +109,7 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
     };
     try {
       var resp = await _myRepo.getRequestOfClientByCaId(query: query);
-      List<RequestData> newData = resp.data ?? [];
+      List<RequestData> newData = resp.data?.content ?? [];
       List<RequestData> allData = (pageNumber == 0)
           ? newData
           : [
@@ -147,7 +149,7 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
     };
     try {
       var resp = await _myRepo.getRequestOfTeamByCaId(query: query);
-      List<RequestData> newData = resp.data ?? [];
+      List<RequestData> newData = resp.data?.content ?? [];
       List<RequestData> allData = (pageNumber == 0)
           ? newData
           : [

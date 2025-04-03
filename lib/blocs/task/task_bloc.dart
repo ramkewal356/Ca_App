@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
@@ -10,7 +10,6 @@ import 'package:ca_app/data/repositories/task_repository.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 part 'task_event.dart';
@@ -50,7 +49,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     };
     try {
       var resp = await _myRepo.getSelfAssignTaskApi(query: query);
-      List<AssignTaskData> newData = resp.data ?? [];
+      List<AssignTaskData> newData = resp.data?.content ?? [];
       List<AssignTaskData> allData = (pageNumber == 0)
           ? newData
           : [
@@ -92,7 +91,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     };
     try {
       var resp = await _myRepo.getAssignTaskApi(query: query);
-      List<AssignTaskData> newData = resp.data ?? [];
+      List<AssignTaskData> newData = resp.data?.content ?? [];
       List<AssignTaskData> allData = (pageNumber == 0)
           ? newData
           : [

@@ -1,5 +1,6 @@
 import 'package:ca_app/data/models/assign_customer_model.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
+import 'package:ca_app/data/models/get_login_customer_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
@@ -69,7 +70,7 @@ class CustomerRepository {
   }
 
   //**** Get Customer by SUBCA Id API ****//
-  Future<GetCustomerModel> getLoginCustomerByCaId(
+  Future<GetLoginCustomerModel> getLoginCustomerByCaId(
       {required Map<String, dynamic> query}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -81,7 +82,7 @@ class CustomerRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('getCustomer by CaID Response ${response?.data}');
-      return GetCustomerModel.fromJson(response?.data);
+      return GetLoginCustomerModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

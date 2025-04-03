@@ -1,8 +1,6 @@
 // import 'dart:io';
 
 import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AuthEvent extends Equatable {
@@ -70,6 +68,7 @@ class UpdateUserEvent extends AuthEvent {
   final String? panCard;
   final String? addharCard;
   final String? address;
+  final List<int>? permissionIds;
 
   const UpdateUserEvent(
       {required this.userId,
@@ -81,7 +80,8 @@ class UpdateUserEvent extends AuthEvent {
       this.mobile,
       this.panCard,
       this.addharCard,
-      this.address});
+      this.address,
+      this.permissionIds});
   @override
   List<Object> get props => [
         userId,
@@ -93,7 +93,8 @@ class UpdateUserEvent extends AuthEvent {
         mobile ?? '',
         panCard ?? '',
         addharCard ?? '',
-        address ?? ''
+        address ?? '',
+        permissionIds ?? []
       ];
 }
 
@@ -117,15 +118,20 @@ class AddUserEvent extends AuthEvent {
   final String role;
   final String? addharNumber;
   final String? degination;
-  const AddUserEvent(
-      {required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.countryCode,
-      required this.mobile,
-      required this.role,
-      this.addharNumber,
-      this.degination});
+  final String panCardNumber;
+  final String companyName;
+  const AddUserEvent({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.countryCode,
+    required this.mobile,
+    required this.role,
+    this.addharNumber,
+    this.degination,
+    this.panCardNumber = '',
+    this.companyName = '',
+  });
 
   @override
   List<Object> get props => [
@@ -136,7 +142,9 @@ class AddUserEvent extends AuthEvent {
         mobile,
         role,
         addharNumber ?? '',
-        degination ?? ''
+        degination ?? '',
+        panCardNumber,
+        companyName
       ];
 }
 

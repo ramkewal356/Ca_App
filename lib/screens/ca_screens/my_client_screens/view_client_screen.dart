@@ -8,11 +8,13 @@ import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/active_deactive_widget.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
+import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
+import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+
 
 class ViewClientScreen extends StatefulWidget {
   final String userId;
@@ -23,11 +25,14 @@ class ViewClientScreen extends StatefulWidget {
 }
 
 class _ViewClientScreenState extends State<ViewClientScreen> {
-  
   @override
   void initState() {
-    context.read<AuthBloc>().add(GetUserByIdEvent(userId: widget.userId));
     super.initState();
+    _getUserDetail();
+  }
+
+  void _getUserDetail() {
+    context.read<AuthBloc>().add(GetUserByIdEvent(userId: widget.userId));
   }
 
   Data? data;
@@ -144,6 +149,23 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                                 } else if (value == 'Logs') {
                                   context.push('/ca_dashboard/logs_history',
                                       extra: {"uponId": data?.id.toString()});
+                                } else if (value == 'Update Service') {
+                                  context.push('/ca_dashboard/assign_service',
+                                      extra: {
+                                        'clientId': data?.id.toString() ?? '',
+                                        'serviceList': data?.services
+                                                ?.map((toElement) =>
+                                                    '${toElement.subService} (${toElement.serviceName})')
+                                                .toList() ??
+                                            [],
+                                        'serviceIdList': data?.services
+                                                ?.map((toElement) =>
+                                                    toElement.serviceId)
+                                                .toList() ??
+                                            [],
+                                      }).then((onValue) {
+                                    _getUserDetail();
+                                  });
                                 }
                               },
                               itemBuilder: (BuildContext context) =>
@@ -163,6 +185,13 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                                     value: 'Logs',
                                     child: SizedBox(
                                         width: 120, child: Text('Logs'))),
+                                if ((data?.services ?? []).isNotEmpty)
+                                  PopupMenuItem<String>(
+                                      height: 45,
+                                      value: 'Update Service',
+                                      child: SizedBox(
+                                          width: 120,
+                                          child: Text('Update Service'))),
                               ],
                             ),
                           ),
@@ -181,10 +210,13 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                             children: [
                               textItem(
                                   lable: 'Pan Card',
-                                  value: '${data?.panCardNumber ?? '__'}'),
+                                  value: data?.panCardNumber ?? '__'),
+                              textItem(
+                                  lable: 'Company Name',
+                                  value: data?.companyName ?? '__'),
                               textItem(
                                   lable: 'Aadhaar Card',
-                                  value: '${data?.aadhaarCardNumber ?? '__'}'),
+                                  value: data?.aadhaarCardNumber ?? '__'),
                               textItem(
                                   lable: 'Created Date',
                                   value: dateFormate(data?.createdDate)),
@@ -217,6 +249,39 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                             style: AppTextStyle().listTileText,
                           )
                         ],
+                      ),
+                      (data?.services ?? []).isNotEmpty
+                          ? Divider()
+                          : SizedBox.shrink(),
+
+                      (data?.services ?? []).isNotEmpty
+                          ? Text(
+                              'Assigned Services :->',
+                              style: AppTextStyle().cardLableText,
+                            )
+                          : SizedBox.shrink(),
+
+                      ...List.generate(
+                        data?.services?.length ?? 0,
+                        (index) {
+                          return CustomCard(
+                              child: Column(
+                            children: [
+                              CustomTextItem(
+                                  lable: 'Service Name',
+                                  value:
+                                      data?.services?[index].serviceName ?? ''),
+                              CustomTextItem(
+                                  lable: 'Sub Service Name',
+                                  value:
+                                      data?.services?[index].subService ?? ''),
+                              CustomTextItem(
+                                  lable: 'Service Description',
+                                  value:
+                                      data?.services?[index].serviceDesc ?? ''),
+                            ],
+                          ));
+                        },
                       ),
                       Divider(),
                       Row(

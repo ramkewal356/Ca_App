@@ -15,7 +15,6 @@ import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_list_tile_card.dart';
 import 'package:ca_app/widgets/custom_phone_field.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
@@ -36,11 +35,18 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _pancardController = TextEditingController();
+  final TextEditingController _companyNameController = TextEditingController();
+
   final FocusNode _searchFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   String countryCode = '91';
   String selectedFilter = '';
   String searchQuery = '';
+  List<String> selectedItems = [];
+  List<int> selectedUserIds = [];
+  List<String> selectedServices = [];
+  List<int> selectedServiceIds = [];
   Map<String, bool> selectedFilters = {
     "All": false,
     "Active": false,
@@ -51,6 +57,10 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
     _fetchCustomer(isFilter: true);
     super.initState();
     _scrollController.addListener(_onScroll);
+  }
+
+  void _getUser() {
+    context.read<AuthBloc>().add(GetUserByIdEvent());
   }
 
   void _fetchCustomer(
@@ -138,8 +148,22 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                           selectedFilters: selectedFilters,
                           onFilterChanged: _onFilterChanged,
                         ),
+                        SizedBox(width: 10),
+                        CommonButtonWidget(
+                          buttonWidth: 130,
+                          buttonheight: 45,
+                          buttonTitle: 'Assign Service',
+                          onTap: () {
+                            context
+                                .push('/ca_dashboard/assign_service')
+                                .then((onValue) {
+                              _fetchCustomer(isFilter: true);
+                            });
+                            // _fetchService();
+                            // _showModal();
+                          },
+                        ),
                        
-                        
                       ],
                     ),
                   ),
@@ -153,10 +177,12 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                           color: ColorConstants.buttonColor,
                         )));
                       } else if (state is CustomerError) {
-                        return Center(
-                          child: Text(
-                            'No data found !',
-                            style: AppTextStyle().redText,
+                        return Expanded(
+                          child: Center(
+                            child: Text(
+                              'No data found !',
+                              style: AppTextStyle().redText,
+                            ),
                           ),
                         );
                       } else if (state is GetCustomerByCaIdSuccess) {
@@ -189,10 +215,10 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                             }).then((onValue) {
                                           debugPrint(
                                               ',,,,cvnmvnc,v,,,,nv,mnv,mnv,nn,nn,v,,,');
-                                          context
-                                              .read<AuthBloc>()
-                                              .add(GetUserByIdEvent());
+                                          // if (context.mounted) {
+                                          _getUser();
                                           _fetchCustomer(isFilter: true);
+                                          // }
                                         });
                                       },
                                       child: CustomCard(
@@ -212,7 +238,6 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                             value: '${data?.caName}'),
                                       )),
                                     );
-                                  
                                   },
                                 ),
                         );
@@ -274,7 +299,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 8),
                               Text('Email', style: AppTextStyle().labletext),
                               SizedBox(height: 5),
                               TextformfieldWidget(
@@ -289,7 +314,30 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                   return ValidatorClass.validateEmail(p0);
                                 },
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 8),
+                              Text('Pan Card', style: AppTextStyle().labletext),
+                              SizedBox(height: 5),
+                              TextformfieldWidget(
+                                controller: _pancardController,
+                                hintText: '******',
+                                validator: (p0) {
+                                  if (p0 == null || p0.isEmpty) {
+                                    return 'Please enter pan card';
+                                  } else if (!ValidatorClass.isValidPanCard(
+                                      p0)) {
+                                    return 'Please enter valid pan card';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 8),
+                              Text('Company Name (Optional)',
+                                  style: AppTextStyle().labletext),
+                              SizedBox(height: 5),
+                              TextformfieldWidget(
+                                  controller: _companyNameController,
+                                  hintText: 'Enter firm name'),
+                              SizedBox(height: 8),
                               Text('Mobile No',
                                   style: AppTextStyle().labletext),
                               SizedBox(height: 5),
@@ -324,7 +372,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 15),
+                              SizedBox(height: 10),
                               BlocConsumer<AuthBloc, AuthState>(
                                 listener: (context, state) {
                                   if (state is AddUserSuccess) {
@@ -332,6 +380,8 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                     _lastNameController.clear();
                                     _emailController.clear();
                                     _phoneController.clear();
+                                    _pancardController.clear();
+                                    _companyNameController.clear();
 
                                     Future.microtask(() {
                                       if (context.mounted) {
@@ -359,6 +409,10 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                                 email: _emailController.text,
                                                 countryCode: countryCode,
                                                 mobile: _phoneController.text,
+                                                panCardNumber:
+                                                    _pancardController.text,
+                                                companyName:
+                                                    _companyNameController.text,
                                                 role: 'CUSTOMER'));
                                       }
                                     },
@@ -368,8 +422,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                             ],
                           ),
                         ),
-                      ))
-              )
+                      )))
             ],
           ),
         ),

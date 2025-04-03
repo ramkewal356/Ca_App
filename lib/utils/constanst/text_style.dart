@@ -19,7 +19,7 @@ class AppTextStyle {
   TextStyle statustext = GoogleFonts.roboto(
       color: ColorConstants.white, fontSize: 15, fontWeight: FontWeight.w500);
   TextStyle checkboxTitle = GoogleFonts.roboto(
-      color: ColorConstants.white, fontSize: 14, fontWeight: FontWeight.w500);
+      color: ColorConstants.white, fontSize: 13, fontWeight: FontWeight.w500);
   TextStyle textButtonStyle = GoogleFonts.roboto(
       color: ColorConstants.buttonColor,
       fontSize: 18,

@@ -1,14 +1,14 @@
+import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
-import 'package:ca_app/data/models/get_team_member_model.dart';
+import 'package:ca_app/data/models/get_subca_by_caid_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_dropdown_button.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
-import 'package:ca_app/widgets/custom_multi_select_dropdown.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +47,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
     super.initState();
     _fetchTeamMembers();
     _fetchCustomer();
+    context.read<CustomDropdownBloc>().add(DropdownResetEvent());
   }
 
   void _onSelectRow(int index) {
@@ -87,10 +88,9 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
   @override
   Widget build(BuildContext context) {
     var currentSatate = context.watch<CustomerBloc>().state;
-    List<CustomerData> customers =
-        currentSatate is GetCustomerByCaIdForTableSuccess
-            ? currentSatate.customers
-            : [];
+    List<Content> customers = currentSatate is GetCustomerByCaIdForTableSuccess
+        ? currentSatate.customers
+        : [];
     int currentPage = currentSatate is GetCustomerByCaIdForTableSuccess
         ? currentSatate.currentPage
         : 0;
@@ -119,6 +119,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                         ? state.getTeamMembers
                         : [];
                     return CustomDropdownButton(
+                      initialStateSelected: true,
                       dropdownItems: data
                           .map((toElement) =>
                               '${toElement.firstName} ${toElement.lastName}')
@@ -176,13 +177,16 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                         if (state is AssignCustomerSuccess) {
                           _fetchCustomer();
                           _fetchTeamMembers();
+                          selectedCa = null;
+                          context
+                              .read<CustomDropdownBloc>()
+                              .add(DropdownResetEvent());
                         }
                       },
                       builder: (context, state) {
                         return CommonButtonWidget(
                           buttonWidth: 120,
                           loader: state is AssignCustomerLoading,
-                     
                           buttonTitle: 'Assign',
                           onTap: () {
                             context.read<AssigneCustomerBloc>().add(
@@ -233,8 +237,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                                         Checkbox(
                                           activeColor:
                                               ColorConstants.buttonColor,
-                                          visualDensity:
-                                              VisualDensity(
+                                          visualDensity: VisualDensity(
                                               horizontal: -4, vertical: -4),
                                           value: selectedRowIndex ==
                                               toElement.userId,
@@ -250,8 +253,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                                     DataCell(SizedBox(
                                       width: 130,
                                       child: Text(
-                                          '${toElement.firstName} ${toElement.lastName}' ??
-                                              'N/A'),
+                                          '${toElement.firstName ?? ''} ${toElement.lastName ?? ''}'),
                                     )),
                                     DataCell(SizedBox(
                                         width: 100,

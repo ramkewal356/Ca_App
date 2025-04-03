@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
+import 'package:ca_app/data/models/get_login_customer_model.dart';
 import 'package:ca_app/data/repositories/customer_repository.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:equatable/equatable.dart';
@@ -10,7 +11,7 @@ part 'customer_event.dart';
 part 'customer_state.dart';
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
-  List<CustomerData> allCustomers = [];
+  List<Content> allCustomers = [];
   int pageNumber = 0;
   int rowsPerPage = 7;
   final int pageSize = 10;
@@ -60,10 +61,10 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     };
     try {
       var resp = await _myRepo.getCustomerByCaId(query: query);
-      List<CustomerData> newData = resp.data ?? [];
+      List<Content> newData = resp.data?.content ?? [];
 
       // 🔹 If search/filter changed, replace old data. Otherwise, append for pagination.
-      List<CustomerData> allItems = (pageNumber == 0)
+      List<Content> allItems = (pageNumber == 0)
           ? newData
           : [
               ...?(state is GetCustomerByCaIdSuccess
@@ -76,7 +77,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
       emit(GetCustomerByCaIdSuccess(
           getCustomers: allItems,
-          totalCustomer: newData.length,
+          totalCustomer: resp.data?.totalElements ?? 0,
           isLastPage: isLastPage));
 
       pageNumber++;
@@ -98,13 +99,13 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     try {
       var resp = await _myRepo.getCustomerBySubCaId(query: query);
 
-      allCustomers = resp.data ?? [];
+      allCustomers = resp.data?.content ?? [];
       debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $allCustomers');
       emit(GetCustomerBySubCaIdSuccess(
           customers: allCustomers.take(rowsPerPage).toList(),
           currentPage: pageNumber1,
           rowsPerPage: rowsPerPage,
-          totalCustomer: allCustomers.length));
+          totalCustomer: resp.data?.totalElements ?? 0));
     } catch (e) {
       emit(CustomerError(errorMessage: e.toString()));
     }
@@ -124,13 +125,13 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     try {
       emit(CustomerLoading());
       var resp = await _myRepo.getCustomerByCaId(query: query);
-      allCustomers = resp.data ?? [];
+      allCustomers = resp.data?.content ?? [];
       debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $resp');
       emit(GetCustomerByCaIdForTableSuccess(
           customers: allCustomers,
           currentPage: event.pageNumber,
           rowsPerPage: event.pageSize,
-          totalCustomer: allCustomers.length));
+          totalCustomer: resp.data?.totalElements ?? 0));
     } catch (e) {
       emit(CustomerError(errorMessage: e.toString()));
     }
@@ -255,6 +256,31 @@ class AssigneCustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       await _myRepo.assignCustomer(query: query);
       Utils.toastSuccessMessage('Customer Assigned Successfully');
       emit(AssignCustomerSuccess());
+    } catch (e) {
+      emit(CustomerError(errorMessage: e.toString()));
+    }
+  }
+}
+
+class GetLoginCustomerBloc extends Bloc<CustomerEvent, CustomerState> {
+  final _myRepo = CustomerRepository();
+
+  GetLoginCustomerBloc() : super(CustomerInitial()) {
+    on<GetLogincutomerEvent>(_getLoginCustomerByCaId);
+  }
+
+  Future<void> _getLoginCustomerByCaId(
+      GetLogincutomerEvent event, Emitter<CustomerState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {
+      "caId": userId,
+    };
+    try {
+      var resp = await _myRepo.getLoginCustomerByCaId(query: query);
+      emit(GetLoginCustomerSuccess(
+          getLoginCustomers: resp.data ?? [],
+          selectedClientName: event.selectedClientName));
     } catch (e) {
       emit(CustomerError(errorMessage: e.toString()));
     }

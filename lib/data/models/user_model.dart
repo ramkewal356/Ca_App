@@ -33,7 +33,7 @@ class Data {
   String? firstName;
   String? lastName;
   String? email;
-  String? address;
+  dynamic address;
   String? mobile;
   dynamic phone;
   String? role;
@@ -42,24 +42,24 @@ class Data {
   bool? status;
   int? createdDate;
   int? modifiedDate;
-  String? profileUrl;
-  String? profileName;
-  String? gender;
+  dynamic profileUrl;
+  dynamic profileName;
+  dynamic gender;
   String? panCardNumber;
-  String? aadhaarCardNumber;
+  dynamic aadhaarCardNumber;
   String? userResponse;
   String? countryCode;
   dynamic token;
-  dynamic caEmail;
-  dynamic caId;
-  dynamic caName;
-  dynamic caMobile;
-  String? designation;
-  List<dynamic>? permissions;
-  dynamic companyName;
+  String? caEmail;
+  int? caId;
+  String? caName;
+  String? caMobile;
+  dynamic designation;
+  List<Permission>? permissions;
+  String? companyName;
   dynamic gst;
-  String? companyLogo;
-  List<dynamic>? services;
+  dynamic companyLogo;
+  List<Service>? services;
 
   Data({
     this.id,
@@ -124,13 +124,15 @@ class Data {
         designation: json["designation"],
         permissions: json["permissions"] == null
             ? []
-            : List<dynamic>.from(json["permissions"]!.map((x) => x)),
+            : List<Permission>.from(
+                json["permissions"]!.map((x) => Permission.fromJson(x))),
         companyName: json["companyName"],
         gst: json["gst"],
         companyLogo: json["companyLogo"],
         services: json["services"] == null
             ? []
-            : List<dynamic>.from(json["services"]!.map((x) => x)),
+            : List<Service>.from(
+                json["services"]!.map((x) => Service.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -162,12 +164,65 @@ class Data {
         "designation": designation,
         "permissions": permissions == null
             ? []
-            : List<dynamic>.from(permissions!.map((x) => x)),
+            : List<dynamic>.from(permissions!.map((x) => x.toJson())),
         "companyName": companyName,
         "gst": gst,
         "companyLogo": companyLogo,
-        "services":
-            services == null ? [] : List<dynamic>.from(services!.map((x) => x)),
+        "services": services == null
+            ? []
+            : List<dynamic>.from(services!.map((x) => x.toJson())),
+      };
+}
+
+class Permission {
+  int? id;
+  String? permissionName;
+  String? type;
+
+  Permission({
+    this.id,
+    this.permissionName,
+    this.type,
+  });
+
+  factory Permission.fromJson(Map<String, dynamic> json) => Permission(
+        id: json["id"],
+        permissionName: json["permissionName"],
+        type: json["type"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "permissionName": permissionName,
+        "type": type,
+      };
+}
+
+class Service {
+  int? serviceId;
+  String? serviceName;
+  String? serviceDesc;
+  String? subService;
+
+  Service({
+    this.serviceId,
+    this.serviceName,
+    this.serviceDesc,
+    this.subService,
+  });
+
+  factory Service.fromJson(Map<String, dynamic> json) => Service(
+        serviceId: json["serviceId"],
+        serviceName: json["serviceName"],
+        serviceDesc: json["serviceDesc"],
+        subService: json["subService"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "serviceId": serviceId,
+        "serviceName": serviceName,
+        "serviceDesc": serviceDesc,
+        "subService": subService,
       };
 }
 

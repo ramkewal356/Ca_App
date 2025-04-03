@@ -1,6 +1,6 @@
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/reminder/reminder_bloc.dart';
-import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
+import 'package:ca_app/data/models/get_login_customer_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
@@ -248,7 +248,8 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                                       SizedBox(height: 5),
                                       BlocBuilder<CustomerBloc, CustomerState>(
                                         builder: (context, state) {
-                                          List<CustomerData> customers = [];
+                                          List<LoginCustomerData> customers =
+                                              [];
                                           if (state
                                               is GetLoginCustomerSuccess) {
                                             customers = state.getLoginCustomers;

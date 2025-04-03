@@ -8,7 +8,7 @@ import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+
 
 class ViewPreviousScreen extends StatefulWidget {
   const ViewPreviousScreen({super.key});

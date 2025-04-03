@@ -49,10 +49,10 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     };
     try {
       var resp = await _myRepo.getRecentDocumentByCustomerIdApi(query: query);
-      List<Content> newData = resp.data?.content ?? [];
+      List<DocContent> newData = resp.data?.content ?? [];
 
       // 🔹 If search/filter changed, replace old data. Otherwise, append for pagination.
-      List<Content> allItems = (pageNumber == 0)
+      List<DocContent> allItems = (pageNumber == 0)
           ? newData
           : [
               ...?(state is RecentDocumentSuccess
@@ -100,7 +100,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     try {
       var resp = await _myRepo.getViewDocumentByUserIdApi(query: query);
 
-      List<ViewDocument> newData = resp.data ?? [];
+      List<ViewDocument> newData = resp.data?.content ?? [];
 
       // 🔹 If search/filter changed, replace old data. Otherwise, append for pagination.
       List<ViewDocument> allItems = (pageNumber1 == 0)
@@ -117,7 +117,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       emit(ViewDocumentSuccess(
           viewDocumnets: allItems,
           isLastPage: isLastPage1,
-          totalDocument: allItems.length));
+          totalDocument: resp.data?.totalElements ?? 0));
 
       pageNumber1++;
     } catch (e) {

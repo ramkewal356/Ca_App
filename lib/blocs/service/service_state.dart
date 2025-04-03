@@ -81,6 +81,22 @@ class GetViewServiceSuccess extends ServiceState {
   List<Object> get props => [getViewServiceList, isLastPage];
 }
 
+class AssignServiceToUserSuccess extends ServiceState {
+  final AssignServiceToUserModel assignServiceToClient;
+
+  const AssignServiceToUserSuccess({required this.assignServiceToClient});
+  @override
+  List<Object> get props => [assignServiceToClient];
+}
+
+class UpdateAssigneService extends ServiceState {
+  final bool updatedAssignService;
+
+  const UpdateAssigneService({required this.updatedAssignService});
+  @override
+  List<Object> get props => [updatedAssignService];
+}
+
 class ServiceError extends ServiceState {
   final String errorMessage;
 

@@ -4,12 +4,9 @@ import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
-import 'package:ca_app/blocs/service/service_bloc.dart';
-import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_ca_dashboard_model.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
-import 'package:ca_app/data/models/get_services_list_model.dart';
 import 'package:ca_app/data/models/recent_document_model.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
@@ -59,8 +56,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
     BlocProvider.of<AuthBloc>(context).add(GetUserByIdEvent());
     await _fetchCustomersData(isFilter: true);
     await _getRecentDocument();
-    // _fetchTeamMembers(isFilter: true);
-    // _fetchService();
+   
     context.read<DashboardBloc>().add(GetCaDashboardEvent());
   }
 
@@ -70,45 +66,21 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
         .add(GetRecentDocumentEvent(isPagination: isPagination));
   }
 
-  // void _fetchService() {
-  //   context.read<ServiceBloc>().add(GetCaServiceListEvent(
-  //       isSearch: true,
-  //       searchText: '',
-  //       isPagination: false,
-  //       pageNumber: -1,
-  //       pageSize: -1));
-  // }
+ 
 
   Future<void> _fetchCustomersData({bool isFilter = false}) async {
     int? useId = await SharedPrefsClass().getUserId();
     // ignore: use_build_context_synchronously
-    BlocProvider.of<CustomerBloc>(context).add(GetCustomerByCaIdEvent(
+    context.read<CustomerBloc>().add(GetCustomerByCaIdEvent(
         caId: useId.toString(),
         searchText: '',
-        pageNumber: -1,
-        pageSize: -1,
         filterText: '',
         isPagination: false,
         isFilter: isFilter,
         isSearch: false));
   }
 
-  // void _fetchTeamMembers(
-  //     {bool isPagination = false,
-  //     bool isFilter = false,
-  //     bool isSearch = false}) {
-  //   context.read<TeamMemberBloc>().add(
-  //         GetTeamMemberEvent(
-  //             searchText: '',
-  //             filterText: '',
-  //             isPagination: isPagination,
-  //             isFilter: isFilter,
-  //             isSearch: isSearch,
-  //             pageNumber: -1,
-  //             pagesize: -1),
-  //       );
-  // }
-
+ 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
@@ -118,15 +90,13 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             ? state.getUserByIdData // Cast to GetUserByIdModel?
             : null;
         var customerSate = context.watch<CustomerBloc>().state;
-        List<CustomerData>? getCustomers =
+        List<Content>? getCustomers =
             customerSate is GetCustomerByCaIdSuccess
                 ? customerSate.getCustomers
                 : null;
-        // int totalCustomers = customerSate is GetCustomerByCaIdSuccess
-        //     ? customerSate.totalCustomer
-        //     : 0;
+      
         var documentState = context.watch<DocumentBloc>().state;
-        List<Content>? getRecentDocument =
+        List<DocContent>? getRecentDocument =
             documentState is RecentDocumentSuccess
                 ? documentState.recentDocumnets
                 : [];
@@ -135,11 +105,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             (dashboardState is GetCaDashboardSuccess)
                 ? dashboardState.getCaDashboardData
                 : null;
-        // var serviceState = context.watch<ServiceBloc>().state;
-        // List<ServicesListData> getServiceData =
-        //     (serviceState is GetCaServiceListSuccess
-        //         ? (serviceState).getCaServicesList
-        //         : []);
+       
         return Scaffold(
           backgroundColor: ColorConstants.white,
           appBar: CustomAppbar(
@@ -201,7 +167,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                       (onValue) async {
                     await _fetchCustomersData(isFilter: true);
                   });
-                  ;
+                  
                 }
               },
               {
@@ -297,6 +263,13 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "label": "Logs History",
                 "onTap": () {
                   context.push('/ca_dashboard/logs_history');
+                }
+              },
+              {
+                "imgUrl": Icons.history_sharp,
+                "label": "Permission History",
+                "onTap": () {
+                  context.push('/ca_dashboard/permission_history');
                 }
               },
             ],

@@ -1,6 +1,5 @@
 import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
-import 'package:ca_app/data/models/get_services_list_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
@@ -14,7 +13,7 @@ import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+
 
 class ServiceScreen1 extends StatefulWidget {
   const ServiceScreen1({super.key});

@@ -28,6 +28,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _emailController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  // ignore: unused_field
   late Timer _timer; // Timer object
   int _start = 60; // Initial countdown time in seconds
   bool _isButtonDisabled = false;

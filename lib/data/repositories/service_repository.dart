@@ -1,4 +1,5 @@
 import 'package:ca_app/data/models/add_service_model.dart';
+import 'package:ca_app/data/models/assign_service_to_user_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
@@ -148,6 +149,48 @@ class ServiceRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('CreateServiceResponse ${response?.data}');
       return GetViewServiceModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Assign Services  API ****//
+  Future<AssignServiceToUserModel> assignServiceToClientApi(
+      {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.assignServiceUrl,
+        body: body,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.POST);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('assignServiceToUserResponse ${response?.data}');
+      return AssignServiceToUserModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+//**** Update Assign Services  API ****//
+  Future<bool> updateAssignServiceToClientApi(
+      {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.updateServiceToUserUrl,
+        body: body,
+        bodyType: HttpBodyType.FormData,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('assignServiceToUserResponse ${response?.data}');
+      return true;
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

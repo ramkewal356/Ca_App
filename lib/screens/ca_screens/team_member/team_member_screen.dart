@@ -17,7 +17,6 @@ import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_list_tile_card.dart';
 import 'package:ca_app/widgets/custom_phone_field.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -156,10 +155,12 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                             color: ColorConstants.buttonColor,
                           )));
                         } else if (state is TeamMemberError) {
-                          return Center(
-                            child: Text(
-                              'No data found !',
-                              style: AppTextStyle().redText,
+                          return Expanded(
+                            child: Center(
+                              child: Text(
+                                'No data found !',
+                                style: AppTextStyle().redText,
+                              ),
                             ),
                           );
                         } else if (state is GetTeamMemberSuccess) {

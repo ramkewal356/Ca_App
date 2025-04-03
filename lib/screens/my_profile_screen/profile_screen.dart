@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
@@ -127,11 +126,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               )),
                           Positioned(
-                              right: 0,
-                              top: 0,
-                              child: IconButton(
-                                  onPressed: () {},
-                                  icon: Row(
+                              right: 10,
+                              top: 10,
+                              child: Row(
                                     children: [
                                       Text(
                                         'Edit Firm Logo..',
@@ -144,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       )
                                     ],
-                                  ))),
+                              )),
                           BlocConsumer<ImagePickerBloc, ImagePickerState>(
                             listener: (context, state) {
                               if (state is ImagePickedSuccess) {

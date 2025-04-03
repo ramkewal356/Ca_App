@@ -3,15 +3,18 @@ import 'package:ca_app/screens/auth_screens/forgot_screen.dart';
 import 'package:ca_app/screens/ca_screens/all_raise_history/all_raise_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/customer_allocation/customer_allocation.dart';
 import 'package:ca_app/screens/ca_screens/logs_history/logs_history_screen.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/assign_service_to_client.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/my_client_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_client_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/view_document_screen.dart';
+import 'package:ca_app/screens/ca_screens/permission_history/permission_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/reminders_screen/reminders_screen.dart';
 import 'package:ca_app/screens/ca_screens/reminders_screen/view_reminder_screen.dart';
 import 'package:ca_app/screens/ca_screens/services_screens/services_screen.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/task_allocation_screen.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/upload_document_screen.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/view_task_screen.dart';
+import 'package:ca_app/screens/ca_screens/team_member/get_permission_screen.dart';
 import 'package:ca_app/screens/ca_screens/team_member/team_member_screen.dart';
 import 'package:ca_app/screens/ca_screens/team_member/view_team_member_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support.dart';
@@ -312,7 +315,49 @@ final GoRouter goRouter = GoRouter(
                 var data = state.extra as Map<String, dynamic>;
                 return ViewReminderScreen(reminderId: data["reminderId"]);
               },
-            )
+            ),
+            GoRoute(
+              path: 'assign_service',
+              builder: (context, state) {
+                // Ensure `state.extra` is a Map before casting
+                final extra = state.extra as Map<String, dynamic>? ?? {};
+
+                // Extract parameters safely, providing default values if missing
+                final String? clientId = extra["clientId"] as String?;
+                final List<String> selectedServicesList =
+                    (extra["serviceList"] as List<dynamic>?)?.cast<String>() ??
+                        [];
+                final List<int> selectedServicesIdList =
+                    (extra["serviceIdList"] as List<dynamic>?)?.cast<int>() ??
+                        [];
+                return AssignServiceToClient(
+                  clientId: clientId,
+                  selectedServicesList: selectedServicesList,
+                  selectedServicesIdList: selectedServicesIdList,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'permission',
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>? ?? {};
+                final int subCaId = extra["subCaId"] as int;
+                final List<Permission> selectedPermission =
+                    (extra["permissions"] as List<Permission>?)
+                            ?.cast<Permission>() ??
+                        [];
+                return GetPermissionScreen(
+                  subCaId: subCaId,
+                  selectedPermission: selectedPermission,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'permission_history',
+              builder: (context, state) {
+                return PermissionHistoryScreen();
+              },
+            ),
           ]),
       // SUBCA MODULE ROUTES
       GoRoute(

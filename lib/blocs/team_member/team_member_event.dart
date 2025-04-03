@@ -60,3 +60,4 @@ class UpdateSubCaNameEvent extends TeamMemberEvent {
 }
 
 class GetDeginationEvent extends TeamMemberEvent {}
+class GetPermissionEvent extends TeamMemberEvent {}

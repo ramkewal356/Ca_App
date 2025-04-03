@@ -1,7 +1,7 @@
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
-import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
+import 'package:ca_app/data/models/get_login_customer_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -31,19 +31,10 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   List<String> selectedItems = [];
-  List<int> selectedUserIds = [];
+  List<String> selectedUserIds = [];
   List<PlatformFile> documentList = [];
   String? selectedCa;
-  // final List<String> items = [
-  //   "Sarthak",
-  //   "Binni",
-  //   "John",
-  //   "Alex",
-  //   "Emma",
-  //   'fdgfg',
-  //   'hgfhjhgjhg',
-  //   'hghjgvvbv'
-  // ];
+
   @override
   void initState() {
     context
@@ -110,11 +101,11 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                         )
                       : BlocBuilder<CustomerBloc, CustomerState>(
                           builder: (context, state) {
-                            List<CustomerData> customers = [];
+                            List<LoginCustomerData> customers = [];
                             if (state is GetLoginCustomerSuccess) {
                               customers = state.getLoginCustomers;
-                              print(
-                                  'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}').toList()}');
+                              debugPrint(
+                                  'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
                             }
                             return MultiSelectSearchableDropdown(
                               hintText: 'Select client',
@@ -124,13 +115,19 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                                   .toList(),
                               selectedItems: selectedItems,
                               onChanged: (newSelection) {
-                                selectedUserIds = customers
-                                    .where((customer) => newSelection.contains(
-                                        '${customer.firstName} ${customer.lastName}'))
-                                    .map((customer) => customer.userId ?? 0)
-                                    .toList();
                                 setState(() {
-                                  selectedItems = newSelection;
+                                  List<String> selectedUsers = customers
+                                      .where((customer) => newSelection.contains(
+                                          '${customer.firstName} ${customer.lastName}'))
+                                      .map((customer) => customer.userId
+                                          .toString()
+                                          .trim()) // Trim whitespace from userId
+                                      .where((userId) => userId
+                                          .isNotEmpty) // Remove empty userId values
+                                      .toList();
+                                  selectedUserIds = selectedUsers
+                                      .map((e) => e.trimLeft())
+                                      .toList();
                                   debugPrint('selectedItems $selectedUserIds');
                                 });
                               },

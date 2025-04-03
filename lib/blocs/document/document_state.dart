@@ -20,7 +20,7 @@ final class DocumentDownloading extends DocumentState {
 final class DocumentLoading extends DocumentState {}
 
 class RecentDocumentSuccess extends DocumentState {
-  final List<Content>? recentDocumnets;
+  final List<DocContent>? recentDocumnets;
   final bool isLastPage;
   const RecentDocumentSuccess(
       {required this.recentDocumnets, required this.isLastPage});

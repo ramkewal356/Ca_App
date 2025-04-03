@@ -104,7 +104,7 @@ class _LogsHistoryScreenState extends State<LogsHistoryScreen> {
               SizedBox(height: 5),
               BlocConsumer<LogsBloc, LogsState>(
                 listener: (context, state) {
-                  // TODO: implement listener
+               
                 },
                 builder: (context, state) {
                   if (state is LogsLoading) {
@@ -119,10 +119,12 @@ class _LogsHistoryScreenState extends State<LogsHistoryScreen> {
                     );
                   } else if (state is LogsSuccess) {
                     return (state.logsModel ?? []).isEmpty
-                        ? Center(
-                            child: Text(
-                              'No Data Found !',
-                              style: AppTextStyle().redText,
+                        ? Expanded(
+                            child: Center(
+                              child: Text(
+                                'No Data Found !',
+                                style: AppTextStyle().redText,
+                              ),
                             ),
                           )
                         : Expanded(

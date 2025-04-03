@@ -10,7 +10,7 @@ part 'logs_state.dart';
 
 class LogsBloc extends Bloc<LogsEvent, LogsState> {
   int pageNumber = 0;
-  final int pageSize = 6;
+  final int pageSize = 10;
   bool isFetching = false;
   bool isLastPage = false;
   final _myRepo = LogsRepository();
@@ -47,7 +47,7 @@ class LogsBloc extends Bloc<LogsEvent, LogsState> {
     try {
       var resp = await _myRepo.getActiveDeactiveLogsApi(
           query: event.byCaId ? query : query1, byCaId: event.byCaId);
-      List<LogsData> newData = resp.data ?? [];
+      List<LogsData> newData = resp.data?.content ?? [];
       List<LogsData> allData = (pageNumber == 0)
           ? newData
           : [

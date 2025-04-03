@@ -253,6 +253,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
                                     .contains(filterList[index]);
                                 return CheckboxListTile(
                                   contentPadding: EdgeInsets.zero,
+                                  dense: true,
                                   visualDensity: VisualDensity(horizontal: -4),
                                   controlAffinity:
                                       ListTileControlAffinity.leading,
@@ -317,7 +318,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
   @override
   Widget build(BuildContext context) {
     filterList = widget.items;
-    debugPrint('filter list ${filterList}');
+    debugPrint('filter list $filterList');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -358,6 +359,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
                                     setState(() {
                                       widget.selectedItems.remove(selectedItem);
                                       // _updatePopupMenu();
+                                      widget.onChanged(widget.selectedItems);
                                     });
                                   },
                                 );

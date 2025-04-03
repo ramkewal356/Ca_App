@@ -18,6 +18,7 @@ class EndPoints {
   static const getSubCaByCaIdUrl = '/sub_ca/get_subCa_by_caId';
   static const getVerifiedSubCaByCaId = '/sub_ca/get_verified_subCA_by_caId';
   static const getDegination = '/designation/all_designation';
+  static const getPermission = '/permission/get_permission_list';
   //Customer Url
   static var getCustomerBySubCaId = '/customer/get_customer_by_subCaId';
   static var getCustomerByCaId = '/customer/get_customer_by_caId';
@@ -41,6 +42,8 @@ class EndPoints {
   static var createNewServiceUrl = '/caServices/request_service';
   static var deleteServiceUrl = '/caServices/remove_service';
   static var getViewServiceUrl = '/caServices/get_request_service_by_caId';
+  static var assignServiceUrl = '/users/assign_service_to_user';
+  static var updateServiceToUserUrl = '/users/update_service_by_userId';
   //task Url
   static var getSelfTaskUrl = '/task/get_self_assigned_task';
   static var getAssignTaskUrl = '/task/get_assigned_task_by_createdById';
@@ -48,7 +51,7 @@ class EndPoints {
   static var getViewTaskUrl = '/task/get_task_document';
   static var actionOnTaskUrl = '/task/accept_reject_task';
   static var taskDocumentUploadUrl = '/task/upload_document';
-//Raise Request
+  //Raise Request
   static var sendRaiseRequest = '/request/send_request';
   static var getRequestBySenderId = '/request/get_request_by_senderId';
   static var getRequestByRequestId =
@@ -57,17 +60,20 @@ class EndPoints {
   static var getRequestOfTeamUrl = '/request/get_requests_of_subCa_by_caId';
   static var getRequestByReceiverId = '/request/get_request_by_receiverId';
 
-// Contact Url
+  // Contact Url
   static var addContactUrl = '/contact/add_contact';
   static var getContactByUserIdUrl = '/contact/get_contact_by_userId';
   static var getContactByContactIdUrl = '/contact/get_contact_by_contactId';
-// Reminder Url
+  // Reminder Url
   static var getReminderUrl = '/reminder/get_all_reminder_by_caId';
   static var createReminderUrl = '/reminder/add_reminder';
   static var getViewReminderByIdUrl = '/reminder/get_reminder';
   static var updateReminderByIdUrl = '/reminder/update_reminder';
   static var activeReminderUrl = '/reminder/activate_reminder';
   static var deactiveReminderUrl = '/reminder/deactivate_reminder';
+  //Permission url
+  static var getPermissionHistory =
+      '/permission/get_account_permission_history_updatedBy';
   //sate url
   static var stateBaseUrl = 'https://countriesnow.space';
   static var getStateNameUrl = '/api/v0.1/countries/states';

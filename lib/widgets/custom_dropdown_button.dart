@@ -1,7 +1,6 @@
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
-import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

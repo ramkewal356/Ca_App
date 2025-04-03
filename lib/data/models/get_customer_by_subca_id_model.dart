@@ -1,18 +1,18 @@
 // To parse this JSON data, do
 //
-//     final getCustomerBySubCaIdModel = getCustomerBySubCaIdModelFromJson(jsonString);
+//     final getCustomerModel = getCustomerModelFromJson(jsonString);
 
 import 'dart:convert';
 
-GetCustomerModel getCustomerBySubCaIdModelFromJson(String str) =>
+GetCustomerModel getCustomerModelFromJson(String str) =>
     GetCustomerModel.fromJson(json.decode(str));
 
-String getCustomerBySubCaIdModelToJson(GetCustomerModel data) =>
+String getCustomerModelToJson(GetCustomerModel data) =>
     json.encode(data.toJson());
 
 class GetCustomerModel {
   Status? status;
-  List<CustomerData>? data;
+  Data? data;
 
   GetCustomerModel({
     this.status,
@@ -22,21 +22,81 @@ class GetCustomerModel {
   factory GetCustomerModel.fromJson(Map<String, dynamic> json) =>
       GetCustomerModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
-        data: json["data"] == null
-            ? []
-            : List<CustomerData>.from(
-                json["data"]!.map((x) => CustomerData.fromJson(x))),
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status?.toJson(),
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "data": data?.toJson(),
       };
 }
 
-class CustomerData {
+class Data {
+  List<Content>? content;
+  Pageable? pageable;
+  bool? last;
+  int? totalElements;
+  int? totalPages;
+  int? size;
+  int? number;
+  Sort? sort;
+  bool? first;
+  int? numberOfElements;
+  bool? empty;
+
+  Data({
+    this.content,
+    this.pageable,
+    this.last,
+    this.totalElements,
+    this.totalPages,
+    this.size,
+    this.number,
+    this.sort,
+    this.first,
+    this.numberOfElements,
+    this.empty,
+  });
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        content: json["content"] == null
+            ? []
+            : List<Content>.from(
+                json["content"]!.map((x) => Content.fromJson(x))),
+        pageable: json["pageable"] is String
+            ? Pageable() // If "INSTANCE", return an empty Pageable object
+            : json["pageable"] == null
+                ? null
+                : Pageable.fromJson(json["pageable"]),
+        last: json["last"],
+        totalElements: json["totalElements"],
+        totalPages: json["totalPages"],
+        size: json["size"],
+        number: json["number"],
+        sort: json["sort"] == null ? null : Sort.fromJson(json["sort"]),
+        first: json["first"],
+        numberOfElements: json["numberOfElements"],
+        empty: json["empty"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "content": content == null
+            ? []
+            : List<dynamic>.from(content!.map((x) => x.toJson())),
+        "pageable": pageable?.toJson(),
+        "last": last,
+        "totalElements": totalElements,
+        "totalPages": totalPages,
+        "size": size,
+        "number": number,
+        "sort": sort?.toJson(),
+        "first": first,
+        "numberOfElements": numberOfElements,
+        "empty": empty,
+      };
+}
+
+class Content {
   int? id;
   int? userId;
   int? caId;
@@ -47,7 +107,7 @@ class CustomerData {
   dynamic address;
   String? mobile;
   dynamic phone;
-  dynamic panCardNumber;
+  String? panCardNumber;
   dynamic aadhaarCardNumber;
   String? gender;
   String? userResponse;
@@ -58,7 +118,7 @@ class CustomerData {
   bool? status;
   String? countryCode;
 
-  CustomerData({
+  Content({
     this.id,
     this.userId,
     this.caId,
@@ -81,7 +141,7 @@ class CustomerData {
     this.countryCode,
   });
 
-  factory CustomerData.fromJson(Map<String, dynamic> json) => CustomerData(
+  factory Content.fromJson(Map<String, dynamic> json) => Content(
         id: json["id"],
         userId: json["userId"],
         caId: json["caId"],
@@ -128,6 +188,71 @@ class CustomerData {
       };
 }
 
+
+
+
+
+
+class Pageable {
+  Sort? sort;
+  int? offset;
+  int? pageNumber;
+  int? pageSize;
+  bool? paged;
+  bool? unpaged;
+
+  Pageable({
+    this.sort,
+    this.offset,
+    this.pageNumber,
+    this.pageSize,
+    this.paged,
+    this.unpaged,
+  });
+
+  factory Pageable.fromJson(Map<String, dynamic> json) => Pageable(
+        sort: json["sort"] == null ? null : Sort.fromJson(json["sort"]),
+        offset: json["offset"],
+        pageNumber: json["pageNumber"],
+        pageSize: json["pageSize"],
+        paged: json["paged"],
+        unpaged: json["unpaged"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "sort": sort?.toJson(),
+        "offset": offset,
+        "pageNumber": pageNumber,
+        "pageSize": pageSize,
+        "paged": paged,
+        "unpaged": unpaged,
+      };
+}
+
+class Sort {
+  bool? empty;
+  bool? sorted;
+  bool? unsorted;
+
+  Sort({
+    this.empty,
+    this.sorted,
+    this.unsorted,
+  });
+
+  factory Sort.fromJson(Map<String, dynamic> json) => Sort(
+        empty: json["empty"],
+        sorted: json["sorted"],
+        unsorted: json["unsorted"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "empty": empty,
+        "sorted": sorted,
+        "unsorted": unsorted,
+      };
+}
+
 class Status {
   String? httpCode;
   bool? success;
@@ -151,3 +276,5 @@ class Status {
         "message": message,
       };
 }
+
+

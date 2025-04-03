@@ -1,11 +1,8 @@
 import 'dart:io';
-import 'package:ca_app/blocs/image_picker/image_picker_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
-import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_image_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 class ImagePickerWidget extends StatefulWidget {
   final String userImg;

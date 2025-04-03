@@ -31,7 +31,7 @@ class DocumnetModel {
 }
 
 class Data {
-  List<Content>? content;
+  List<DocContent>? content;
   Pageable? pageable;
   int? totalPages;
   int? totalElements;
@@ -60,8 +60,8 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         content: json["content"] == null
             ? []
-            : List<Content>.from(
-                json["content"]!.map((x) => Content.fromJson(x))),
+            : List<DocContent>.from(
+                json["content"]!.map((x) => DocContent.fromJson(x))),
         pageable: json["pageable"] == null
             ? null
             : Pageable.fromJson(json["pageable"]),
@@ -93,7 +93,7 @@ class Data {
       };
 }
 
-class Content {
+class DocContent {
   int? docId;
   String? docName;
   int? userId;
@@ -106,7 +106,7 @@ class Content {
   String? customerName;
   int? uuid;
 
-  Content({
+  DocContent({
     this.docId,
     this.docName,
     this.userId,
@@ -120,7 +120,7 @@ class Content {
     this.uuid,
   });
 
-  factory Content.fromJson(Map<String, dynamic> json) => Content(
+  factory DocContent.fromJson(Map<String, dynamic> json) => DocContent(
         docId: json["docId"],
         docName: json["docName"],
         userId: json["userId"],

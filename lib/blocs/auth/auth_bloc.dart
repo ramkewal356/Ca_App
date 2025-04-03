@@ -84,7 +84,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         "countryCode": event.countryCode,
         if ((event.addharNumber ?? '').isNotEmpty)
           "aadhaarCardNumber": event.addharNumber,
-        if ((event.degination ?? '').isNotEmpty) "designation": event.degination
+        if ((event.degination ?? '').isNotEmpty)
+          "designation": event.degination,
+        if (event.panCardNumber.isNotEmpty)
+          "panCardNumber": event.panCardNumber,
+        if (event.companyName.isNotEmpty) "companyName": event.companyName
       };
       emit(AuthLoading());
       var userResp = await _myRepo.addNewUser(body: body);
@@ -174,14 +178,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       "aadhaarCardNumber": event.addharCard,
       "address": event.address,
       "userId": event.userId.isEmpty ? userId : event.userId,
-      "password": event.password
+      "password": event.password,
+      if ((event.permissionIds ?? []).isNotEmpty)
+        "permissions": event.permissionIds
     };
     try {
       emit(AuthLoading());
       var resp = await _myRepo.updateUser(body: body);
       if (resp?.status?.httpCode == '200') {
         emit(UpdateUserSuccess(updateUser: resp));
-        Utils.toastSuccessMessage('Profile Updated Successfully');
+        // Utils.toastSuccessMessage('Profile Updated Successfully');
       }
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));

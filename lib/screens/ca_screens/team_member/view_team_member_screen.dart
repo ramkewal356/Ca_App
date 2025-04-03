@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-
 class ViewTeamMemberScreen extends StatefulWidget {
   final String userId;
   const ViewTeamMemberScreen({super.key, required this.userId});
@@ -24,7 +23,6 @@ class ViewTeamMemberScreen extends StatefulWidget {
 }
 
 class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
-
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   ScrollController controller = ScrollController();
@@ -32,9 +30,8 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
   String searchQuery = '';
   @override
   void initState() {
-    context.read<AuthBloc>().add(GetUserByIdEvent(userId: widget.userId));
     super.initState();
-
+    _getUserDetails();
     _fetchTeamMembers();
   }
 
@@ -46,9 +43,9 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
         isPagination: isPagination));
   }
 
-  // void _onScroll() {
-  //   _fetchTeamMembers(isPagination: true);
-  // }
+  void _getUserDetails() {
+    context.read<AuthBloc>().add(GetUserByIdEvent(userId: widget.userId));
+  }
 
   void _onSearchChanged(String value) {
     setState(() {
@@ -62,7 +59,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
   @override
   Widget build(BuildContext context) {
     var currentSatate = context.watch<CustomerBloc>().state;
-    List<CustomerData>? customers = currentSatate is GetCustomerBySubCaIdSuccess
+    List<Content>? customers = currentSatate is GetCustomerBySubCaIdSuccess
         ? currentSatate.customers
         : [];
     int currentPage = currentSatate is GetCustomerBySubCaIdSuccess
@@ -75,10 +72,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
         ? currentSatate.totalCustomer
         : 0;
     debugPrint('ccbbnvbvc $customers');
-    // int start = _currentPage * _rowsPerPage;
-    // int end = start + _rowsPerPage;
-    // List<Datum>? customer = customer1!
-    //     .sublist(start, end > customer1.length ? customer1.length : end);
+    
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -93,9 +87,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
             // },
           ),
           child: BlocConsumer<AuthBloc, AuthState>(
-            listener: (context, state) {
-            
-            },
+            listener: (context, state) {},
             builder: (context, state) {
               if (state is AuthLoading && state is! GetUserByIdSuccess) {
                 return Center(
@@ -111,7 +103,6 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                       
                         SizedBox(height: 10),
                         Stack(
                           children: [
@@ -184,7 +175,6 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                 offset: Offset(0, 0),
                                 icon: Row(
                                   children: [
-                                  
                                     Icon(
                                       Icons.more_vert_rounded,
                                       color: ColorConstants.buttonColor,
@@ -202,6 +192,15 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                   } else if (value == 'Logs') {
                                     context.push('/ca_dashboard/logs_history',
                                         extra: {"uponId": data?.id.toString()});
+                                  } else if (value == 'Permission') {
+                                    context.push('/ca_dashboard/permission',
+                                        extra: {
+                                          "subCaId": data?.id,
+                                          "permissions": data?.permissions
+                                        }).then((onValue) {
+                                      _getUserDetails();
+                                      _fetchTeamMembers();
+                                    });
                                   }
                                 },
                                 itemBuilder: (BuildContext context) =>
@@ -221,6 +220,12 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                       value: 'Logs',
                                       child: SizedBox(
                                           width: 120, child: Text('Logs'))),
+                                  PopupMenuItem<String>(
+                                      height: 45,
+                                      value: 'Permission',
+                                      child: SizedBox(
+                                          width: 120,
+                                          child: Text('Permission'))),
                                 ],
                               ),
                             ),
@@ -239,7 +244,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                               children: [
                                 textItem(
                                     lable: 'Pan Card',
-                                    value: '${data?.panCardNumber ?? '__'}'),
+                                    value: data?.panCardNumber ?? '__'),
                                 textItem(
                                     lable: 'Aadhaar Card',
                                     value:
@@ -526,7 +531,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
 }
 
 class CustomerDataSource extends DataTableSource {
-  final List<CustomerData> customerList;
+  final List<Content> customerList;
 
   CustomerDataSource(this.customerList);
   @override

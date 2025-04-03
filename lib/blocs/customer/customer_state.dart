@@ -14,7 +14,7 @@ class CustomerLoading extends CustomerState {}
 class AssignCustomerLoading extends CustomerState {}
 
 class GetCustomerBySubCaIdSuccess extends CustomerState {
-  final List<CustomerData> customers;
+  final List<Content> customers;
   final int currentPage;
   final int rowsPerPage;
   final int totalCustomer;
@@ -26,7 +26,7 @@ class GetCustomerBySubCaIdSuccess extends CustomerState {
 
   // CopyWith method for updating pagination
   GetCustomerBySubCaIdSuccess copyWith(
-      {List<CustomerData>? customers,
+      {List<Content>? customers,
       int? currentPage,
       int? rowsPerPage,
       int? totalCustomer}) {
@@ -43,7 +43,7 @@ class GetCustomerBySubCaIdSuccess extends CustomerState {
 }
 
 class GetCustomerByCaIdSuccess extends CustomerState {
-  final List<CustomerData>? getCustomers;
+  final List<Content>? getCustomers;
   final int totalCustomer;
   final bool isLastPage;
   const GetCustomerByCaIdSuccess(
@@ -51,7 +51,7 @@ class GetCustomerByCaIdSuccess extends CustomerState {
       required this.totalCustomer,
       required this.isLastPage});
   GetCustomerByCaIdSuccess copyWith(
-      {List<CustomerData>? getCustomers,
+      {List<Content>? getCustomers,
       int? totalCustomer,
       bool? isLastPage}) {
     return GetCustomerByCaIdSuccess(
@@ -65,7 +65,7 @@ class GetCustomerByCaIdSuccess extends CustomerState {
 }
 
 class GetCustomerByCaIdForTableSuccess extends CustomerState {
-  final List<CustomerData> customers;
+  final List<Content> customers;
   final int currentPage;
   final int rowsPerPage;
   final int totalCustomer;
@@ -77,7 +77,7 @@ class GetCustomerByCaIdForTableSuccess extends CustomerState {
 
   // CopyWith method for updating pagination
   GetCustomerByCaIdForTableSuccess copyWith(
-      {List<CustomerData>? customers,
+      {List<Content>? customers,
       int? currentPage,
       int? rowsPerPage,
       int? totalCustomer}) {
@@ -105,7 +105,7 @@ class CustomerError extends CustomerState {
 }
 
 class GetLoginCustomerSuccess extends CustomerState {
-  final List<CustomerData> getLoginCustomers;
+  final List<LoginCustomerData> getLoginCustomers;
   final String selectedClientName;
   const GetLoginCustomerSuccess(
       {required this.getLoginCustomers, required this.selectedClientName});

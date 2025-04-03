@@ -12,7 +12,7 @@ final class TeamMemberInitial extends TeamMemberState {}
 final class TeamMemberLoading extends TeamMemberState {}
 
 final class GetTeamMemberSuccess extends TeamMemberState {
-  final List<Datum>? getTeamMemberModel;
+  final List<TeamContent>? getTeamMemberModel;
   final bool isLastPage;
   const GetTeamMemberSuccess(
       {required this.getTeamMemberModel, required this.isLastPage});
@@ -43,6 +43,14 @@ class GetDeginationListSuccess extends TeamMemberState {
   const GetDeginationListSuccess({required this.deginationList});
   @override
   List<Object> get props => [deginationList];
+}
+
+class GetPermissionListSuccess extends TeamMemberState {
+  final List<PermissionData> getPermissionList;
+
+  const GetPermissionListSuccess({required this.getPermissionList});
+  @override
+  List<Object> get props => [getPermissionList];
 }
 
 final class TeamMemberError extends TeamMemberState {

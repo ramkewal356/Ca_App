@@ -25,6 +25,6 @@ final class LogsError extends LogsState {
 
   const LogsError({required this.errorMessage});
   @override
-  // TODO: implement props
+
   List<Object> get props => [errorMessage];
 }

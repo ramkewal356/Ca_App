@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/degination_model.dart';
+import 'package:ca_app/data/models/get_permission_model.dart';
+import 'package:ca_app/data/models/get_subca_by_caid_model.dart';
 import 'package:ca_app/data/models/get_team_member_model.dart';
 import 'package:ca_app/data/repositories/team_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -54,10 +56,10 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
     try {
       var resp = await _myRepo.getTeamByCaId(query: query);
 
-      List<Datum> newData = resp.data ?? [];
+      List<TeamContent> newData = resp.data?.content ?? [];
 
       // 🔹 If search/filter changed, replace old data. Otherwise, append for pagination.
-      List<Datum> allItems = (pageNumber == 0)
+      List<TeamContent> allItems = (pageNumber == 0)
           ? newData
           : [
               ...?(state is GetTeamMemberSuccess
@@ -122,6 +124,25 @@ class GetDeginationBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
     try {
       var resp = await _myRepo.getDeginationList();
       emit(GetDeginationListSuccess(deginationList: resp));
+    } catch (e) {
+      emit(TeamMemberError(errorMessage: e.toString()));
+    }
+  }
+}
+
+class GetPermissionBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
+  final _myRepo = TeamRepository();
+
+  GetPermissionBloc() : super(TeamMemberInitial()) {
+    on<GetPermissionEvent>(_getPermissionApi);
+  }
+  Future<void> _getPermissionApi(
+      GetPermissionEvent event, Emitter<TeamMemberState> emit) async {
+    Map<String, dynamic> query = {"type": "SUBCA"};
+    try {
+      emit(TeamMemberLoading());
+      var resp = await _myRepo.getPermissionList(query: query);
+      emit(GetPermissionListSuccess(getPermissionList: resp.data ?? []));
     } catch (e) {
       emit(TeamMemberError(errorMessage: e.toString()));
     }

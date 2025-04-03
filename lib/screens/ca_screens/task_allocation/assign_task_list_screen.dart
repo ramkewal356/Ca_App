@@ -1,8 +1,8 @@
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/task/task_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
-import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
-import 'package:ca_app/data/models/get_team_member_model.dart';
+import 'package:ca_app/data/models/get_login_customer_model.dart';
+import 'package:ca_app/data/models/get_subca_by_caid_model.dart';
 import 'package:ca_app/screens/ca_screens/task_allocation/common_task_card_screen.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -10,15 +10,12 @@ import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_modal.dart';
 import 'package:ca_app/widgets/custom_dropdown_button.dart';
-import 'package:ca_app/widgets/custom_filter_popup.dart';
-import 'package:ca_app/widgets/custom_multi_select_dropdown.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+
 
 class AssignTaskListScreen extends StatefulWidget {
   
@@ -208,7 +205,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                           SizedBox(height: 5),
                           BlocBuilder<CustomerBloc, CustomerState>(
                             builder: (context, state) {
-                              List<CustomerData> getLoginCustomer = [];
+                              List<LoginCustomerData> getLoginCustomer = [];
                               if (state is GetLoginCustomerSuccess) {
                                 getLoginCustomer = state.getLoginCustomers;
                               }
@@ -230,7 +227,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                               '${test.firstName} ${test.lastName}' ==
                                               p0,
                                           orElse: () =>
-                                              CustomerData(userId: -1),
+                                              LoginCustomerData(userId: -1),
                                         )
                                         .userId;
                                   });

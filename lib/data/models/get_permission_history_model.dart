@@ -1,26 +1,26 @@
 // To parse this JSON data, do
 //
-//     final getServicesListModel = getServicesListModelFromJson(jsonString);
+//     final getPermissionHistoryModel = getPermissionHistoryModelFromJson(jsonString);
 
 import 'dart:convert';
 
-GetServicesListModel getServicesListModelFromJson(String str) =>
-    GetServicesListModel.fromJson(json.decode(str));
+GetPermissionHistoryModel getPermissionHistoryModelFromJson(String str) =>
+    GetPermissionHistoryModel.fromJson(json.decode(str));
 
-String getServicesListModelToJson(GetServicesListModel data) =>
+String getPermissionHistoryModelToJson(GetPermissionHistoryModel data) =>
     json.encode(data.toJson());
 
-class GetServicesListModel {
+class GetPermissionHistoryModel {
   Status? status;
   Data? data;
 
-  GetServicesListModel({
+  GetPermissionHistoryModel({
     this.status,
     this.data,
   });
 
-  factory GetServicesListModel.fromJson(Map<String, dynamic> json) =>
-      GetServicesListModel(
+  factory GetPermissionHistoryModel.fromJson(Map<String, dynamic> json) =>
+      GetPermissionHistoryModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
@@ -32,7 +32,7 @@ class GetServicesListModel {
 }
 
 class Data {
-  List<ServicesListData>? content;
+  List<Content>? content;
   Pageable? pageable;
   int? totalElements;
   int? totalPages;
@@ -61,13 +61,11 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         content: json["content"] == null
             ? []
-            : List<ServicesListData>.from(
-                json["content"]!.map((x) => ServicesListData.fromJson(x))),
-        pageable: json["pageable"] is String
-            ? Pageable() // If "INSTANCE", return an empty Pageable object
-            : json["pageable"] == null
-                ? null
-                : Pageable.fromJson(json["pageable"]),
+            : List<Content>.from(
+                json["content"]!.map((x) => Content.fromJson(x))),
+        pageable: json["pageable"] == null
+            ? null
+            : Pageable.fromJson(json["pageable"]),
         totalElements: json["totalElements"],
         totalPages: json["totalPages"],
         last: json["last"],
@@ -96,50 +94,62 @@ class Data {
       };
 }
 
-class ServicesListData {
+class Content {
   int? id;
-  int? serviceId;
-  String? serviceName;
-  String? serviceDesc;
-  String? subService;
-  int? caId;
-  int? createdDate;
-  int? modifiedDate;
+  UserName? userName;
+  int? userId;
+  String? permissionName;
+  int? updatedById;
+  UpdatedByName? updatedByName;
+  int? createdAt;
+  String? action;
 
-  ServicesListData({
+  Content({
     this.id,
-    this.serviceId,
-    this.serviceName,
-    this.serviceDesc,
-    this.subService,
-    this.caId,
-    this.createdDate,
-    this.modifiedDate,
+    this.userName,
+    this.userId,
+    this.permissionName,
+    this.updatedById,
+    this.updatedByName,
+    this.createdAt,
+    this.action,
   });
 
-  factory ServicesListData.fromJson(Map<String, dynamic> json) =>
-      ServicesListData(
+  factory Content.fromJson(Map<String, dynamic> json) => Content(
         id: json["id"],
-        serviceId: json["serviceId"],
-        serviceName: json["serviceName"],
-        serviceDesc: json["serviceDesc"],
-        subService: json["subService"],
-        caId: json["caId"],
-        createdDate: json["createdDate"],
-        modifiedDate: json["modifiedDate"],
+        userName: userNameValues.map[json["userName"]]!,
+        userId: json["userId"],
+        permissionName: json["permissionName"],
+        updatedById: json["updatedById"],
+        updatedByName: updatedByNameValues.map[json["updatedByName"]]!,
+        createdAt: json["createdAt"],
+        action: json["action"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "serviceId": serviceId,
-        "serviceName": serviceName,
-        "serviceDesc": serviceDesc,
-        "subService": subService,
-        "caId": caId,
-        "createdDate": createdDate,
-        "modifiedDate": modifiedDate,
+        "userName": userNameValues.reverse[userName],
+        "userId": userId,
+        "permissionName": permissionName,
+        "updatedById": updatedById,
+        "updatedByName": updatedByNameValues.reverse[updatedByName],
+        "createdAt": createdAt,
+        "action": action,
       };
 }
+
+enum UpdatedByName { DIVYA_PROJECT }
+
+final updatedByNameValues =
+    EnumValues({"Divya Project": UpdatedByName.DIVYA_PROJECT});
+
+enum UserName { BRIJESH_KUMAR, PHIL_SALT, SPORT_ONE }
+
+final userNameValues = EnumValues({
+  "Brijesh  kumar ": UserName.BRIJESH_KUMAR,
+  "Phil Salt": UserName.PHIL_SALT,
+  "Sport one": UserName.SPORT_ONE
+});
 
 class Pageable {
   Sort? sort;
@@ -223,4 +233,16 @@ class Status {
         "success": success,
         "message": message,
       };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
 }
