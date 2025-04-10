@@ -211,7 +211,8 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                         context.push(
                                             '/ca_dashboard/view_client',
                                             extra: {
-                                              "userId": data?.userId.toString()
+                                              "userId": data?.userId.toString(),
+                                              "role": "CA"
                                             }).then((onValue) {
                                           debugPrint(
                                               ',,,,cvnmvnc,v,,,,nv,mnv,mnv,nn,nn,v,,,');
@@ -235,7 +236,8 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                             '${data?.firstName?[0]}${data?.lastName?[0]}',
                                         isSecondary: CustomTextItem(
                                             lable: 'Assignee to',
-                                            value: '${data?.caName}'),
+                                            value:
+                                                '${data?.caName ?? ''} (# ${data?.caId})'),
                                       )),
                                     );
                                   },

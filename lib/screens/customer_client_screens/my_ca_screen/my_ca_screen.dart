@@ -81,6 +81,8 @@ class _MyCaScreenState extends State<MyCaScreen> {
                               '+${caData?.data?.countryCode ?? ''} ${caData?.data?.mobile ?? ''}'),
                           subTitle(
                               Icons.location_on, caData?.data?.address ?? ''),
+                          subTitle(Icons.business_rounded,
+                              caData?.data?.companyName ?? ''),
                         ],
                       ))
                     ],

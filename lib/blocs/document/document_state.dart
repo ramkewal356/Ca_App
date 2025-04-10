@@ -49,7 +49,9 @@ class DownloadDocumentFileSuccess extends DocumentState {
   @override
   List<Object> get props => [docName];
 }
-
+class DocumentUploadedSuccess extends DocumentState {
+  
+}
 final class DocumentError extends DocumentState {
   final String errorMessage;
 

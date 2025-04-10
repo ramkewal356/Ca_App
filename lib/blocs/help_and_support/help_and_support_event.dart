@@ -23,11 +23,21 @@ class AddContactEvent extends HelpAndSupportEvent {
 }
 
 class GetContactByUserIdEvent extends HelpAndSupportEvent {
+  final bool isSearch;
+  final String searchText;
+  final bool isFilter;
+  final String filterText;
   final bool isPagination;
 
-  const GetContactByUserIdEvent({required this.isPagination});
+  const GetContactByUserIdEvent(
+      {required this.isPagination,
+      required this.isSearch,
+      required this.searchText,
+      required this.filterText,
+      required this.isFilter});
   @override
-  List<Object> get props => [isPagination];
+  List<Object> get props =>
+      [isPagination, isSearch, isFilter, searchText, filterText];
 }
 
 class GetContactByContactIdEvent extends HelpAndSupportEvent {

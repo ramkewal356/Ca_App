@@ -41,7 +41,9 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
   Widget build(BuildContext context) {
     return Material(
       elevation: 1,
-      color: widget.buttonColor ?? ColorConstants.buttonColor,
+      color: widget.disable
+          ? ColorConstants.buttonColor.withOpacity(0.2)
+          : widget.buttonColor ?? ColorConstants.buttonColor,
       shadowColor: widget.buttonColor ?? ColorConstants.buttonColor,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
@@ -51,10 +53,12 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
           height: widget.buttonheight ?? 50,
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
-              color: widget.buttonColor ?? ColorConstants.buttonColor,
+              color: widget.disable
+                  ? ColorConstants.buttonColor.withOpacity(0.2)
+                  : widget.buttonColor ?? ColorConstants.buttonColor,
               border: Border.all(
                 color: widget.buttonBorderColor ??
-                    ColorConstants.darkGray.withOpacity(0.5),
+                    ColorConstants.darkGray.withOpacity(0.2),
               ),
               borderRadius: BorderRadius.circular(8)),
           child: Center(

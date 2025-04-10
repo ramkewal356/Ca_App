@@ -15,10 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-
 class ViewClientScreen extends StatefulWidget {
   final String userId;
-  const ViewClientScreen({super.key, required this.userId});
+  final String role;
+  const ViewClientScreen({super.key, required this.userId, required this.role});
 
   @override
   State<ViewClientScreen> createState() => _ViewClientScreenState();
@@ -43,10 +43,9 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
           title: 'View Client',
           backIconVisible: true,
         ),
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {},
+        child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            if (state is AuthLoading) {
+            if (state is GetUserLoading) {
               return Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.buttonColor,
@@ -125,76 +124,86 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                               ))
                             ],
                           ),
-                          Positioned(
-                            right: 0,
-                            top: -10,
-                            child: PopupMenuButton<String>(
-                              position: PopupMenuPosition.under,
-                              color: ColorConstants.white,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              constraints:
-                                  BoxConstraints(minWidth: 90, maxWidth: 140),
-                              offset: Offset(0, 0),
-                              icon: Icon(
-                                Icons.more_vert_rounded,
-                                color: ColorConstants.buttonColor,
-                              ),
-                              onSelected: (value) {
-                                debugPrint("Selected: $value");
-                                if (value == 'Deactive' || value == 'Active') {
-                                  _showModalBottomSheet(
-                                      context: context,
-                                      actionUponId: data?.id.toString() ?? '',
-                                      action: value);
-                                } else if (value == 'Logs') {
-                                  context.push('/ca_dashboard/logs_history',
-                                      extra: {"uponId": data?.id.toString()});
-                                } else if (value == 'Update Service') {
-                                  context.push('/ca_dashboard/assign_service',
-                                      extra: {
-                                        'clientId': data?.id.toString() ?? '',
-                                        'serviceList': data?.services
-                                                ?.map((toElement) =>
-                                                    '${toElement.subService} (${toElement.serviceName})')
-                                                .toList() ??
-                                            [],
-                                        'serviceIdList': data?.services
-                                                ?.map((toElement) =>
-                                                    toElement.serviceId)
-                                                .toList() ??
-                                            [],
-                                      }).then((onValue) {
-                                    _getUserDetail();
-                                  });
-                                }
-                              },
-                              itemBuilder: (BuildContext context) =>
-                                  <PopupMenuEntry<String>>[
-                                PopupMenuItem<String>(
-                                    height: 45,
-                                    value: data?.status == true
-                                        ? 'Deactive'
-                                        : 'Active',
-                                    child: SizedBox(
-                                        width: 120,
-                                        child: Text(data?.status == true
-                                            ? 'Deactive'
-                                            : 'Active'))),
-                                PopupMenuItem<String>(
-                                    height: 45,
-                                    value: 'Logs',
-                                    child: SizedBox(
-                                        width: 120, child: Text('Logs'))),
-                                if ((data?.services ?? []).isNotEmpty)
-                                  PopupMenuItem<String>(
-                                      height: 45,
-                                      value: 'Update Service',
-                                      child: SizedBox(
-                                          width: 120,
-                                          child: Text('Update Service'))),
-                              ],
-                            ),
-                          ),
+                          widget.role == 'SUBCA'
+                              ? SizedBox.shrink()
+                              : Positioned(
+                                  right: 0,
+                                  top: -10,
+                                  child: PopupMenuButton<String>(
+                                    position: PopupMenuPosition.under,
+                                    color: ColorConstants.white,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    constraints: BoxConstraints(
+                                        minWidth: 90, maxWidth: 140),
+                                    offset: Offset(0, 0),
+                                    icon: Icon(
+                                      Icons.more_vert_rounded,
+                                      color: ColorConstants.buttonColor,
+                                    ),
+                                    onSelected: (value) {
+                                      debugPrint("Selected: $value");
+                                      if (value == 'Deactive' ||
+                                          value == 'Active') {
+                                        _showModalBottomSheet(
+                                            context: context,
+                                            actionUponId:
+                                                data?.id.toString() ?? '',
+                                            action: value);
+                                      } else if (value == 'Logs') {
+                                        context.push(
+                                            '/ca_dashboard/logs_history',
+                                            extra: {
+                                              "uponId": data?.id.toString()
+                                            });
+                                      } else if (value == 'Update Service') {
+                                        context.push(
+                                            '/ca_dashboard/assign_service',
+                                            extra: {
+                                              'clientId':
+                                                  data?.id.toString() ?? '',
+                                              'serviceList': data?.services
+                                                      ?.map((toElement) =>
+                                                          '${toElement.subService} (${toElement.serviceName})')
+                                                      .toList() ??
+                                                  [],
+                                              'serviceIdList': data?.services
+                                                      ?.map((toElement) =>
+                                                          toElement.serviceId)
+                                                      .toList() ??
+                                                  [],
+                                            }).then((onValue) {
+                                          _getUserDetail();
+                                        });
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) =>
+                                        <PopupMenuEntry<String>>[
+                                      PopupMenuItem<String>(
+                                          height: 45,
+                                          value: data?.status == true
+                                              ? 'Deactive'
+                                              : 'Active',
+                                          child: SizedBox(
+                                              width: 120,
+                                              child: Text(data?.status == true
+                                                  ? 'Deactive'
+                                                  : 'Active'))),
+                                      PopupMenuItem<String>(
+                                          height: 45,
+                                          value: 'Logs',
+                                          child: SizedBox(
+                                              width: 120, child: Text('Logs'))),
+                                      if ((data?.services ?? []).isNotEmpty)
+                                        PopupMenuItem<String>(
+                                            height: 45,
+                                            value: 'Update Service',
+                                            child: SizedBox(
+                                                width: 120,
+                                                child: Text('Update Service'))),
+                                    ],
+                                  ),
+                                ),
                         ],
                       ),
                       SizedBox(height: 15),
@@ -245,7 +254,7 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                           ),
                           SizedBox(width: 5),
                           Text(
-                            '${data?.caName}',
+                            data?.caName ?? '',
                             style: AppTextStyle().listTileText,
                           )
                         ],
@@ -292,21 +301,36 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                             buttonColor: ColorConstants.white,
                             buttonBorderColor: ColorConstants.buttonColor,
                             tileStyle: AppTextStyle().textMediumButtonStyle,
+                            disable:
+                                data?.userResponse == 'ACCEPTED' ? false : true,
                             buttonTitle: 'View Document',
                             onTap: () {
-                              context.push('/ca_dashboard/view_document',
-                                  extra: {"userId": data?.id.toString()});
+                              context
+                                  .push('/ca_dashboard/view_document', extra: {
+                                "userId": data?.id,
+                                "role": widget.role,
+                                "userName":
+                                    '${data?.firstName} ${data?.lastName}'
+                              }).then((onValue) {
+                                _getUserDetail();
+                              });
                             },
                           ),
                           CommonButtonWidget(
                             buttonWidth: 150,
-                            // buttonColor: ColorConstants.white,
-                            // buttonBorderColor: ColorConstants.buttonColor,
-                            // tileStyle: AppTextStyle().textMediumButtonStyle,
+                            disable: data?.userResponse == 'REQUESTED'
+                                ? true
+                                : false,
                             buttonTitle: 'Raise Request',
                             onTap: () {
-                              context.push('/raise_request',
-                                  extra: {'role': 'CA'});
+                              context.push('/raise_request', extra: {
+                                'role': widget.role,
+                                "selectedUser":
+                                    '${data?.firstName} ${data?.lastName}',
+                                "selectedId": data?.id
+                              }).then((onValue) {
+                                _getUserDetail();
+                              });
                             },
                           ),
                         ],

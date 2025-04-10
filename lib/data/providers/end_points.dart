@@ -1,5 +1,6 @@
 class EndPoints {
-  static const baseUrl = 'https://dev-api.cabaonline.in';
+  // static const baseUrl = 'https://dev-api.cabaonline.in';
+  static const baseUrl = 'https://cabaonline.xyz/api';
   //Auth url
   static const loginUrl = '/login';
   static const addNewUserUrl = '/users/add_user';
@@ -13,6 +14,7 @@ class EndPoints {
   static const updateUserUrl = '/users/update_user';
   // dashboard url
   static const getCaDashboardUrl = '/ca/ca_dashboard_stats';
+  static const getSubCaDashboardUrl = '/sub_ca/subca_dashboard_stats';
   //Team member
   static const getSubCaByCaId = '/sub_ca/get_subCA_by_CAId';
   static const getSubCaByCaIdUrl = '/sub_ca/get_subCa_by_caId';
@@ -24,10 +26,13 @@ class EndPoints {
   static var getCustomerByCaId = '/customer/get_customer_by_caId';
   static var assignCustomerUrl = '/ca/assign_customer';
   static var getLoginCustomerUrl = '/customer/get_login_customers_by_caId';
+  static var getLoginCustomerBySubCaIdUrl =
+      '/customer/get_login_customers_by_caId';
   //Document url
   static var getRecentDocumentUrl =
       '/ca/get_recent_document_uploaded_by_customer';
   static var getViewDocumentUrl = '/document/get_document_by_userId';
+  static var uploadDocumentUrl = '/document/upload_document_v2';
   //Logs Url
   static var getActiveDeactiveLogByCaIdUrl =
       '/active_deactive_logs/get_logs_by_caId';
@@ -44,6 +49,7 @@ class EndPoints {
   static var getViewServiceUrl = '/caServices/get_request_service_by_caId';
   static var assignServiceUrl = '/users/assign_service_to_user';
   static var updateServiceToUserUrl = '/users/update_service_by_userId';
+  static var getServicesListByIdUrl = '/caServices/get_services_By_caId';
   //task Url
   static var getSelfTaskUrl = '/task/get_self_assigned_task';
   static var getAssignTaskUrl = '/task/get_assigned_task_by_createdById';
@@ -51,6 +57,7 @@ class EndPoints {
   static var getViewTaskUrl = '/task/get_task_document';
   static var actionOnTaskUrl = '/task/accept_reject_task';
   static var taskDocumentUploadUrl = '/task/upload_document';
+  static var gettaskbyAssignedIdUrl = '/task/get_task_by_assignedId';
   //Raise Request
   static var sendRaiseRequest = '/request/send_request';
   static var getRequestBySenderId = '/request/get_request_by_senderId';

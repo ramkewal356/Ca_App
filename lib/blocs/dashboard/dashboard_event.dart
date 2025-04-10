@@ -8,3 +8,4 @@ sealed class DashboardEvent extends Equatable {
 }
 
 class GetCaDashboardEvent extends DashboardEvent {}
+class GetSubCaDashboardEvent extends DashboardEvent {}

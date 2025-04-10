@@ -10,10 +10,17 @@ import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ViewDocumentScreen extends StatefulWidget {
-  final String userId;
-  const ViewDocumentScreen({super.key, required this.userId});
+  final int userId;
+  final String role;
+  final String userName;
+  const ViewDocumentScreen(
+      {super.key,
+      required this.userId,
+      required this.role,
+      required this.userName});
 
   @override
   State<ViewDocumentScreen> createState() => _ViewDocumentScreenState();
@@ -42,7 +49,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
       bool isFilter = false,
       bool isSearch = false}) {
     context.read<DocumentBloc>().add(GetViewDocumentEvent(
-        userId: widget.userId,
+        userId: widget.userId.toString(),
         searchText: searchQuery,
         filterText: selectedFilter,
         isPagination: isPagination,
@@ -193,7 +200,9 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
                                             flex1: 2,
                                             flex2: 3,
                                             lable: 'DOCUMENT TYPE',
-                                            value: data?.serviceName ?? 'N/A'),
+                                            value: data?.serviceName == 'null'
+                                                ? 'N/A'
+                                                : data?.serviceName ?? 'N/A'),
                                         CustomTextInfo(
                                             flex1: 2,
                                             flex2: 3,
@@ -241,7 +250,19 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
                                             CommonButtonWidget(
                                                 buttonWidth: 130,
                                                 buttonTitle: 'Re-Request',
-                                                onTap: () {})
+                                                onTap: () {
+                                                  context.push('/raise_request',
+                                                      extra: {
+                                                        'role': widget.role,
+                                                        "selectedUser":
+                                                            widget.userName,
+                                                        "selectedId":
+                                                            widget.userId
+                                                      }).then((onValue) {
+                                                    _getViewDocument(
+                                                        isFilter: true);
+                                                  });
+                                                })
                                           ],
                                         )
                                       ],

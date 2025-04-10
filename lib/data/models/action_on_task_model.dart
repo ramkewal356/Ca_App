@@ -32,79 +32,41 @@ class GetActionOnTaskModel {
 }
 
 class Data {
-  int? id;
-  String? name;
-  String? description;
-  dynamic duration;
-  dynamic resolution;
-  int? createdDate;
-  int? modifiedDate;
-  bool? taskStatus;
-  int? assignedId;
-  int? assigneeId;
-  int? createdById;
-  int? customerId;
-  dynamic comment;
-  String? taskResponse;
-  String? priority;
-  dynamic emailStatus;
+  Headers? headers;
+  String? body;
+  String? statusCode;
+  int? statusCodeValue;
 
   Data({
-    this.id,
-    this.name,
-    this.description,
-    this.duration,
-    this.resolution,
-    this.createdDate,
-    this.modifiedDate,
-    this.taskStatus,
-    this.assignedId,
-    this.assigneeId,
-    this.createdById,
-    this.customerId,
-    this.comment,
-    this.taskResponse,
-    this.priority,
-    this.emailStatus,
+    this.headers,
+    this.body,
+    this.statusCode,
+    this.statusCodeValue,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        duration: json["duration"],
-        resolution: json["resolution"],
-        createdDate: json["createdDate"],
-        modifiedDate: json["modifiedDate"],
-        taskStatus: json["taskStatus"],
-        assignedId: json["assignedId"],
-        assigneeId: json["assigneeId"],
-        createdById: json["createdById"],
-        customerId: json["customerId"],
-        comment: json["comment"],
-        taskResponse: json["taskResponse"],
-        priority: json["priority"],
-        emailStatus: json["emailStatus"],
+        headers:
+            json["headers"] == null ? null : Headers.fromJson(json["headers"]),
+        body: json["body"],
+        statusCode: json["statusCode"],
+        statusCodeValue: json["statusCodeValue"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "description": description,
-        "duration": duration,
-        "resolution": resolution,
-        "createdDate": createdDate,
-        "modifiedDate": modifiedDate,
-        "taskStatus": taskStatus,
-        "assignedId": assignedId,
-        "assigneeId": assigneeId,
-        "createdById": createdById,
-        "customerId": customerId,
-        "comment": comment,
-        "taskResponse": taskResponse,
-        "priority": priority,
-        "emailStatus": emailStatus,
+        "headers": headers?.toJson(),
+        "body": body,
+        "statusCode": statusCode,
+        "statusCodeValue": statusCodeValue,
       };
+}
+
+class Headers {
+  Headers();
+
+  factory Headers.fromJson(Map<String, dynamic> json) => Headers();
+
+  Map<String, dynamic> toJson() => {
+    };
 }
 
 class Status {

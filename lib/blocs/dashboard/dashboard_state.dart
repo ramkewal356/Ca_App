@@ -18,6 +18,13 @@ class GetCaDashboardSuccess extends DashboardState {
   @override
   List<Object> get props => [getCaDashboardData];
 }
+class GetSubCaDashboardSuccess extends DashboardState {
+  final SubCaDashboardModel getSubCaDashboardData;
+
+  const GetSubCaDashboardSuccess({required this.getSubCaDashboardData});
+  @override
+  List<Object> get props => [getSubCaDashboardData];
+}
 
 class DashboardError extends DashboardState {
   final String errorMessage;

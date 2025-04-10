@@ -65,7 +65,6 @@ class _RequestScreenState extends State<RequestScreen> {
             SizedBox(height: 8),
             Row(
               children: [
-               
                 Expanded(
                   child: CustomSearchField(
                     controller: _searchController,
@@ -81,8 +80,10 @@ class _RequestScreenState extends State<RequestScreen> {
                     // tileStyle: AppTextStyle().textMediumButtonStyle,
                     buttonTitle: 'Raise request',
                     onTap: () {
-                      context
-                          .push('/raise_request', extra: {'role': 'CUSTOMER'});
+                      context.push('/raise_request',
+                          extra: {'role': 'CUSTOMER'}).then((onValue) {
+                        _getRaiseRequest(isSearch: true);
+                      });
                     })
               ],
             ),
@@ -98,10 +99,12 @@ class _RequestScreenState extends State<RequestScreen> {
                     ),
                   );
                 } else if (state is RaiseRequestError) {
-                  return Center(
-                    child: Text(
-                      'No Data Found!',
-                      style: AppTextStyle().redText,
+                  return Expanded(
+                    child: Center(
+                      child: Text(
+                        'No Data Found!',
+                        style: AppTextStyle().redText,
+                      ),
                     ),
                   );
                 } else if (state is GetRequestByRecieverIdSuccess) {

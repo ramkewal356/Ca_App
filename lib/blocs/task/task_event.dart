@@ -36,7 +36,22 @@ class GetAssignTaskEvent extends TaskEvent {
   List<Object> get props =>
       [isSearch, searchText, isPagination, isFilter, filterText];
 }
-
+class GetTaskByAssignIdEvent extends TaskEvent {
+  final bool isSearch;
+  final String searchText;
+  final bool isPagination;
+  final bool isFilter;
+  final String filterText;
+  const GetTaskByAssignIdEvent(
+      {required this.isSearch,
+      required this.searchText,
+      required this.isPagination,
+      required this.isFilter,
+      required this.filterText});
+  @override
+  List<Object> get props =>
+      [isSearch, searchText, isPagination, isFilter, filterText];
+}
 class CreateTaskEvent extends TaskEvent {
   final int assignedId;
   final int customerId;

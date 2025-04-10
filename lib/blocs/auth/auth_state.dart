@@ -28,7 +28,10 @@ class AuthSuccessState extends AuthState {
   @override
   List<Object> get props => [role];
 }
-
+/// Get User Loading State///
+class GetUserLoading extends AuthState {
+  
+}
 /// Login Success State///
 class LoginSuccess extends AuthState {
   final LoginModel? loginModel;
@@ -82,7 +85,14 @@ class UpdateUserSuccess extends AuthState {
   List<Object> get props => [updateUser ?? []];
 }
 
+/// Update Success State///
+class UpdateProfileImgSuccess extends AuthState {
+  final UserModel? updateUser;
 
+  const UpdateProfileImgSuccess({required this.updateUser});
+  @override
+  List<Object> get props => [updateUser ?? []];
+}
 /// GetUserById Success State///
 class GetUserByIdSuccess extends AuthState {
   final UserModel? getUserByIdData;

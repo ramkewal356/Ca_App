@@ -28,6 +28,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     on<GetCustomerByCaIdEvent>(_getCustomerByCaIdApi);
     on<GetCustomerByCaIdForTableEvent>(_getCustomerByCaIdForTableApi);
     on<GetLogincutomerEvent>(_getLoginCustomerByCaId);
+    on<GetCustomerBySubCaEvent>(_getCustomerBySubCaIdApi);
     on<UpdateClientEvent>((event, emit) {
       if (state is GetLoginCustomerSuccess) {
         emit(GetLoginCustomerSuccess(
@@ -76,6 +77,55 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       isLastPage = newData.length < pageSize;
 
       emit(GetCustomerByCaIdSuccess(
+          getCustomers: allItems,
+          totalCustomer: resp.data?.totalElements ?? 0,
+          isLastPage: isLastPage));
+
+      pageNumber++;
+    } catch (e) {
+      emit(CustomerError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  Future<void> _getCustomerBySubCaIdApi(
+      GetCustomerBySubCaEvent event, Emitter<CustomerState> emit) async {
+    if (isFetching) return;
+    // bool isNewSearch = (event.isSearch);
+
+    if (event.isSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(CustomerLoading()); // Show loading only for the first page
+    }
+    if (isLastPage) return;
+    isFetching = true;
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {
+      "subCaId": userId,
+      "search": event.searchText,
+      "pageNumber": event.pageNumber ?? pageNumber,
+      "pageSize": event.pageSize ?? pageSize,
+    };
+    try {
+      var resp = await _myRepo.getCustomerBySubCaId(query: query);
+      List<Content> newData = resp.data?.content ?? [];
+
+      // 🔹 If search/filter changed, replace old data. Otherwise, append for pagination.
+      List<Content> allItems = (pageNumber == 0)
+          ? newData
+          : [
+              ...?(state is GetCustomerBySubCaSuccess
+                  ? (state as GetCustomerBySubCaSuccess).getCustomers
+                  : []),
+              ...newData
+            ];
+
+      isLastPage = newData.length < pageSize;
+
+      emit(GetCustomerBySubCaSuccess(
           getCustomers: allItems,
           totalCustomer: resp.data?.totalElements ?? 0,
           isLastPage: isLastPage));

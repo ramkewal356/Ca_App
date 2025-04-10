@@ -55,9 +55,10 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var requestState = context.watch<RaiseRequestBloc>().state;
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        // TODO: implement listener
+        
       },
       builder: (context, state) {
         UserModel? userdata =
@@ -106,14 +107,13 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 "imgUrl": Icons.dashboard,
                 "label": "Dashboard",
                 "onTap": () {
-                  // context.pop();
+                  _getUser();
                 }
               },
               {
                 "imgUrl": Icons.add_photo_alternate_outlined,
                 "label": "Upload Document",
                 "onTap": () {
-                  // context.pop();
                   context.push('/customer_dashboard/upload_document');
                 }
               },
@@ -121,14 +121,14 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 "imgUrl": Icons.history,
                 "label": "History",
                 "onTap": () {
-                  context.push('/customer_dashboard/history');
+                  context.push('/customer_dashboard/history',
+                      extra: {"userId": userdata?.data?.id.toString()});
                 }
               },
               {
                 "imgUrl": Icons.star,
                 "label": "Request",
                 "onTap": () {
-                  // context.pop();
                   context.push('/customer_dashboard/request');
                 }
               },
@@ -147,7 +147,10 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 "label": "Payment",
                 "onTap": () {
                   context.push('/customer_dashboard/payment',
-                      extra: {"caId": userdata?.data?.caId});
+                      extra: {"caId": userdata?.data?.caId}).then((onValue) {
+                    _getUser();
+                  });
+                  ;
                 }
               },
               {
@@ -166,25 +169,14 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
               },
             ],
           ),
-          body: BlocBuilder<RaiseRequestBloc, RaiseRequestState>(
-            builder: (context, state) {
-              if (state is RaiseRequestLoading) {
-                return Center(
-                  child: CircularProgressIndicator(
+          body: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: (requestState is RaiseRequestLoading)
+                ? Center(
+                    child: CircularProgressIndicator(
                     color: ColorConstants.buttonColor,
-                  ),
-                );
-              } else if (state is RaiseRequestError) {
-                return Center(
-                  child: Text(
-                    'No Data Found!',
-                    style: AppTextStyle().redText,
-                  ),
-                );
-              } else if (state is GetRequestByRecieverIdSuccess) {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                  ))
+                : SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -202,7 +194,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                         SizedBox(height: 10),
                         GestureDetector(
                           onTap: () {
-                            context.push('/customer_dashboard/history');
+                            context.push('/customer_dashboard/history', extra: {
+                              "userId": userdata?.data?.id.toString()
+                            });
                           },
                           child: _customcard(
                               lable: 'History',
@@ -219,7 +213,29 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                             style: AppTextStyle().headingtext,
                           ),
                         ),
-                        ListView.builder(
+                        SizedBox(height: 5),
+                        BlocBuilder<RaiseRequestBloc, RaiseRequestState>(
+                          builder: (context, state) {
+                            if (state is RaiseRequestError) {
+                              return Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: ColorConstants.darkGray),
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Center(
+                                  child: Text(
+                                    'No Data Found!',
+                                    style: AppTextStyle().redText,
+                                  ),
+                                ),
+                              );
+                            } else if (state is GetRequestByRecieverIdSuccess) {
+                              return state.requestData.isEmpty
+                                  ? Center(
+                                      child: Text('No Data Found'),
+                                    )
+                                  : ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: state.requestData.length >= 6
@@ -257,37 +273,22 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                       CustomTextItem(
                                           lable: 'DESCRIPTION',
                                           value: '${data.text}'),
-                                      // SizedBox(height: 5),
-                                      // Align(
-                                      //   alignment: Alignment.bottomRight,
-                                      //   child: CommonButtonWidget(
-                                      //       buttonWidth: 100,
-                                      //       buttonheight: 50,
-                                      //       buttonTitle: 'View',
-                                      //       onTap: () {
-                                      //         context.push('/request_details',
-                                      //             extra: {
-                                      //               "requestId": data.requestId
-                                      //             }).then((onValue) {
-                                      //           _getRequest();
-                                      //         });
-                                      //       }),
-                                      // )
+                                     
                                     ],
                                   ),
                                 ),
                               ),
                             );
+                                      },
+                                    );
+                            }
+
+                            return Container();
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),
-                );
-              }
-
-              return Container();
-            },
           ),
         );
       },

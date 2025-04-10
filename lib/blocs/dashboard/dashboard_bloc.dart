@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_ca_dashboard_model.dart';
+import 'package:ca_app/data/models/subca_dashboard_model.dart';
 import 'package:ca_app/data/repositories/dashboard_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final _myResp = DashboardRepository();
   DashboardBloc() : super(DashboardInitial()) {
     on<GetCaDashboardEvent>(_getCaDashboardApi);
+    on<GetSubCaDashboardEvent>(_getSubCaDashboardApi);
   }
   Future<void> _getCaDashboardApi(
       GetCaDashboardEvent event, Emitter<DashboardState> emit) async {
@@ -20,8 +22,22 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Map<String, dynamic> query = {"caId": userId};
     try {
       emit(DashboardLoading());
-      var resp = await _myResp.getReminderByCaId(query: query);
+      var resp = await _myResp.getCaDashboardApi(query: query);
       emit(GetCaDashboardSuccess(getCaDashboardData: resp));
+    } catch (e) {
+      emit(DashboardError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getSubCaDashboardApi(
+      GetSubCaDashboardEvent event, Emitter<DashboardState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {"id": userId};
+    try {
+      emit(DashboardLoading());
+      var resp = await _myResp.getSubCaDashboardApi(query: query);
+      emit(GetSubCaDashboardSuccess(getSubCaDashboardData: resp));
     } catch (e) {
       emit(DashboardError(errorMessage: e.toString()));
     }

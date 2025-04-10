@@ -54,10 +54,10 @@ class Data {
   int? caId;
   String? caName;
   String? caMobile;
-  dynamic designation;
+  String? designation;
   List<Permission>? permissions;
   String? companyName;
-  dynamic gst;
+  String? gst;
   dynamic companyLogo;
   List<Service>? services;
 

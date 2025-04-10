@@ -14,7 +14,7 @@ class PickImageEvent extends ImagePickerEvent {
   @override
   List<Object> get props => [source, isProfileImgChange];
 }
-
+class ResetImagePickerEvent extends ImagePickerEvent {}
 // class UpdateProfileImageEvent extends ImagePickerEvent {
 //   final File imageFile;
 //   const UpdateProfileImageEvent({required this.imageFile});

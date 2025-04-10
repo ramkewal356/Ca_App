@@ -80,3 +80,7 @@ String dateFormate(int? date) {
   return DateFormat('dd/MM/yyyy')
       .format(DateTime.fromMillisecondsSinceEpoch(date ?? 0));
 }
+String timeFormate(int? date) {
+  return DateFormat('h:mm a')
+      .format(DateTime.fromMillisecondsSinceEpoch(date ?? 0));
+}

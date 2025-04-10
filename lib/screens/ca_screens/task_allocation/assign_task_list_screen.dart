@@ -174,7 +174,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                   setState(() {
                                     selectedSubCaName = p0;
                                     if (p0 == 'Self') {
-                                      assignedId = 2;
+                                      assignedId = 0;
                                     } else {
                                       assignedId = getSubCa
                                           .firstWhere(

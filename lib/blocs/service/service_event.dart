@@ -78,13 +78,19 @@ class GetViewServiceEvent extends ServiceEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
+  final bool isFilter;
+  final String filterTex;
 
-  const GetViewServiceEvent(
-      {required this.isPagination,
-      required this.isSearch,
-      required this.searchText});
+  const GetViewServiceEvent({
+    required this.isPagination,
+    required this.isSearch,
+    required this.searchText,
+    required this.isFilter,
+    required this.filterTex,
+  });
   @override
-  List<Object> get props => [isPagination, isSearch, searchText];
+  List<Object> get props =>
+      [isPagination, isSearch, searchText, isFilter, filterTex];
 }
 
 class AssignServiceEvent extends ServiceEvent {
@@ -95,4 +101,19 @@ class AssignServiceEvent extends ServiceEvent {
       {required this.selectedClients, required this.selectedServices});
   @override
   List<Object> get props => [selectedClients, selectedServices];
+}
+
+class GetServiceByCaIdEvent extends ServiceEvent {
+  final int caId;
+  final bool isSearch;
+  final String searchText;
+  final bool isPagination;
+
+  const GetServiceByCaIdEvent(
+      {required this.caId,
+      required this.isSearch,
+      required this.searchText,
+      required this.isPagination});
+  @override
+  List<Object> get props => [caId, isSearch, searchText, isPagination];
 }

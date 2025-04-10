@@ -4,23 +4,23 @@
 
 import 'dart:convert';
 
-TaskDocumentUploadModel taskDocumentUploadModelFromJson(String str) =>
-    TaskDocumentUploadModel.fromJson(json.decode(str));
+DocumentUploadModel taskDocumentUploadModelFromJson(String str) =>
+    DocumentUploadModel.fromJson(json.decode(str));
 
-String taskDocumentUploadModelToJson(TaskDocumentUploadModel data) =>
+String taskDocumentUploadModelToJson(DocumentUploadModel data) =>
     json.encode(data.toJson());
 
-class TaskDocumentUploadModel {
+class DocumentUploadModel {
   Status? status;
   Data? data;
 
-  TaskDocumentUploadModel({
+  DocumentUploadModel({
     this.status,
     this.data,
   });
 
-  factory TaskDocumentUploadModel.fromJson(Map<String, dynamic> json) =>
-      TaskDocumentUploadModel(
+  factory DocumentUploadModel.fromJson(Map<String, dynamic> json) =>
+      DocumentUploadModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );

@@ -71,15 +71,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       children: [
                         Expanded(
                           child: _textItem(
-                              lable: 'CA(Sender)',
+                              lable: 'SENDER',
                               value:
                                   '${data?.requestResponse?.senderName}(#${data?.requestResponse?.senderId})'),
                         ),
                         Expanded(
                           child: _textItem(
-                              lable: 'CLIENT(Receiver)',
+                              lable: 'RECEIVER',
                               value:
-                                  '${data?.requestResponse?.receiverName}(#${data?.requestResponse?.receiverId})'),
+                                  '${data?.requestResponse?.receiverName ?? ''}(#${data?.requestResponse?.receiverId})'),
                         )
                       ],
                     ),

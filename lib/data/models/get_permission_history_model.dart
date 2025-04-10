@@ -96,11 +96,11 @@ class Data {
 
 class Content {
   int? id;
-  UserName? userName;
+  String? userName;
   int? userId;
   String? permissionName;
   int? updatedById;
-  UpdatedByName? updatedByName;
+  String? updatedByName;
   int? createdAt;
   String? action;
 
@@ -117,39 +117,39 @@ class Content {
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
         id: json["id"],
-        userName: userNameValues.map[json["userName"]]!,
+        userName: json["userName"],
         userId: json["userId"],
         permissionName: json["permissionName"],
         updatedById: json["updatedById"],
-        updatedByName: updatedByNameValues.map[json["updatedByName"]]!,
+        updatedByName: json["updatedByName"],
         createdAt: json["createdAt"],
         action: json["action"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "userName": userNameValues.reverse[userName],
+        "userName": userName,
         "userId": userId,
         "permissionName": permissionName,
         "updatedById": updatedById,
-        "updatedByName": updatedByNameValues.reverse[updatedByName],
+        "updatedByName": updatedByName,
         "createdAt": createdAt,
         "action": action,
       };
 }
 
-enum UpdatedByName { DIVYA_PROJECT }
+// enum UpdatedByName { DIVYA_PROJECT }
 
-final updatedByNameValues =
-    EnumValues({"Divya Project": UpdatedByName.DIVYA_PROJECT});
+// final updatedByNameValues =
+//     EnumValues({"Divya Project": UpdatedByName.DIVYA_PROJECT});
 
-enum UserName { BRIJESH_KUMAR, PHIL_SALT, SPORT_ONE }
+// enum UserName { BRIJESH_KUMAR, PHIL_SALT, SPORT_ONE }
 
-final userNameValues = EnumValues({
-  "Brijesh  kumar ": UserName.BRIJESH_KUMAR,
-  "Phil Salt": UserName.PHIL_SALT,
-  "Sport one": UserName.SPORT_ONE
-});
+// final userNameValues = EnumValues({
+//   "Brijesh  kumar ": UserName.BRIJESH_KUMAR,
+//   "Phil Salt": UserName.PHIL_SALT,
+//   "Sport one": UserName.SPORT_ONE
+// });
 
 class Pageable {
   Sort? sort;

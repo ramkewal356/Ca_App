@@ -97,6 +97,16 @@ class UpdateAssigneService extends ServiceState {
   List<Object> get props => [updatedAssignService];
 }
 
+class GetServiceByCaIdSuccess extends ServiceState {
+  final List<ServicesListData> serviceList;
+  final bool isLastPage;
+
+  const GetServiceByCaIdSuccess(
+      {required this.serviceList, required this.isLastPage});
+  @override
+  List<Object> get props => [serviceList, isLastPage];
+}
+
 class ServiceError extends ServiceState {
   final String errorMessage;
 

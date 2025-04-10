@@ -1,6 +1,10 @@
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_event.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
+import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
 import 'package:ca_app/data/models/get_login_customer_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
@@ -20,7 +24,10 @@ import 'package:go_router/go_router.dart';
 
 class RaiseRequestScreen extends StatefulWidget {
   final String userRole;
-  const RaiseRequestScreen({super.key, required this.userRole});
+  final String? selectedUser;
+  final int? selectedId;
+  const RaiseRequestScreen(
+      {super.key, required this.userRole, this.selectedUser, this.selectedId});
 
   @override
   State<RaiseRequestScreen> createState() => _RaiseRequestScreenState();
@@ -31,16 +38,50 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   List<String> selectedItems = [];
-  List<String> selectedUserIds = [];
+  String selectedUserIds = '';
+  String caId = '';
   List<PlatformFile> documentList = [];
   String? selectedCa;
 
   @override
   void initState() {
+    super.initState();
+    _initializeRequested();
+    _getUser();
+  }
+
+  void _initializeRequested() {
+    if (widget.selectedUser != null) {
+      selectedItems = [widget.selectedUser!]; // Convert String? to List<String>
+    }
+
+    if (widget.selectedId != null) {
+      selectedUserIds = '[${widget.selectedId}]';
+    }
+  }
+
+  void _getUser() {
+    context.read<AuthBloc>().add(GetUserByIdEvent());
+    if (widget.userRole == 'CA') {
+      _getLoginCustomer();
+    } else if (widget.userRole == 'SUBCA') {
+      _getCustomerBySubCaId();
+    }
+  }
+
+  _getCustomerBySubCaId() {
+    context.read<CustomerBloc>().add(GetCustomerBySubCaEvent(
+        searchText: '',
+        isSearch: true,
+        isPagination: false,
+        pageNumber: -1,
+        pageSize: -1));
+  }
+
+  _getLoginCustomer() {
     context
         .read<CustomerBloc>()
         .add(GetLogincutomerEvent(selectedClientName: ''));
-    super.initState();
   }
 
   @override
@@ -82,53 +123,90 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                               : _button(
                                   icon: recieptrefundimg,
                                   title: 'Client Request',
-                                  onTap: () {},
+                                  onTap: () {
+                                    context
+                                        .push('/raise_request/client_request');
+                                  },
                                 )
                     ],
                   ),
                   SizedBox(height: 10),
                   widget.userRole == 'CUSTOMER'
-                      ? CustomDropdownButton(
-                          dropdownItems: ['vishal'],
-                          initialValue: selectedCa,
-                          hintText: 'Select your ca',
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select your ca';
+                      ? BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            if (state is GetUserByIdSuccess) {
+                              selectedCa = state.getUserByIdData?.data?.caName;
+                              caId = state.getUserByIdData?.data?.caId
+                                      .toString() ??
+                                  '';
                             }
-                            return null;
+                            return CustomDropdownButton(
+                              dropdownItems: ['$selectedCa'],
+                              initialValue: selectedCa,
+                              hintText: 'Select your ca',
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select your ca';
+                                }
+                                return null;
+                              },
+                            );
                           },
                         )
                       : BlocBuilder<CustomerBloc, CustomerState>(
                           builder: (context, state) {
                             List<LoginCustomerData> customers = [];
+                            List<Content> customers1 = [];
                             if (state is GetLoginCustomerSuccess) {
                               customers = state.getLoginCustomers;
                               debugPrint(
                                   'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
+                            } else if (state is GetCustomerBySubCaSuccess) {
+                              customers1 = state.getCustomers ?? [];
+                              debugPrint(
+                                  'object???>>>>>>>????>>>> ${customers1.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
                             }
                             return MultiSelectSearchableDropdown(
                               hintText: 'Select client',
-                              items: customers
-                                  .map((toElement) =>
-                                      '${toElement.firstName} ${toElement.lastName}')
-                                  .toList(),
+                              items: customers.isEmpty
+                                  ? customers1
+                                      .where((test) =>
+                                          test.userResponse == 'ACCEPTED')
+                                      .map((toElement) =>
+                                          '${toElement.firstName} ${toElement.lastName}')
+                                      .toList()
+                                  : customers
+                                      .map((toElement) =>
+                                          '${toElement.firstName} ${toElement.lastName}')
+                                      .toList(),
                               selectedItems: selectedItems,
                               onChanged: (newSelection) {
                                 setState(() {
-                                  List<String> selectedUsers = customers
-                                      .where((customer) => newSelection.contains(
-                                          '${customer.firstName} ${customer.lastName}'))
-                                      .map((customer) => customer.userId
-                                          .toString()
-                                          .trim()) // Trim whitespace from userId
-                                      .where((userId) => userId
-                                          .isNotEmpty) // Remove empty userId values
-                                      .toList();
-                                  selectedUserIds = selectedUsers
-                                      .map((e) => e.trimLeft())
-                                      .toList();
-                                  debugPrint('selectedItems $selectedUserIds');
+                                  List<int> selectedUsers = customers.isEmpty
+                                      ? customers1
+                                          .where((customer) =>
+                                              newSelection.contains(
+                                                  '${customer.firstName} ${customer.lastName}'))
+                                          .map((customer) => int.parse(customer
+                                              .userId
+                                              .toString()
+                                              .trim()))
+                                          .toList()
+                                      : customers
+                                          .where((customer) =>
+                                              newSelection.contains(
+                                                  '${customer.firstName} ${customer.lastName}'))
+                                          .map((customer) => int.parse(customer
+                                              .userId
+                                              .toString()
+                                              .trim()))
+                                          .toList();
+
+                                  debugPrint('selectedItems $selectedUsers');
+                                  selectedUserIds =
+                                      '[${selectedUsers.join(',')}]';
+                                  debugPrint(
+                                      'selectedUserIds: $selectedUserIds');
                                 });
                               },
                               validator: (value) {
@@ -206,7 +284,9 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                               context.read<RaiseRequestBloc>().add(
                                   SendRaiseRequestEvent(
                                       description: _descriptionController.text,
-                                      receiverId: selectedUserIds,
+                                      receiverId: widget.userRole == 'CUSTOMER'
+                                          ? '[$caId]'
+                                          : selectedUserIds,
                                       files: multipartFiles));
                             }
                           });

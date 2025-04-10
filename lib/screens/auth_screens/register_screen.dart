@@ -6,6 +6,7 @@ import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_dropdown_button.dart';
 import 'package:ca_app/widgets/custom_phone_field.dart';
@@ -237,7 +238,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(height: 20),
                     BlocConsumer<AuthBloc, AuthState>(
                       listener: (context, state) {
-                        if (state is AddUserSuccess) {
+                        if (state is UpdateUserSuccess) {
+                          Utils.toastSuccessMessage(
+                              'Account Created Successfully');
                           context.push('/login');
                         }
                       },

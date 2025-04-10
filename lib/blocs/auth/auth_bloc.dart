@@ -93,6 +93,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       var userResp = await _myRepo.addNewUser(body: body);
       if (userResp?.status?.httpCode == '200') {
+        // Utils.toastSuccessMessage('Accound Created Successfully');
         emit(AddUserSuccess(addUserModel: userResp));
       }
     } catch (e) {
@@ -221,7 +222,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       var resp = await _myRepo.updateProfileImage(body: body);
       if (resp?.status?.httpCode == '200') {
-        emit(UpdateUserSuccess(updateUser: resp));
+        emit(UpdateProfileImgSuccess(updateUser: resp));
+        
         Utils.toastSuccessMessage('Profile Image Updated Successfully');
       }
     } catch (e) {
@@ -233,7 +235,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<UserModel?> _getUserById(
       GetUserByIdEvent event, Emitter<AuthState> emit) async {
     try {
-      emit(AuthLoading());
+      emit(GetUserLoading());
       int? userId = await SharedPrefsClass().getUserId();
       if (userId == null) {
         await Future.delayed(Duration(seconds: 2));

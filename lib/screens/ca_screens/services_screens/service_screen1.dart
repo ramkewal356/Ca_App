@@ -244,7 +244,10 @@ class _ServiceScreen1State extends State<ServiceScreen1> {
                 return Expanded(
                   child: state.getCaServicesList.isEmpty
                       ? Center(
-                          child: Text('No Data'),
+                          child: Text(
+                            'No Data Found',
+                            style: AppTextStyle().redText,
+                          ),
                         )
                       : ListView.builder(
                           controller: _scrollController,

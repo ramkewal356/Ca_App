@@ -70,6 +70,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DropdownButton2(
+                    isExpanded: true,
                     hint: Text(
                       widget.hintText,
                       style: AppTextStyle().hintText,
@@ -78,13 +79,18 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
                     // disabledHint: Text('data'),
                     underline: SizedBox.shrink(),
                     items: uniqueDropdownItems.map((value) {
-                      return DropdownMenuItem(value: value, child: Text(value));
+                      return DropdownMenuItem(
+                          value: value,
+                          child: Text(
+                            value,
+                          ));
                     }).toList(),
+                    
                     buttonStyleData: ButtonStyleData(
                       height: 50,
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
+                          vertical: 10, horizontal: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: ColorConstants.darkGray),
@@ -96,7 +102,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
                       icon: Icon(
                         Icons.keyboard_arrow_down_outlined,
                       ),
-                      iconSize: 24,
+                      iconSize: 20,
                       iconEnabledColor: Colors.black38,
                       iconDisabledColor: Colors.grey,
                     ),
@@ -116,6 +122,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
                         thumbVisibility: WidgetStateProperty.all(true),
                       ),
                     ),
+                    
                     menuItemStyleData: const MenuItemStyleData(
                       height: 50,
                       overlayColor:

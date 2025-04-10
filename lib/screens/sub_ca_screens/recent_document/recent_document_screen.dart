@@ -1,5 +1,6 @@
 import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
+import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/ca_subca_custom_widget/custom_recent_document.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
@@ -11,8 +12,6 @@ import 'package:go_router/go_router.dart';
 
 
 
-// import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
 
 class RecentDocumentScreen extends StatefulWidget {
   final String role;
@@ -66,12 +65,18 @@ class _RecentDocumentScreenState extends State<RecentDocumentScreen> {
           } else if (state is RecentDocumentSuccess) {
             return Padding(
               padding: const EdgeInsets.all(10.0),
-              child: ListView.builder(
+              child: (state.recentDocumnets ?? []).isEmpty
+                  ? Center(
+                      child: Text(
+                        'No Data Found',
+                        style: AppTextStyle().redText,
+                      ),
+                    )
+                  : ListView.builder(
                 controller: _scrollController,
                 itemCount: (state.recentDocumnets ?? []).length +
                     (state.isLastPage ? 0 : 1),
-                // shrinkWrap: true,
-                // physics: NeverScrollableScrollPhysics(),
+            
                 itemBuilder: (context, index) {
                   if (index == state.recentDocumnets?.length) {
                     return Center(
@@ -101,7 +106,11 @@ class _RecentDocumentScreenState extends State<RecentDocumentScreen> {
                         },
                         onTapReRequest: () {
                           context.push('/raise_request',
-                              extra: {'role': widget.role});
+                              extra: {
+                                  'role': widget.role,
+                                  "selectedUser": data?.customerName,
+                                  "selectedId": data?.userId
+                                });
                         },
                       ));
                     },

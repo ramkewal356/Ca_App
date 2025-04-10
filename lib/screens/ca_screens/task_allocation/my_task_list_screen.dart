@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-
 class MyTaskListScreen extends StatefulWidget {
   const MyTaskListScreen({super.key});
 
@@ -50,7 +49,6 @@ class _MyTaskListScreenState extends State<MyTaskListScreen> {
     _fetchAssignTask(isSearch: true);
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -93,25 +91,32 @@ class _MyTaskListScreenState extends State<MyTaskListScreen> {
                               );
                             }
                             var data = state.getSelfAssignTaskList[index];
-                            return BlocBuilder<ActionOnTaskBloc, TaskState>(
-                                buildWhen: (previous, current) {
-                              // Only rebuild the specific item when its status changes
-                              if (current is ActionOnTaskSuccess &&
-                                  current.actionOnTaskData.data?.id ==
-                                      data.id) {
-                                return true;
+                            return BlocConsumer<ActionOnTaskBloc, TaskState>(
+                                listener: (context, state) {
+                              if (state is ActionOnTaskSuccess) {
+                                _fetchAssignTask();
                               }
-                              return false;
-                            }, builder: (context, state) {
-                              String status =
-                                  data.taskResponse ?? ''; // Default from API
-                              if (state is ActionOnTaskSuccess &&
-                                  (state.actionOnTaskData.data?.id ==
-                                      data.id)) {
-                                status =
-                                    state.actionOnTaskData.data?.taskResponse ??
-                                        ''; // Update status if success
-                              }
+                            },
+                                //     buildWhen: (previous, current) {
+                                //   // Only rebuild the specific item when its status changes
+                                //   if (current is ActionOnTaskSuccess &&
+                                //       current.actionOnTaskData.data?.id ==
+                                //           data.id) {
+                                //     return true;
+                                //   }
+                                //   return false;
+                                // },
+
+                                builder: (context, state) {
+                              // String status =
+                              //     data.taskResponse ?? ''; // Default from API
+                              // if (state is ActionOnTaskSuccess &&
+                              //     (state.actionOnTaskData.data?.id ==
+                              //         data.id)) {
+                              //   status =
+                              //       state.actionOnTaskData.data?.taskResponse ??
+                              //           ''; // Update status if success
+                              // }
                               return CommonTaskCardScreen(
                                 isMytaskScreen: true,
                                 taskId: '${data.id}',
@@ -120,7 +125,7 @@ class _MyTaskListScreenState extends State<MyTaskListScreen> {
                                 clientEmail: '${data.customerEmail}',
                                 priority: '${data.priority}',
                                 assignTo: '${data.assignedName}',
-                                status: status,
+                                status: '${data.taskResponse}',
                                 completeLoader: state is ActionOnTaskLoading &&
                                     (state.taskId == data.id.toString()),
                                 onCompleteTap: () {

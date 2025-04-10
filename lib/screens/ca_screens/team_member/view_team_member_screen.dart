@@ -89,7 +89,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
           child: BlocConsumer<AuthBloc, AuthState>(
             listener: (context, state) {},
             builder: (context, state) {
-              if (state is AuthLoading && state is! GetUserByIdSuccess) {
+              if (state is GetUserLoading && state is! GetUserByIdSuccess) {
                 return Center(
                   child: CircularProgressIndicator(
                     color: ColorConstants.buttonColor,

@@ -3,6 +3,8 @@ import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_view_document_by_userid_model.dart';
 import 'package:ca_app/data/models/recent_document_model.dart';
 import 'package:ca_app/data/repositories/document_repository.dart';
+import 'package:ca_app/utils/utils.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +27,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     on<GetViewDocumentEvent>(_getViewDocumentApi);
     on<DownloadDocumentEvent>(_downloadDocument);
     // on<DownloadDocumentFileEvent>(_downloadDocumentFile);
+    on<DocumentUploadEvent>(_uploadDocumentFile);
   }
   Future<void> _getRecentDocumentApi(
       GetRecentDocumentEvent event, Emitter<DocumentState> emit) async {
@@ -141,16 +144,25 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     }
   }
 
-  // Future<void> _downloadDocumentFile(
-  //     DownloadDocumentFileEvent event, Emitter<DocumentState> emit) async {
-  //   try {
-  //     // Perform the download
-  //     await _myRepo.downloadDocumentFile(
-  //         docUrl: event.docUrl, docName: event.docName);
-  //   } catch (e) {
-  //     emit(DocumentError(errorMessage: e.toString()));
-  //   }
-  // }
+  Future<void> _uploadDocumentFile(
+      DocumentUploadEvent event, Emitter<DocumentState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> body = {
+      "userId": userId,
+      "serviceId": event.serviceId,
+      "file": event.file
+    };
+    try {
+      // Perform the download
+      emit(DocumentLoading());
+      var resp = await _myRepo.uploadDocumentApi(body: body);
+      emit(DocumentUploadedSuccess());
+      Utils.toastSuccessMessage('${resp.data?.body}');
+    } catch (e) {
+      emit(DocumentError(errorMessage: e.toString()));
+    }
+  }
 }
 
 class DownloadDocumentBloc extends Bloc<DocumentEvent, DocumentState> {

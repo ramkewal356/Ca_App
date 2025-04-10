@@ -28,11 +28,12 @@ import 'package:ca_app/screens/customer_client_screens/hisoty_screen/history_scr
 import 'package:ca_app/screens/customer_client_screens/my_ca_screen/my_ca_screen.dart';
 import 'package:ca_app/screens/my_profile_screen/profile_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/payment_screen/payment_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/ca_request_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/raise_request_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/request_details_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/request_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/your_request_screen.dart';
+import 'package:ca_app/screens/request_screen/ca_request_screen.dart';
+import 'package:ca_app/screens/request_screen/client_request_screen.dart';
+import 'package:ca_app/screens/request_screen/raise_request_screen.dart';
+import 'package:ca_app/screens/request_screen/request_details_screen.dart';
+import 'package:ca_app/screens/request_screen/request_screen.dart';
+import 'package:ca_app/screens/request_screen/your_request_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/upload_document/upload_document_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support_history_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support_view_screen.dart';
@@ -40,7 +41,6 @@ import 'package:ca_app/screens/starting_screens/splash_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_clients/my_clients_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_services/my_services_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_task/my_task_screen.dart';
-import 'package:ca_app/screens/sub_ca_screens/my_task/task_view_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/recent_document/recent_document_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/sub_ca_dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -143,9 +143,11 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
           path: '/raise_request',
           builder: (context, state) {
-            var userRole = state.extra as Map<String, dynamic>;
+            var extra = state.extra as Map<String, dynamic>;
             return RaiseRequestScreen(
-              userRole: userRole['role'],
+              userRole: extra['role'],
+              selectedUser: extra['selectedUser'],
+              selectedId: extra['selectedId'],
             );
           },
           routes: [
@@ -159,6 +161,12 @@ final GoRouter goRouter = GoRouter(
               path: 'ca_request',
               builder: (context, state) {
                 return CaRequestScreen();
+              },
+            ),
+            GoRoute(
+              path: 'client_request',
+              builder: (context, state) {
+                return ClientRequestScreen();
               },
             ),
           ]),
@@ -187,7 +195,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'history',
               builder: (context, state) {
-                return HistoryScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return HistoryScreen(
+                  userId: data["userId"],
+                );
               },
             ),
             GoRoute(
@@ -231,6 +242,7 @@ final GoRouter goRouter = GoRouter(
                 var data = state.extra as Map<String, dynamic>;
                 return ViewClientScreen(
                   userId: data["userId"],
+                  role: data["role"],
                 );
               },
             ),
@@ -240,6 +252,8 @@ final GoRouter goRouter = GoRouter(
                 var data = state.extra as Map<String, dynamic>;
                 return ViewDocumentScreen(
                   userId: data["userId"],
+                  role: data["role"],
+                  userName: data["userName"],
                 );
               },
             ),
@@ -369,7 +383,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'my_service',
               builder: (context, state) {
-                return MyServicesScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return MyServicesScreen(
+                  caId: data["caId"],
+                );
               },
             ),
             GoRoute(
@@ -384,11 +401,6 @@ final GoRouter goRouter = GoRouter(
                 return MyTaskScreen();
               },
             ),
-            GoRoute(
-              path: 'task_view',
-              builder: (context, state) {
-                return TaskViewScreen();
-              },
-            ),
+           
           ]),
     ]);

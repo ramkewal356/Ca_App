@@ -29,6 +29,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     on<DeleteServiceEvent>(_deleteServiceApi);
     on<CreateServiceEvent>(_createServiceApi);
     on<GetViewServiceEvent>(_getViewService);
+    on<GetServiceByCaIdEvent>(_getServiceByCaIdApi);
   }
   Future<void> _getCaServiceListApi(
       GetCaServiceListEvent event, Emitter<ServiceState> emit) async {
@@ -80,9 +81,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       "pageSize": -1,
     };
     try {
-    
       var resp = await _myRepo.getServiceDropdownListApi(query: query);
-    
 
       if (state is GetCaServiceListSuccess) {
         emit((state as GetCaServiceListSuccess)
@@ -191,8 +190,8 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   Future<void> _getViewService(
       GetViewServiceEvent event, Emitter<ServiceState> emit) async {
     if (isFetching) return;
-
-    if (event.isSearch && !event.isPagination) {
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(ServiceLoading()); // Show loading only for the first page
@@ -206,7 +205,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       "pageNumber": pageNumber,
       "pageSize": pageSize,
       "search": event.searchText,
-      "filter": ''
+      "filter": event.filterTex
     };
     try {
       var resp = await _myRepo.getViewServiceByCaIdApi(query: query);
@@ -222,6 +221,47 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       isLastPage = newData.length < pageSize;
       emit(GetViewServiceSuccess(
           getViewServiceList: allData, isLastPage: isLastPage));
+      pageNumber++;
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  Future<void> _getServiceByCaIdApi(
+      GetServiceByCaIdEvent event, Emitter<ServiceState> emit) async {
+    if (isFetching) return;
+    // bool isNewSearch = (event.isSearch || event.isFilter);
+    if (event.isSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(ServiceLoading()); // Show loading only for the first page
+    }
+
+    if (isLastPage) return;
+    isFetching = true;
+    // int? userId = await SharedPrefsClass().getUserId();
+    Map<String, dynamic> query = {
+      "caId": event.caId,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+      "search": event.searchText,
+    };
+    try {
+      var resp = await _myRepo.getServicesListByCaIdApi(query: query);
+      List<ServicesListData> newData = resp.data?.content ?? [];
+      List<ServicesListData> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetServiceByCaIdSuccess
+                  ? (state as GetServiceByCaIdSuccess).serviceList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetServiceByCaIdSuccess(
+          serviceList: allData, isLastPage: isLastPage));
       pageNumber++;
     } catch (e) {
       emit(ServiceError(errorMessage: e.toString()));

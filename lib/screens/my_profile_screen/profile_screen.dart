@@ -1,4 +1,3 @@
-
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
@@ -34,13 +33,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _pancardController = TextEditingController();
   final TextEditingController _adharcardController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _deginationController = TextEditingController();
+  final TextEditingController _gstController = TextEditingController();
+
   final FocusNode _addharFocus = FocusNode();
   String countryCode = '91';
   String? selectedGender;
   String imageUrl = '';
   String companyLogoUrl = '';
   String userId = '';
- 
+  String role = '';
+
   @override
   void initState() {
     getUser();
@@ -65,6 +69,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (state is UpdateUserSuccess) {
           getUser();
           _addharFocus.unfocus();
+        } else if (state is UpdateProfileImgSuccess) {
+          context.read<ImagePickerBloc>().add(ResetImagePickerEvent());
+          getUser();
+          _addharFocus.unfocus();
         }
       },
       builder: (context, state) {
@@ -82,6 +90,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _adharcardController.text = data?.aadhaarCardNumber ?? '';
           _locationController.text = data?.address ?? '';
           companyLogoUrl = data?.companyLogo ?? '';
+          role = data?.role ?? '';
+          _companyController.text = data?.companyName ?? '';
+          _deginationController.text = data?.designation ?? '';
+          _gstController.text = data?.gst ?? '';
         }
         return CustomLayoutPage(
           appBar: CustomAppbar(
@@ -99,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10),
+                    // SizedBox(height: 10),
                     SizedBox(
                       height: 160,
                       child: Stack(
@@ -110,25 +122,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: double.infinity,
                             decoration: BoxDecoration(
                                 color:
+                                    // ignore: deprecated_member_use
                                     ColorConstants.buttonColor.withOpacity(0.8),
                                 borderRadius: BorderRadius.circular(5)),
                           ),
-                          Positioned(
-                              left: 8,
-                              top: 8,
-                              child: CircleAvatar(
-                                radius: 32,
-                                backgroundColor: ColorConstants.white,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  child: ClipOval(
-                                      child: Image.network(companyLogoUrl)),
-                                ),
-                              )),
-                          Positioned(
-                              right: 10,
-                              top: 10,
-                              child: Row(
+                          role == 'SUBCA'
+                              ? SizedBox.shrink()
+                              : Positioned(
+                                  left: 8,
+                                  top: 8,
+                                  child: CircleAvatar(
+                                    radius: 32,
+                                    backgroundColor: ColorConstants.white,
+                                    child: CircleAvatar(
+                                      radius: 30,
+                                      child: (companyLogoUrl ?? '').isEmpty
+                                          ? Icon(Icons.person)
+                                          : ClipOval(
+                                              child: Image.network(
+                                                  companyLogoUrl)),
+                                    ),
+                                  )),
+                          role == 'SUBCA'
+                              ? SizedBox.shrink()
+                              : Positioned(
+                                  right: 10,
+                                  top: 10,
+                                  child: Row(
                                     children: [
                                       Text(
                                         'Edit Firm Logo..',
@@ -141,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       )
                                     ],
-                              )),
+                                  )),
                           BlocConsumer<ImagePickerBloc, ImagePickerState>(
                             listener: (context, state) {
                               if (state is ImagePickedSuccess) {
@@ -176,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 80),
+                    SizedBox(height: 60),
                     Text('First Name', style: AppTextStyle().labletext),
                     SizedBox(height: 5),
                     TextformfieldWidget(
@@ -199,9 +219,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
                       hintText: 'Enter email id',
-                      // validator: (email) {
-                      //   return ValidatorClass.validateEmail(email);
-                      // },
                     ),
                     SizedBox(height: 10),
                     Text('Mobile No', style: AppTextStyle().labletext),
@@ -258,6 +275,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         return null;
                       },
                     ),
+                    role == 'SUBCA' ? SizedBox.shrink() : SizedBox(height: 10),
+                    role == 'SUBCA'
+                        ? SizedBox.shrink()
+                        : Text(role == 'CA' ? 'Firm Name' : 'Company Name',
+                            style: AppTextStyle().labletext),
+                    role == 'SUBCA' ? SizedBox.shrink() : SizedBox(height: 5),
+                    role == 'SUBCA'
+                        ? SizedBox.shrink()
+                        : TextformfieldWidget(
+                            readOnly: true,
+                            fillColor: ColorConstants.white,
+                            controller: _companyController,
+                            hintText: 'Enter company name',
+                          ),
+                    role == 'SUBCA' ? SizedBox(height: 10) : SizedBox.shrink(),
+                    role == 'SUBCA'
+                        ? Text('Designation', style: AppTextStyle().labletext)
+                        : SizedBox.shrink(),
+                    role == 'SUBCA' ? SizedBox(height: 5) : SizedBox.shrink(),
+                    role == 'SUBCA'
+                        ? TextformfieldWidget(
+                            readOnly: true,
+                            fillColor: ColorConstants.white,
+                            controller: _deginationController,
+                            hintText: 'Enter degination',
+                          )
+                        : SizedBox.shrink(),
                     SizedBox(height: 10),
                     Text('Pan Card', style: AppTextStyle().labletext),
                     SizedBox(height: 5),
@@ -275,6 +319,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         return null;
                       },
                     ),
+                    role == 'CA' ? SizedBox(height: 10) : SizedBox.shrink(),
+                    role == 'CA'
+                        ? Text('GstNumber', style: AppTextStyle().labletext)
+                        : SizedBox.shrink(),
+                    role == 'CA' ? SizedBox(height: 5) : SizedBox.shrink(),
+                    role == 'CA'
+                        ? TextformfieldWidget(
+                            readOnly: true,
+                            fillColor: ColorConstants.white,
+                            controller: _gstController,
+                            hintText: 'Enter gst number',
+                          )
+                        : SizedBox.shrink(),
                     SizedBox(height: 10),
                     Text('Aadhar Card', style: AppTextStyle().labletext),
                     SizedBox(height: 5),

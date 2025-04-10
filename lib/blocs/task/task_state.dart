@@ -28,7 +28,14 @@ class GetAssignTaskSuccess extends TaskState {
   @override
   List<Object> get props => [getAssignTaskList, isLastPage];
 }
-
+class GetTaskByAssignIdSuccess extends TaskState {
+  final List<AssignTaskData> getTaskList;
+  final bool isLastPage;
+  const GetTaskByAssignIdSuccess(
+      {required this.getTaskList, required this.isLastPage});
+  @override
+  List<Object> get props => [getTaskList, isLastPage];
+}
 class TaskError extends TaskState {
   final String errorMessage;
 
@@ -62,7 +69,7 @@ class ActionOnTaskLoading extends TaskState {
 }
 
 class TaskUploadDocumentSuccess extends TaskState {
-  final TaskDocumentUploadModel taskDocumentUploadModel;
+  final DocumentUploadModel taskDocumentUploadModel;
 
   const TaskUploadDocumentSuccess({required this.taskDocumentUploadModel});
   @override

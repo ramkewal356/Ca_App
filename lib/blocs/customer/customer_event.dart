@@ -51,7 +51,22 @@ class GetCustomerByCaIdEvent extends CustomerEvent {
         pageSize ?? 0
       ];
 }
-
+class GetCustomerBySubCaEvent extends CustomerEvent {
+  final String searchText;
+  final bool isSearch;
+  final bool isPagination;
+  final int? pageNumber;
+  final int? pageSize;
+  const GetCustomerBySubCaEvent(
+      {required this.searchText,
+      required this.isSearch,
+      required this.isPagination,
+      this.pageNumber,
+      this.pageSize});
+  @override
+  List<Object> get props =>
+      [searchText, isSearch, isPagination, pageNumber ?? 0, pageSize ?? 0];
+}
 class GetCustomerByCaIdForTableEvent extends CustomerEvent {
   final String searchText;
   final bool isSearch;

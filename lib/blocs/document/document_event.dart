@@ -64,3 +64,12 @@ class DownloadDocumentFileEvent extends DocumentEvent {
   @override
   List<Object> get props => [docUrl, docName];
 }
+
+class DocumentUploadEvent extends DocumentEvent {
+  final String serviceId;
+  final List<MultipartFile> file;
+
+  const DocumentUploadEvent({this.serviceId = '', required this.file});
+  @override
+  List<Object> get props => [serviceId, file];
+}

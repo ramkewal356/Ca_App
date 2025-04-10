@@ -1,5 +1,6 @@
 import 'package:ca_app/blocs/permission/permission_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
+import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
@@ -61,7 +62,14 @@ class _PermissionHistoryScreenState extends State<PermissionHistoryScreen> {
               } else if (state is PermissionError) {
                 return Center(child: Text('data'));
               } else if (state is GetPermissionHistorySuccess) {
-                return ListView.builder(
+                return state.getPermissionHistoryList.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No Data Found',
+                          style: AppTextStyle().redText,
+                        ),
+                      )
+                    : ListView.builder(
                   controller: _scrollController,
                   itemCount: state.getPermissionHistoryList.length +
                       (state.isLastPage ? 0 : 1),

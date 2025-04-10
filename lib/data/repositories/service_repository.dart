@@ -30,6 +30,26 @@ class ServiceRepository {
       rethrow;
     }
   }
+  //****  Get Services List By CAID API ****//
+  Future<GetServicesListModel> getServicesListByCaIdApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getServicesListByIdUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('ServiceResponse ${response?.data}');
+      return GetServicesListModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
 
   //****  Get Services Dropdown List API ****//
   Future<GetServiceAndSubServiceListModel> getServiceDropdownListApi(

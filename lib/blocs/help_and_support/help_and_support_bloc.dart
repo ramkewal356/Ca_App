@@ -47,8 +47,8 @@ class HelpAndSupportBloc
   Future<void> _getContactByUserIdApi(
       GetContactByUserIdEvent event, Emitter<HelpAndSupportState> emit) async {
     if (isFetching) return;
-
-    if (!event.isPagination) {
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(HelpAndSupportLoading());
@@ -61,12 +61,12 @@ class HelpAndSupportBloc
       "userId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "search": "",
-      "filter": ""
+      "search": event.searchText,
+      "filter": event.filterText
     };
     try {
       var resp = await _myRepo.getContactByUserId(query: query);
-      List<ContactData> newData = resp.data ?? [];
+      List<ContactData> newData = resp.data?.content ?? [];
       List<ContactData> allData = (pageNumber == 0)
           ? newData
           : [

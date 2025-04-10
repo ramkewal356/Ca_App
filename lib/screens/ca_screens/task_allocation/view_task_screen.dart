@@ -95,9 +95,9 @@ class _ViewTaskScreenState extends State<ViewTaskScreen> {
                         children: [
                           Expanded(
                             child: _textItem(
-                                lable: 'Assigned CLient',
+                                lable: 'Assigned Client',
                                 value:
-                                    '${data?.taskResponseDto?.assignedName} (#${data?.taskResponseDto?.assignedId})'),
+                                    '${data?.taskResponseDto?.customerName} (#${data?.taskResponseDto?.customerId})'),
                           ),
                           Expanded(
                             child: _textItem(

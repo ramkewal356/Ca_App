@@ -1,11 +1,9 @@
-
-
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/action_on_task_model.dart';
-import 'package:ca_app/data/models/get_self_assign_task_model.dart';
+import 'package:ca_app/data/models/get_assign_task_model.dart';
 import 'package:ca_app/data/models/get_view_task_by_taskid_model.dart';
-import 'package:ca_app/data/models/task_upload_document_model.dart';
+import 'package:ca_app/data/models/upload_document_model.dart';
 import 'package:ca_app/data/repositories/task_repository.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';
@@ -26,6 +24,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<GetAssignTaskEvent>(_getAssignTaskListApi);
     on<GetViewTaskDetailsEvent>(_getViewTaskDetailsApi);
     on<TaskUploadDocumentEvent>(_taskDocumentUploadApi);
+    on<GetTaskByAssignIdEvent>(_getTaskListByAssignIdApi);
   }
   Future<void> _getSelfAssignTaskListApi(
       GetSelfAssignTaskEvent event, Emitter<TaskState> emit) async {
@@ -111,6 +110,48 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     }
   }
 
+  Future<void> _getTaskListByAssignIdApi(
+      GetTaskByAssignIdEvent event, Emitter<TaskState> emit) async {
+    if (isFetching) return;
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(TaskLoading()); // Show loading only for the first page
+    }
+    if (isLastPage) return;
+    isFetching = true;
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('created by Id.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {
+      "assignedId": userId,
+      "search": event.searchText,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+      "filter": event.filterText
+    };
+    try {
+      var resp = await _myRepo.getTaskByAssignedIdApi(query: query);
+      List<AssignTaskData> newData = resp.data?.content ?? [];
+      List<AssignTaskData> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetTaskByAssignIdSuccess
+                  ? (state as GetTaskByAssignIdSuccess).getTaskList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetTaskByAssignIdSuccess(
+          getTaskList: allData, isLastPage: isLastPage));
+      pageNumber++;
+    } catch (e) {
+      emit(TaskError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
+    }
+  }
+
   Future<void> _getViewTaskDetailsApi(
       GetViewTaskDetailsEvent event, Emitter<TaskState> emit) async {
     Map<String, dynamic> query = {"taskId": event.taskId};
@@ -155,7 +196,7 @@ class CreateNewTaskBloc extends Bloc<TaskEvent, TaskState> {
       "name": event.taskName,
       "priority": event.priority,
       "description": event.description,
-      "assignedId": event.assignedId,
+      "assignedId": event.assignedId == 0 ? userId : event.assignedId,
       "customerId": event.customerId,
       "assigneeId": userId
     };
@@ -184,7 +225,7 @@ class ActionOnTaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       emit(ActionOnTaskLoading(taskId: event.taskId));
       var resp = await _myRepo.actionOnTaskApi(body: body);
-      Utils.toastSuccessMessage('Task Completed Succussfully');
+      Utils.toastSuccessMessage(resp.data?.body ?? '');
       emit(ActionOnTaskSuccess(actionOnTaskData: resp));
     } catch (e) {
       emit(TaskError(errorMessage: e.toString()));

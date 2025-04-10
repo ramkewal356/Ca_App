@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         context.pushReplacement('/subca_dashboard');
                       } else if (state.loginModel?.data?.role == 'CUSTOMER') {
                         context.pushReplacement('/customer_dashboard');
-                      } else {}
+                      }
                      
                       Utils.toastSuccessMessage('Login Successfully');
                     }

@@ -56,7 +56,10 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
     BlocProvider.of<AuthBloc>(context).add(GetUserByIdEvent());
     await _fetchCustomersData(isFilter: true);
     await _getRecentDocument();
-   
+    _getDashboardData();
+  }
+
+  void _getDashboardData() {
     context.read<DashboardBloc>().add(GetCaDashboardEvent());
   }
 
@@ -65,8 +68,6 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
         .read<DocumentBloc>()
         .add(GetRecentDocumentEvent(isPagination: isPagination));
   }
-
- 
 
   Future<void> _fetchCustomersData({bool isFilter = false}) async {
     int? useId = await SharedPrefsClass().getUserId();
@@ -80,7 +81,6 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
         isSearch: false));
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
@@ -90,11 +90,10 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             ? state.getUserByIdData // Cast to GetUserByIdModel?
             : null;
         var customerSate = context.watch<CustomerBloc>().state;
-        List<Content>? getCustomers =
-            customerSate is GetCustomerByCaIdSuccess
-                ? customerSate.getCustomers
-                : null;
-      
+        List<Content>? getCustomers = customerSate is GetCustomerByCaIdSuccess
+            ? customerSate.getCustomers
+            : null;
+
         var documentState = context.watch<DocumentBloc>().state;
         List<DocContent>? getRecentDocument =
             documentState is RecentDocumentSuccess
@@ -105,7 +104,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             (dashboardState is GetCaDashboardSuccess)
                 ? dashboardState.getCaDashboardData
                 : null;
-       
+
         return Scaffold(
           backgroundColor: ColorConstants.white,
           appBar: CustomAppbar(
@@ -167,7 +166,6 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                       (onValue) async {
                     await _fetchCustomersData(isFilter: true);
                   });
-                  
                 }
               },
               {
@@ -178,6 +176,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                     debugPrint('bnbmnbm??????????????????????');
                     await _fetchCustomersData(isFilter: true);
                     await _getRecentDocument();
+                    _getDashboardData();
                   });
                 }
               },
@@ -189,8 +188,10 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                       .push('/ca_dashboard/team_member')
                       .then((onValue) async {
                     debugPrint('bnbmnbm??????????????????????');
-                    await _fetchCustomersData(isFilter: true);
-                    // _fetchTeamMembers(isFilter: true);
+                    // await _fetchCustomersData(isFilter: true);
+                    // // _fetchTeamMembers(isFilter: true);
+                    // _getDashboardData();
+                    _getUserDetails();
                   });
                 }
               },
@@ -334,30 +335,28 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () {
-                                            context
-                                                .push(
-                                                    '/ca_dashboard/team_member')
-                                                .then((onValue) async {
-                                              debugPrint(
-                                                  'bnbmnbm??????????????????????');
+                                            onTap: () {
+                                              context
+                                                  .push(
+                                                      '/ca_dashboard/team_member')
+                                                  .then((onValue) async {
+                                                debugPrint(
+                                                    'bnbmnbm??????????????????????');
                                                 _getUserDetails();
                                                 // await _fetchCustomersData(
                                                 //     isFilter: true);
                                                 // _fetchTeamMembers(isFilter: true);
-                                            });
-                                          },
+                                              });
+                                            },
                                             child: DashboardCard(
-                                                icon: Icon(
-                                                  Icons.groups,
-                                                  color: ColorConstants.white,
-                                                ),
+                                              icon: Icon(
+                                                Icons.groups,
+                                                color: ColorConstants.white,
+                                              ),
                                               total:
                                                   '${getCaDashboardData?.data?.totalTeamMember}',
-                                                lable: 'Team Member',
-                                            )
-                                           
-                                        ),
+                                              lable: 'Team Member',
+                                            )),
                                         GestureDetector(
                                           onTap: () {
                                             context
@@ -391,6 +390,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                     color:
                                         // ignore: deprecated_member_use
                                         ColorConstants.darkGray
+                                            // ignore: deprecated_member_use
                                             .withOpacity(0.6)),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Padding(
@@ -569,7 +569,10 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                             onTapReRequest: () {
                                               context.push('/raise_request',
                                                   extra: {
-                                                    'role': 'CA'
+                                                    'role': 'CA',
+                                                    "selectedUser":
+                                                        data?.customerName,
+                                                    "selectedId": data?.userId
                                                   }).then((onValue) async {
                                                 await _fetchCustomersData(
                                                     isFilter: true);

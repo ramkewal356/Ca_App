@@ -63,7 +63,25 @@ class GetCustomerByCaIdSuccess extends CustomerState {
   @override
   List<Object> get props => [getCustomers ?? [], totalCustomer, isLastPage];
 }
+class GetCustomerBySubCaSuccess extends CustomerState {
+  final List<Content>? getCustomers;
+  final int totalCustomer;
+  final bool isLastPage;
+  const GetCustomerBySubCaSuccess(
+      {required this.getCustomers,
+      required this.totalCustomer,
+      required this.isLastPage});
+  GetCustomerBySubCaSuccess copyWith(
+      {List<Content>? getCustomers, int? totalCustomer, bool? isLastPage}) {
+    return GetCustomerBySubCaSuccess(
+        getCustomers: getCustomers ?? this.getCustomers,
+        totalCustomer: totalCustomer ?? this.totalCustomer,
+        isLastPage: isLastPage ?? this.isLastPage);
+  }
 
+  @override
+  List<Object> get props => [getCustomers ?? [], totalCustomer, isLastPage];
+}
 class GetCustomerByCaIdForTableSuccess extends CustomerState {
   final List<Content> customers;
   final int currentPage;

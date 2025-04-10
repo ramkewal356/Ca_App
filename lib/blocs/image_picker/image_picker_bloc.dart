@@ -18,6 +18,9 @@ class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
   ImagePickerBloc() : super(ImagePickerInitial()) {
     on<PickImageEvent>(_onPickImage);
     // on<UpdateProfileImageEvent>(_onUpdateProfileImage);
+    on<ResetImagePickerEvent>((event, emit) {
+      emit(ImagePickerInitial());
+    });
   }
   Future<void> _onPickImage(
       PickImageEvent event, Emitter<ImagePickerState> emit) async {
@@ -51,9 +54,13 @@ class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
           // Step 3: Compress the Image
           var compressedFile = await _compressImage(File(croppedFile.path));
           if (event.isProfileImgChange) {
-            emit(ImagePickedSuccess(imageFile: compressedFile));
+            emit(ImagePickedSuccess(
+              imageFile: compressedFile,
+            ));
           } else {
-            emit(ImagePickedSuccess(companyImage: compressedFile));
+            emit(ImagePickedSuccess(
+              companyImage: compressedFile,
+            ));
           }
           // Emit success state with the picked image
         } else {
@@ -63,12 +70,13 @@ class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
         emit(ProfileImageError(message: "Image picking canceled"));
       }
     } catch (e) {
+      debugPrint('error......$e');
       emit(ProfileImageError(message: e.toString()));
       Utils.toastErrorMessage(e.toString());
     }
   }
 
-  Future<File> _compressImage(File file) async {
+  Future<File?> _compressImage(File file) async {
     final dir = await Directory.systemTemp.createTemp();
     final targetPath = '${dir.path}/temp.jpg';
     final result1 = await FlutterImageCompress.compressAndGetFile(
@@ -77,8 +85,10 @@ class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
       quality: 85, // Adjust quality as needed
       format: CompressFormat.jpeg,
     );
-    final File result = File(result1?.path ?? '');
+    if (result1 == null) {
+      return null; // compression failed
+    }
 
-    return result; // Return the File
+    return File(result1.path);
   }
 }

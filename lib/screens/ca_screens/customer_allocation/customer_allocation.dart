@@ -186,6 +186,10 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                       builder: (context, state) {
                         return CommonButtonWidget(
                           buttonWidth: 120,
+                          disable: (selectedRowIndex == 0 ||
+                                  selectedRowIndex == null)
+                              ? true
+                              : false,
                           loader: state is AssignCustomerLoading,
                           buttonTitle: 'Assign',
                           onTap: () {
