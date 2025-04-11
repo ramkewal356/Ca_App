@@ -2,12 +2,12 @@ import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:flutter/material.dart';
 
-class CustomFilterPopup extends StatefulWidget {
+class CustomFilterPopupWidget extends StatefulWidget {
   final Map<String, String> filterOptions; // UI label to return value
   final ValueChanged<String> onFilterChanged;
   final String title;
 
-  const CustomFilterPopup({
+  const CustomFilterPopupWidget({
     super.key,
     required this.filterOptions,
     required this.onFilterChanged,
@@ -15,10 +15,11 @@ class CustomFilterPopup extends StatefulWidget {
   });
 
   @override
-  State<CustomFilterPopup> createState() => _CustomFilterPopupState();
+  State<CustomFilterPopupWidget> createState() =>
+      _CustomFilterPopupWidgetState();
 }
 
-class _CustomFilterPopupState extends State<CustomFilterPopup> {
+class _CustomFilterPopupWidgetState extends State<CustomFilterPopupWidget> {
   late Map<String, bool> filters;
   late String _filterTitle;
 

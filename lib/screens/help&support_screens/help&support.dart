@@ -75,6 +75,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                   controller: _subjectController,
                   focusNode: _focusNode2,
                   hintText: 'Subject',
+                  textLength: 50,
                   validator: (p0) {
                     if (p0 == null || p0.isEmpty) {
                       return 'Please enter subject';
@@ -86,6 +87,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                 TextformfieldWidget(
                   maxLines: 5,
                   minLines: 5,
+                  textLength: 500,
                   controller: _messageController,
                   focusNode: _focusNode3,
                   hintText: 'Message',

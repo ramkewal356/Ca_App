@@ -1,14 +1,11 @@
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
-import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_list_tile_card.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-import 'package:ca_app/widgets/custom_text_info.dart';
-import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

@@ -13,6 +13,7 @@ import 'package:ca_app/widgets/custom_filter_popup.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_list_tile_card.dart';
 import 'package:ca_app/widgets/custom_multi_select_dropdown.dart';
+import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +43,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   };
   List<String> selectedItems = [];
   List<int> selectedUserIds = [];
+  String title = 'Occurence';
   @override
   void initState() {
     super.initState();
@@ -74,9 +76,16 @@ class _RemindersScreenState extends State<RemindersScreen> {
   void _onFilterChanged1(String value) {
     setState(() {
       selectedOccurence = value;
+      title = value == '' ? 'Occurence' : filtersList[value] ?? '';
     });
     _fetchReminder(isFilter: true);
   }
+  Map<String, String> filtersList = {
+    "All": '',
+    "Weekly": 'WEEKLY',
+    "Monthly": 'MONTHALY',
+    "Yearly": 'YEARLY',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +121,11 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           onFilterChanged: _onFilterChanged,
                         ),
                         SizedBox(width: 10),
-                        FilterPopup(onFilterChanged: _onFilterChanged1)
+                        CustomFilterPopupWidget(
+                            title: title,
+                            filterOptions: filtersList,
+                            onFilterChanged: _onFilterChanged1),
+                        // FilterPopup(onFilterChanged: _onFilterChanged1)
                       ],
                     ),
                   ),

@@ -10,15 +10,14 @@ import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_modal.dart';
 import 'package:ca_app/widgets/custom_dropdown_button.dart';
+import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-
 class AssignTaskListScreen extends StatefulWidget {
-  
   const AssignTaskListScreen({super.key});
 
   @override
@@ -40,6 +39,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
   };
   String filterText = '';
   String searchText = '';
+  String filterTitle = 'All';
   String? selectedSubCaName;
   String? selectedClientName;
   String? selectedPriority;
@@ -85,6 +85,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
   void _onFilterChanged(String value) {
     setState(() {
       filterText = value;
+      filterTitle = value == '' ? "All" : filtersList[value] ?? '';
     });
     _fetchAssignTask(isFilter: true);
   }
@@ -93,6 +94,13 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
     _fetchAssignTask(isFilter: true);
   }
 
+  Map<String, String> filtersList = {
+    "All": '', // Default selection
+    "Not-Started": '0',
+    "In-Progress": '3',
+    "Cancelled": '1',
+    "Completed": '2'
+  };
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -109,14 +117,11 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                 ),
               ),
               SizedBox(width: 5),
-              // CustomFilterPopup(
-              //   // filterTitle: 'All',
-              //   filterIcon: Icon(Icons.filter_list_rounded),
-              //   filterItems: ['All', 'Active', 'Inactive'],
-              //   selectedFilters: selectedFilter,
-              //   onFilterChanged: (value) {},
-              // ),
-              FilterPopup(onFilterChanged: _onFilterChanged),
+              CustomFilterPopupWidget(
+                  title: filterTitle,
+                  filterOptions: filtersList,
+                  onFilterChanged: _onFilterChanged),
+             
               SizedBox(width: 10),
               CustomBottomsheetModal(
                   buttonHieght: 48,
@@ -181,9 +186,9 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                             (test) =>
                                                 '${test.firstName} ${test.lastName}' ==
                                                 p0,
-                                            orElse: () => Datum(userId: -1),
+                                            orElse: () => Datum(id: -1),
                                           )
-                                          .userId;
+                                          .id;
                                     }
                                   });
                                   context.read<TeamMemberBloc>().add(
@@ -387,140 +392,6 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
           },
         )
       ],
-    );
-  }
-}
-
-class FilterPopup extends StatefulWidget {
-  final ValueChanged<String> onFilterChanged;
-
-  const FilterPopup({super.key, required this.onFilterChanged});
-
-  @override
-  State<FilterPopup> createState() => _FilterPopupState();
-}
-
-class _FilterPopupState extends State<FilterPopup> {
-  Map<String, bool> filters = {
-    "All": true, // Default selection
-    "Not-Started": false,
-    "In-Progress": false,
-    "Cancelled": false,
-    "Completed": false
-  };
-
-  String _filterTitle = "All"; // Default title
-
-  void _updateSelection(String filter, bool? value, StateSetter setStatePopup) {
-    // Reset all filters to false first
-    filters.updateAll((key, _) => false);
-
-    // Set only the selected filter to true
-    filters[filter] = value ?? false;
-
-    // Update filter title
-    setStatePopup(() {});
-    setState(() {
-      _filterTitle = filter;
-    });
-
-    // Apply filters & send correct numeric value
-    _applyFilters();
-  }
-
-  void _applyFilters() {
-    String filterValue;
-
-    if (filters["All"] == true) {
-      filterValue = '';
-    } else if (filters["Not-Started"] == true) {
-      filterValue = '0';
-    } else if (filters["In-Progress"] == true) {
-      filterValue = '3';
-    } else if (filters["Cancelled"] == true) {
-      filterValue = '1';
-    } else if (filters["Completed"] == true) {
-      filterValue = '2';
-    } else {
-      filterValue = ''; // Default if no filter is selected
-    }
-
-    // Callback to parent widget
-    widget.onFilterChanged(filterValue);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      position: PopupMenuPosition.under,
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      constraints: BoxConstraints(minWidth: 150, maxWidth: 150),
-      offset: Offset(0, 0),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Row(
-          children: [
-            Text(
-              _filterTitle,
-              style: TextStyle(fontSize: 14, color: Colors.black),
-            ),
-            SizedBox(width: 5),
-            Icon(Icons.filter_list_rounded),
-          ],
-        ),
-      ),
-      onSelected: (value) {},
-      itemBuilder: (BuildContext context) {
-        return <PopupMenuEntry<String>>[
-          PopupMenuItem(
-            padding: EdgeInsets.zero,
-            enabled: false,
-            child: StatefulBuilder(
-              builder: (context, setStatePopup) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    "All",
-                    "Not-Started",
-                    "In-Progress",
-                    "Cancelled",
-                    "Completed"
-                  ].map((filter) {
-                    return _buildCheckListTile(
-                      context,
-                      filter,
-                      filters[filter] ?? false,
-                      (value) => _updateSelection(filter, value, setStatePopup),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-          ),
-        ];
-      },
-    );
-  }
-
-  Widget _buildCheckListTile(BuildContext context, String title, bool? value,
-      void Function(bool?)? onChanged) {
-    return CheckboxListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-      activeColor: ColorConstants.buttonColor,
-      controlAffinity: ListTileControlAffinity.leading,
-      visualDensity: VisualDensity(horizontal: -4),
-      value: value,
-      title: Text(
-        title,
-        style: AppTextStyle().lableText,
-      ),
-      onChanged: onChanged,
     );
   }
 }

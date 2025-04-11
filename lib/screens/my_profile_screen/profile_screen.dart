@@ -136,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     backgroundColor: ColorConstants.white,
                                     child: CircleAvatar(
                                       radius: 30,
-                                      child: (companyLogoUrl ?? '').isEmpty
+                                      child: companyLogoUrl.isEmpty
                                           ? Icon(Icons.person)
                                           : ClipOval(
                                               child: Image.network(

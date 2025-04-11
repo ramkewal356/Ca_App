@@ -84,7 +84,7 @@ class _ViewPreviousScreenState extends State<ViewPreviousScreen> {
               ),
             ),
             SizedBox(width: 10),
-            CustomFilterPopup(
+            CustomFilterPopupWidget(
                 title: filterTitle,
                 filterOptions: {
                   "All": "",

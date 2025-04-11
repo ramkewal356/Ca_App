@@ -2,7 +2,6 @@ import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
-import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
@@ -103,27 +102,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           }
                           var data = state.viewDocumnets?[index];
                           return CustomCard(
-                              //     child: ListTile(
-                              //   contentPadding: EdgeInsets.zero,
-                              //   title: Text('${data?.docName}'),
-                              //   subtitle: Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: [
-
-                              //       Text('bnvnbvbnvbnvbnvbn'),
-                              //       Text('bnvnbvbnvbnvbnvbn'),
-                              //       Text(dateFormate(data?.createdDate)),
-                              //     ],
-                              //   ),
-                              //   trailing: Column(
-                              //     children: [
-
-                              //       Text('${data?.uuid}'),
-                              //       Spacer(),
-                              //       Icon(Icons.download)
-                              //     ],
-                              //   ),
-                              // )
+                            
                               child: Column(
                             children: [
                            

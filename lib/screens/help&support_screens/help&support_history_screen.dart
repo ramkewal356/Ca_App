@@ -96,7 +96,7 @@ class _HelpAndSupportHistoryScreenState
                   ),
                 ),
                 SizedBox(width: 10),
-                CustomFilterPopup(
+                CustomFilterPopupWidget(
                     title: filterTitle,
                     filterOptions: {
                       "All": "",

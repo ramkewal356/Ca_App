@@ -4,13 +4,11 @@ import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
-import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/subca_dashboard_model.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
-import 'package:ca_app/widgets/ca_custom_card.dart';
 import 'package:ca_app/widgets/ca_subca_custom_widget/custom_recent_document.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
@@ -160,10 +158,10 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                 "imgUrl": Icons.info,
                 "label": "My CA",
                 "onTap": () {
-                  context.push('/myCa', extra: {"caId": user?.data?.caId}).then(
-                      (onValue) {
-                    _getUserDetails();
-                  });
+                  // context.push('/myCa', extra: {"caId": user?.data?.caId}).then(
+                  //     (onValue) {
+                  //   _getUserDetails();
+                  // });
                 }
               },
               {
@@ -179,9 +177,9 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                 "imgUrl": Icons.task_outlined,
                 "label": "My Task",
                 "onTap": () {
-                  context.push('/subca_dashboard/my_task').then((onValue) {
-                    _getUserDetails();
-                  });
+                  // context.push('/subca_dashboard/my_task').then((onValue) {
+                  //   _getUserDetails();
+                  // });
                 }
               },
               {
@@ -240,32 +238,61 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                                   spacing: 10,
                                   runSpacing: 10,
                                   children: [
-                                    DashboardCard(
-                                      icon: Icon(
-                                        Icons.miscellaneous_services_outlined,
-                                        color: ColorConstants.white,
+                                    GestureDetector(
+                                      onTap: () {
+                                        context.push(
+                                            '/subca_dashboard/my_service',
+                                            extra: {
+                                              "caId": user?.data?.caId
+                                            }).then((onValue) {
+                                          _getUserDetails();
+                                        });
+                                      },
+                                      child: DashboardCard(
+                                        icon: Icon(
+                                          Icons.miscellaneous_services_outlined,
+                                          color: ColorConstants.white,
+                                        ),
+                                        total:
+                                            '${getDashboardData?.data?.totalService}',
+                                        lable: 'Services',
                                       ),
-                                      total:
-                                          '${getDashboardData?.data?.totalService}',
-                                      lable: 'Services',
                                     ),
-                                    DashboardCard(
-                                      icon: Icon(
-                                        Icons.groups,
-                                        color: ColorConstants.white,
+                                    GestureDetector(
+                                      onTap: () {
+                                        context
+                                            .push('/subca_dashboard/my_client')
+                                            .then((onValue) {
+                                          _getUserDetails();
+                                        });
+                                      },
+                                      child: DashboardCard(
+                                        icon: Icon(
+                                          Icons.groups,
+                                          color: ColorConstants.white,
+                                        ),
+                                        total:
+                                            '${getDashboardData?.data?.totalClient}',
+                                        lable: 'Clients',
                                       ),
-                                      total:
-                                          '${getDashboardData?.data?.totalClient}',
-                                      lable: 'Clients',
                                     ),
-                                    DashboardCard(
-                                      icon: Icon(
-                                        Icons.task,
-                                        color: ColorConstants.white,
+                                    GestureDetector(
+                                      onTap: () {
+                                        context
+                                            .push('/subca_dashboard/my_task')
+                                            .then((onValue) {
+                                          _getUserDetails();
+                                        });
+                                      },
+                                      child: DashboardCard(
+                                        icon: Icon(
+                                          Icons.task,
+                                          color: ColorConstants.white,
+                                        ),
+                                        total:
+                                            '${getDashboardData?.data?.totalTask}',
+                                        lable: 'Task',
                                       ),
-                                      total:
-                                          '${getDashboardData?.data?.totalTask}',
-                                      lable: 'Task',
                                     ),
                                   ]),
                             ),

@@ -6,6 +6,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
+import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +32,11 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
   final ScrollController _scrollController = ScrollController();
   String selectedFilter = '';
   String searchQuery = '';
-  Map<String, bool> filters = {
-    "All": false,
-    "General": false,
-    "Service": false,
+  String filterTitle = 'All';
+  Map<String, String> filtersList = {
+    "All": '',
+    "General": '-1',
+    "Service": '1',
   };
 
   @override
@@ -76,6 +78,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
   void _onFilterChanged(String value) {
     setState(() {
       selectedFilter = value;
+      filterTitle = value == '' ? 'All' : filtersList[value] ?? '';
       debugPrint('selected Item $selectedFilter');
     });
     _getViewDocument(isFilter: true);
@@ -105,16 +108,14 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
                     ),
                   ),
                   SizedBox(width: 10),
-                  // CustomFilterPopup(
-                  //     // filterTitle: '',
-                  //     filterIcon: Icon(Icons.filter_list_rounded),
-                  //     filterItems: ['All', 'General', 'Service'],
-                  //     selectedFilters: filters,
-                  //     onFilterChanged: _onFilterChanged),
+                  CustomFilterPopupWidget(
+                      title: filterTitle,
+                      filterOptions: filtersList,
+                      onFilterChanged: _onFilterChanged)
 
-                  FilterPopup(
-                    onFilterChanged: _onFilterChanged,
-                  ),
+                  // FilterPopup(
+                  //   onFilterChanged: _onFilterChanged,
+                  // ),
                 ])),
             BlocConsumer<DocumentBloc, DocumentState>(
               listener: (context, state) {
@@ -281,127 +282,6 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class FilterPopup extends StatefulWidget {
-  final ValueChanged<String> onFilterChanged;
-
-  const FilterPopup({super.key, required this.onFilterChanged});
-
-  @override
-  State<FilterPopup> createState() => _FilterPopupState();
-}
-
-class _FilterPopupState extends State<FilterPopup> {
-  Map<String, bool> filters = {
-    "All": true, // Default selection
-    "General": false,
-    "Service": false,
-  };
-
-  String _filterTitle = "All"; // Default title
-
-  void _updateSelection(String filter, bool? value, StateSetter setStatePopup) {
-    // Reset all filters to false first
-    filters.updateAll((key, _) => false);
-
-    // Set only the selected filter to true
-    filters[filter] = value ?? false;
-
-    // Update filter title
-    setStatePopup(() {});
-    setState(() {
-      _filterTitle = filter;
-    });
-
-    // Apply filters & send correct numeric value
-    _applyFilters();
-  }
-
-  void _applyFilters() {
-    String filterValue;
-
-    if (filters["All"] == true) {
-      filterValue = '';
-    } else if (filters["General"] == true) {
-      filterValue = '-1';
-    } else if (filters["Service"] == true) {
-      filterValue = '1';
-    } else {
-      filterValue = ''; // Default if no filter is selected
-    }
-
-    // Callback to parent widget
-    widget.onFilterChanged(filterValue);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      position: PopupMenuPosition.under,
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      constraints: BoxConstraints(minWidth: 150, maxWidth: 150),
-      offset: Offset(0, 0),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Row(
-          children: [
-            Text(
-              _filterTitle,
-              style: TextStyle(fontSize: 14, color: Colors.black),
-            ),
-            SizedBox(width: 5),
-            Icon(Icons.filter_list_rounded),
-          ],
-        ),
-      ),
-      onSelected: (value) {},
-      itemBuilder: (BuildContext context) {
-        return <PopupMenuEntry<String>>[
-          PopupMenuItem(
-            padding: EdgeInsets.zero,
-            enabled: false,
-            child: StatefulBuilder(
-              builder: (context, setStatePopup) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: ["All", "General", "Service"].map((filter) {
-                    return _buildCheckListTile(
-                      context,
-                      filter,
-                      filters[filter] ?? false,
-                      (value) => _updateSelection(filter, value, setStatePopup),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-          ),
-        ];
-      },
-    );
-  }
-
-  Widget _buildCheckListTile(BuildContext context, String title, bool? value,
-      void Function(bool?)? onChanged) {
-    return CheckboxListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-      activeColor: ColorConstants.buttonColor,
-      controlAffinity: ListTileControlAffinity.leading,
-      value: value,
-      title: Text(
-        title,
-        style: AppTextStyle().lableText,
-      ),
-      onChanged: onChanged,
     );
   }
 }
