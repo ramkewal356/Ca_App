@@ -86,7 +86,7 @@ class _AssignServiceToClientState extends State<AssignServiceToClient> {
               children: [
                 (widget.clientId ?? '').isNotEmpty
                     ? SizedBox.shrink()
-                    : Text('First Name', style: AppTextStyle().labletext),
+                    : Text('Select Client', style: AppTextStyle().labletext),
                 (widget.clientId ?? '').isNotEmpty
                     ? SizedBox.shrink()
                     : SizedBox(height: 5),
