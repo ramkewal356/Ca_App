@@ -1,3 +1,4 @@
+import 'package:ca_app/data/models/action_on_task_model.dart';
 import 'package:ca_app/data/models/get_document_by_requestid_model.dart';
 import 'package:ca_app/data/models/get_request_by_receiverId_model.dart';
 import 'package:ca_app/data/models/get_request_model.dart';
@@ -104,6 +105,26 @@ class RaiseRequestRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('view request of Team Response ${response?.data}');
       return GetRequestModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  Future<GetActionOnTaskModel> unreadToReadStatusApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.unreadToReadStatusUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('view request of Team Response ${response?.data}');
+      return GetActionOnTaskModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

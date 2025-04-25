@@ -193,10 +193,29 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                     context.push('/ca_dashboard/logs_history',
                                         extra: {"uponId": data?.id.toString()});
                                   } else if (value == 'Permission') {
+                                    final allPermissions = [
+                                      ...?data?.permissions?.clientActivities,
+                                      ...?data?.permissions?.documentActivities,
+                                      ...?data?.permissions?.general,
+                                      ...?data?.permissions?.taskActivities,
+                                    ];
+
+                                    final selectedPermissionNamesList =
+                                        allPermissions
+                                            .map((p) => p.permissionName ?? '')
+                                            .toList();
+
+                                    final selectedPermissionIdsList =
+                                        allPermissions
+                                            .map((p) => p.id ?? 0)
+                                            .toList();
                                     context.push('/ca_dashboard/permission',
                                         extra: {
                                           "subCaId": data?.id,
-                                          "permissions": data?.permissions
+                                          "selectedPermissionNamesList":
+                                              selectedPermissionNamesList,
+                                          "selectedPermissionIdsList":
+                                              selectedPermissionIdsList,
                                         }).then((onValue) {
                                       _getUserDetails();
                                       _fetchTeamMembers();

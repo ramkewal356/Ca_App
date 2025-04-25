@@ -50,12 +50,13 @@ class CustomerRepository {
   }
   //**** Assigne customer API ****//
   Future<AssignCustomerModel> assignCustomer(
-      {required Map<String, dynamic> query}) async {
+      {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
         baseURL: EndPoints.baseUrl,
         endURL: EndPoints.assignCustomerUrl,
-        queryParameters: query,
+        // queryParameters: query,
+        body: body,
         bodyType: HttpBodyType.JSON,
         methodType: HttpMethodType.PUT);
     try {
@@ -68,6 +69,8 @@ class CustomerRepository {
       rethrow;
     }
   }
+
+  
 
   //**** Get Customer by SUBCA Id API ****//
   Future<GetLoginCustomerModel> getLoginCustomerByCaId(
@@ -89,4 +92,25 @@ class CustomerRepository {
       rethrow;
     }
   }
+  //**** Get Customer by SUBCA Id API ****//
+  Future<GetCustomerModel> getCustomerByCaIdAndSubCaIdApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getCustomerbyCaidAndSubCaId,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('GetCustomerByCaIdResponse ${response?.data}');
+      return GetCustomerModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
 }

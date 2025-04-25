@@ -16,6 +16,7 @@ import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AssignTaskListScreen extends StatefulWidget {
   const AssignTaskListScreen({super.key});
@@ -29,8 +30,12 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _taskNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _dateController = TextEditingController();
 
+  final ScrollController _scrollController = ScrollController();
+  DateTime? _selectedDate;
+  String selectedDateTime = '';
+  // DateFormat('yyyy-MM-dd').format(DateTime.now());
   String countryCode = '91';
   Map<String, bool> selectedFilter = {
     "All": false,
@@ -101,6 +106,23 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
     "Cancelled": '1',
     "Completed": '2'
   };
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(), // default to today
+      firstDate: DateTime.now(), // earliest date
+      lastDate: DateTime(2101), // latest date
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = DateFormat('dd-MM-yyyy').format(picked);
+        selectedDateTime = DateFormat('yyyy-MM-dd').format(picked);
+        debugPrint('selected Date:- $selectedDateTime');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -121,7 +143,6 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                   title: filterTitle,
                   filterOptions: filtersList,
                   onFilterChanged: _onFilterChanged),
-             
               SizedBox(width: 10),
               CustomBottomsheetModal(
                   buttonHieght: 48,
@@ -282,6 +303,24 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                             },
                           ),
                           SizedBox(height: 10),
+                          Text('Due Date', style: AppTextStyle().labletext),
+                          SizedBox(height: 5),
+                          TextformfieldWidget(
+                            controller: _dateController,
+                            hintText: 'due date',
+                            readOnly: true,
+                            suffixIcons: Icon(Icons.calendar_month),
+                            onTap: _pickDate,
+                            validator: (p0) {
+                              if (p0 == null ||
+                                  p0.isEmpty ||
+                                  selectedDateTime.isEmpty) {
+                                return 'Please select due date';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 10),
                           Text('Description', style: AppTextStyle().labletext),
                           SizedBox(height: 5),
                           TextformfieldWidget(
@@ -320,7 +359,8 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                             priority: selectedPriority ?? '',
                                             taskName: _taskNameController.text,
                                             description:
-                                                _descriptionController.text));
+                                                _descriptionController.text,
+                                            dueDate: selectedDateTime));
                                   }
                                 },
                               );
@@ -370,6 +410,11 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                             priority: '${data.priority}',
                             assignTo: '${data.assignedName}',
                             status: '${data.taskResponse}',
+                            disabledownload:
+                                (data.taskResponse == 'COMPLETED' ||
+                                        data.taskResponse == 'REJECTED')
+                                    ? true
+                                    : false,
                             onUploadTap: () {
                               context.push('/ca_dashboard/upload_task_document',
                                   extra: {"taskId": data.id}).then((onValue) {

@@ -142,7 +142,7 @@ class GetPermissionBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
     try {
       emit(TeamMemberLoading());
       var resp = await _myRepo.getPermissionList(query: query);
-      emit(GetPermissionListSuccess(getPermissionList: resp.data ?? []));
+      emit(GetPermissionListSuccess(getPermissionList: resp.data));
     } catch (e) {
       emit(TeamMemberError(errorMessage: e.toString()));
     }

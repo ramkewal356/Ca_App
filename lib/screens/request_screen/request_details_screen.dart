@@ -84,6 +84,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       ],
                     ),
                     SizedBox(height: 5),
+
+                    _textItem(
+                        lable: 'READ STATUS',
+                        value: data?.requestResponse?.readStatus == null
+                            ? 'N/A'
+                            : '${data?.requestResponse?.readStatus}'),
+                    SizedBox(height: 5),
                     Text(
                       'Desciption : ',
                       style: AppTextStyle().hintText,

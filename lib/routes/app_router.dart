@@ -154,7 +154,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'your_request',
               builder: (context, state) {
-                return YourRequestScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return YourRequestScreen(
+                  role: data["role"],
+                );
               },
             ),
             GoRoute(
@@ -166,7 +169,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'client_request',
               builder: (context, state) {
-                return ClientRequestScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return ClientRequestScreen(
+                  role: data["role"],
+                );
               },
             ),
           ]),
@@ -356,13 +362,15 @@ final GoRouter goRouter = GoRouter(
               builder: (context, state) {
                 final extra = state.extra as Map<String, dynamic>? ?? {};
                 final int subCaId = extra["subCaId"] as int;
-                final List<Permission> selectedPermission =
-                    (extra["permissions"] as List<Permission>?)
-                            ?.cast<Permission>() ??
-                        [];
+                final List<String> selectedPermissionNamesList =
+                    List<String>.from(
+                        extra["selectedPermissionNamesList"] ?? []);
+                final List<int> selectedPermissionIdsList =
+                    List<int>.from(extra["selectedPermissionIdsList"] ?? []);
                 return GetPermissionScreen(
                   subCaId: subCaId,
-                  selectedPermission: selectedPermission,
+                  selectedPermissionIdsList: selectedPermissionIdsList,
+                  selectedPermissionNamesList: selectedPermissionNamesList,
                 );
               },
             ),
@@ -401,6 +409,5 @@ final GoRouter goRouter = GoRouter(
                 return MyTaskScreen();
               },
             ),
-           
           ]),
     ]);

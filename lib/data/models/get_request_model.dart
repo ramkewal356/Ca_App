@@ -106,6 +106,7 @@ class RequestData {
   bool? isResolved;
   bool? requestStatus;
   String? requestDocumentStatus;
+  String? readStatus;
 
   RequestData({
     this.requestId,
@@ -119,6 +120,7 @@ class RequestData {
     this.isResolved,
     this.requestStatus,
     this.requestDocumentStatus,
+      this.readStatus
   });
 
   factory RequestData.fromJson(Map<String, dynamic> json) => RequestData(
@@ -133,6 +135,7 @@ class RequestData {
         isResolved: json["isResolved"],
         requestStatus: json["requestStatus"],
         requestDocumentStatus: json["requestDocumentStatus"],
+      readStatus: json["readStatus"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -147,6 +150,7 @@ class RequestData {
         "isResolved": isResolved,
         "requestStatus": requestStatus,
         "requestDocumentStatus": requestDocumentStatus,
+        "readStatus": readStatus
       };
 }
 

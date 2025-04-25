@@ -3,9 +3,7 @@ import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/data/models/get_permission_model.dart';
-import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
-import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
@@ -16,16 +14,21 @@ import 'package:go_router/go_router.dart';
 
 class GetPermissionScreen extends StatefulWidget {
   final int subCaId;
-  final List<Permission> selectedPermission;
+  final List<String> selectedPermissionNamesList;
+  final List<int> selectedPermissionIdsList;
 
   const GetPermissionScreen(
-      {super.key, required this.selectedPermission, required this.subCaId});
+      {super.key,
+      required this.selectedPermissionNamesList,
+      required this.selectedPermissionIdsList,
+      required this.subCaId});
 
   @override
   State<GetPermissionScreen> createState() => _GetPermissionScreenState();
 }
 
 class _GetPermissionScreenState extends State<GetPermissionScreen> {
+  late Map<String, List<ClientActivityData>> permissionMap;
   List<String> selectedPermissionNames = [];
   List<int> selectedPermissionIds = [];
   List<bool> selectedItems = [];
@@ -34,62 +37,41 @@ class _GetPermissionScreenState extends State<GetPermissionScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeSelectedPermissions();
+    // _initializeSelectedPermissions();
+    selectedPermissionNames = widget.selectedPermissionNamesList;
+    selectedPermissionIds = widget.selectedPermissionIdsList;
     context.read<GetPermissionBloc>().add(GetPermissionEvent());
   }
 
-  void _initializeSelectedPermissions() {
-    selectedPermissionNames =
-        widget.selectedPermission.map((e) => e.permissionName ?? '').toList();
-    selectedPermissionIds =
-        widget.selectedPermission.map((e) => e.id ?? 0).toList();
-  }
+  // void _initializeSelectedPermissions() {
+   
+  // }
 
-  void _toggleSelectAll(bool? value, List<PermissionData> itemsList) {
-    setState(() {
-      isSelectAll = value ?? false;
-      selectedItems = List.generate(itemsList.length, (index) => isSelectAll);
-      if (isSelectAll) {
-        selectedPermissionNames = List.generate(
-            itemsList.length, (index) => '${itemsList[index].permissionName}');
-        selectedPermissionIds = List.generate(
-          itemsList.length,
-          (index) => itemsList[index].id ?? 0,
-        );
-        debugPrint('selece>>> $selectedPermissionNames');
-        debugPrint('selece>>>id $selectedPermissionIds');
-      } else {
-        selectedPermissionNames.clear();
-        selectedPermissionIds.clear();
-        debugPrint('selece>>> $selectedPermissionNames');
-        debugPrint('selece>>>wid $selectedPermissionNames');
-      }
-    });
-  }
+  
 
   void _toggleItemSelection(
-      int index, bool? value, String permissionName, int permissionId) {
+      bool? value, String permissionName, int permissionId) {
     setState(() {
-      selectedItems[index] = value ?? false;
-      if (selectedItems[index]) {
+      if (value == true) {
+        if (!selectedPermissionNames.contains(permissionName)) {
         selectedPermissionNames.add(permissionName);
+        }
+        if (!selectedPermissionIds.contains(permissionId)) {
         selectedPermissionIds.add(permissionId);
-        debugPrint('selece>>> $selectedPermissionNames');
-        debugPrint('selece>>>id $selectedPermissionIds');
+        }
       } else {
         selectedPermissionNames.remove(permissionName);
         selectedPermissionIds.remove(permissionId);
-        debugPrint('selece>>> $selectedPermissionNames');
-        debugPrint('selece>>>id $selectedPermissionIds');
       }
-      isSelectAll = selectedItems.every((element) => element);
     });
-    debugPrint('selece>>> $selectedPermissionNames');
-  }
 
+    debugPrint('Selected Names: $selectedPermissionNames');
+    debugPrint('Selected IDs: $selectedPermissionIds');
+  }
   @override
   Widget build(BuildContext context) {
-    debugPrint('sdsvxvcxvcv ${widget.subCaId}');
+    debugPrint(
+        'sdsvxvcxvc selected items $selectedPermissionNames $selectedPermissionIds');
     return CustomLayoutPage(
       appBar: CustomAppbar(title: 'Get Permission', backIconVisible: true),
       child: BlocBuilder<GetPermissionBloc, TeamMemberState>(
@@ -99,57 +81,83 @@ class _GetPermissionScreenState extends State<GetPermissionScreen> {
           } else if (state is GetPermissionListSuccess) {
             final permissionList = state.getPermissionList;
 
-            // Initialize selectedItems based on already selected permissions
-            if (selectedItems.isEmpty) {
-              selectedItems = List.generate(permissionList.length, (index) {
-                return selectedPermissionNames
-                    .contains(permissionList[index].permissionName);
-              });
-              isSelectAll = selectedItems.every((element) => element);
-            }
+         
+            permissionMap = {
+              if (permissionList?.clientActivities != null)
+                "Client Activities": permissionList?.clientActivities ?? [],
+              if (permissionList?.documentActivities != null)
+                "Document Activities": permissionList?.documentActivities ?? [],
+              if (permissionList?.general != null)
+                "General": permissionList?.general ?? [],
+              if (permissionList?.taskActivities != null)
+                "Task Activities": permissionList?.taskActivities ?? [],
+            };
+            return ListView(padding: const EdgeInsets.all(16), children: [
+              ...permissionMap.entries.map((entry) {
+                final category = entry.key;
+                final subPermissions = entry.value;
 
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  // "Select All" Checkbox
-                  CheckboxListTile(
-                    activeColor: ColorConstants.buttonColor,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: Text(
-                      "Select All",
-                      style: AppTextStyle().labletext,
-                    ),
-                    value: isSelectAll,
-                    onChanged: (value) =>
-                        _toggleSelectAll(value, permissionList),
-                  ),
-                  Divider(
-                    height: 10,
-                    thickness: 2,
-                  ),
-                  // List of Checkboxes
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: permissionList.length,
-                      itemBuilder: (context, index) {
-                        return CheckboxListTile(
-                          activeColor: ColorConstants.buttonColor,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title:
-                              Text(permissionList[index].permissionName ?? ''),
-                          value: selectedItems[index],
-                          onChanged: (value) => _toggleItemSelection(
-                              index,
-                              value,
-                              permissionList[index].permissionName ?? '',
-                              permissionList[index].id ?? 0),
-                        );
+                final allChecked = subPermissions
+                    .every((e) => selectedPermissionIds.contains(e.id));
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CheckboxListTile(
+                      activeColor: ColorConstants.buttonColor,
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(category,
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      value: allChecked,
+                      // value: false,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          for (var perm in subPermissions) {
+                            perm.isSelected = value ?? false;
+                            _toggleItemSelection(
+                                value, perm.permissionName ?? '', perm.id ?? 0);
+                          }
+                          // categorySelected[category] = value ?? false;
+                        });
                       },
                     ),
-                  ),
-                  BlocConsumer<AuthBloc, AuthState>(
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32),
+                      child: Column(
+                        children: subPermissions.map((perm) {
+                          // final index = entry.key;
+                          // final perm = entry.value;
+                          return CheckboxListTile(
+                            contentPadding: EdgeInsets.zero,
+                            activeColor: ColorConstants.buttonColor,
+                            dense: true,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            title: Text(perm.permissionName ?? ''),
+                            value: selectedPermissionIds.contains(perm.id),
+                            // value: perm.isSelected ?? false,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                perm.isSelected = value ?? false;
+                                _toggleItemSelection(value,
+                                    perm.permissionName ?? '', perm.id ?? 0);
+                                // categorySelected[category] =
+                                //     subPermissions.every((e) => e.isSelected);
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                  ],
+                );
+              }).toList(),
+              SizedBox(
+                height: 20,
+              ),
+              BlocConsumer<AuthBloc, AuthState>(
                     listener: (context, state) {
                       if (state is UpdateUserSuccess) {
                         context.pop();
@@ -168,10 +176,11 @@ class _GetPermissionScreenState extends State<GetPermissionScreen> {
                         },
                       );
                     },
-                  )
-                ],
-              ),
+              )
+            ]
             );
+
+          
           }
           return Container();
         },

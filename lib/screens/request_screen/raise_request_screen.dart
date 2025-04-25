@@ -106,7 +106,8 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                         icon: scheduleSendimg,
                         title: 'Your request',
                         onTap: () {
-                          context.push('/raise_request/your_request');
+                          context.push('/raise_request/your_request',
+                              extra: {"role": widget.userRole});
                         },
                       ),
                       SizedBox(width: 10),
@@ -125,7 +126,9 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                                   title: 'Client Request',
                                   onTap: () {
                                     context
-                                        .push('/raise_request/client_request');
+                                        .push(
+                                        '/raise_request/client_request',
+                                        extra: {"role": widget.userRole});
                                   },
                                 )
                     ],

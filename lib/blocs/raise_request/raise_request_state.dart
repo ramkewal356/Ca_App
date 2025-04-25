@@ -59,6 +59,14 @@ class GetRequestDetailsSuccess extends RaiseRequestState {
   List<Object> get props => [getDocumentByRequestIdData];
 }
 
+class UnReadToReadStatusSuccess extends RaiseRequestState {
+  final GetActionOnTaskModel changeStatus;
+
+  const UnReadToReadStatusSuccess({required this.changeStatus});
+  @override
+  List<Object> get props => [changeStatus];
+}
+
 class RaiseRequestError extends RaiseRequestState {
   final String errorMessage;
 

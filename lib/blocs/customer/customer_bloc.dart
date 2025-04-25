@@ -170,7 +170,38 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       "search": event.searchText,
       "pageNumber": event.pageNumber,
       "pageSize": event.pageSize,
-      "filter": true
+      "filter": true,
+      if ((event.subCaId ?? '').isNotEmpty) "subCaId": event.subCaId
+    };
+    try {
+      emit(CustomerLoading());
+
+      var resp = ((event.subCaId ?? '').isNotEmpty)
+          ? await _myRepo.getCustomerByCaIdAndSubCaIdApi(query: query)
+          : await _myRepo.getCustomerByCaId(query: query);
+      allCustomers = resp.data?.content ?? [];
+      debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $resp');
+      emit(GetCustomerByCaIdForTableSuccess(
+          customers: allCustomers,
+          currentPage: event.pageNumber,
+          rowsPerPage: event.pageSize,
+          totalCustomer: resp.data?.totalElements ?? 0));
+    } catch (e) {
+      emit(CustomerError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getCustomerByCaIdAndSubCaIdForTableApi(
+      GetCustomerByCaIdForTableEvent event, Emitter<CustomerState> emit) async {
+    int? userId = await SharedPrefsClass().getUserId();
+    debugPrint('userId.,.,.,.,.,.,., $userId');
+    Map<String, dynamic> query = {
+      "caId": userId,
+      "search": event.searchText,
+      "pageNumber": event.pageNumber,
+      "pageSize": event.pageSize,
+      "filter": true,
+      "subCaId": event.subCaId
     };
     try {
       emit(CustomerLoading());
@@ -210,6 +241,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       emit(CustomerError(errorMessage: e.toString()));
     }
   }
+  
 
   void _onNextPage(NextPage event, Emitter<CustomerState> emit) {
     if (state is GetCustomerBySubCaIdSuccess) {
@@ -296,14 +328,14 @@ class AssigneCustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       AssignCustomerEvent event, Emitter<CustomerState> emit) async {
     int? userId = await SharedPrefsClass().getUserId();
     debugPrint('userId.,.,.,.,.,.,., $userId');
-    Map<String, dynamic> query = {
-      "caId": userId,
-      "customerId": event.customerId,
-      "subCAId": event.subCaId,
+    Map<String, dynamic> body = {
+      "caId": userId.toString(),
+      "customerIds": event.customerId,
+      "subCaId": event.subCaId,
     };
     try {
       emit(AssignCustomerLoading());
-      await _myRepo.assignCustomer(query: query);
+      await _myRepo.assignCustomer(body: body);
       Utils.toastSuccessMessage('Customer Assigned Successfully');
       emit(AssignCustomerSuccess());
     } catch (e) {

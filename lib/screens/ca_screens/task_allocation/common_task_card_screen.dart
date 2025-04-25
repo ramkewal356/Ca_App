@@ -4,7 +4,6 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 
-
 class CommonTaskCardScreen extends StatelessWidget {
   final bool isMytaskScreen;
   final String taskId;
@@ -19,6 +18,7 @@ class CommonTaskCardScreen extends StatelessWidget {
   final VoidCallback? onViewTap;
   final bool completeLoader;
   final bool uploadLoader;
+  final bool disabledownload;
   const CommonTaskCardScreen(
       {super.key,
       this.isMytaskScreen = false,
@@ -33,7 +33,8 @@ class CommonTaskCardScreen extends StatelessWidget {
       this.onCompleteTap,
       this.onViewTap,
       this.completeLoader = false,
-      this.uploadLoader = false});
+      this.uploadLoader = false,
+      this.disabledownload = false});
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +96,7 @@ class CommonTaskCardScreen extends StatelessWidget {
                           loaderColor: ColorConstants.buttonColor,
                           tileStyle: AppTextStyle().textButtonStyle,
                           buttonTitle: 'Upload',
+                          disable: disabledownload,
                           loader: uploadLoader,
                           onTap: onUploadTap),
                   CommonButtonWidget(

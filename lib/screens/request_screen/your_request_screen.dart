@@ -13,7 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class YourRequestScreen extends StatefulWidget {
-  const YourRequestScreen({super.key});
+  final String role;
+  const YourRequestScreen({super.key, required this.role});
 
   @override
   State<YourRequestScreen> createState() => _YourRequestScreenState();
@@ -124,13 +125,22 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                                     ],
                                   ),
                                   CustomTextItem(
-                                      lable: 'CLIENT (RECEIVER)',
+                                      lable: widget.role == 'CUSTOMER'
+                                          ? 'CA (SENDER)'
+                                          : 'CLIENT (RECEIVER)',
                                       value:
                                           '${data.receiverName ?? ''}(#${data.receiverId})'),
                                   CustomTextItem(
-                                      lable: 'CA (SENDER)',
+                                      lable: widget.role == 'CUSTOMER'
+                                          ? 'CLIENT (RECEIVER)'
+                                          : 'CA (SENDER)',
                                       value:
                                           '${data.senderName}(#${data.senderId})'),
+                                  CustomTextItem(
+                                      lable: 'READ STATUS',
+                                      value: data.readStatus == null
+                                          ? 'N/A'
+                                          : '${data.readStatus}'),
                                   CustomTextItem(
                                       lable: 'DESCRIPTION',
                                       value: '${data.text}'),
@@ -147,6 +157,14 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                                                       state.requsetId,
                                               buttonTitle: 'View',
                                               onTap: () {
+                                                if (widget.role == 'CUSTOMER') {
+                                                  context
+                                                      .read<ChangeStatusBloc>()
+                                                      .add(UnreadToReadStatusEvent(
+                                                          requestId:
+                                                              data.requestId ??
+                                                                  0));
+                                                }
                                                 context.push('/request_details',
                                                     extra: {
                                                       "requestId":

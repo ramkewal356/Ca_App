@@ -110,7 +110,7 @@ class RequestResponse {
   int? modifiedDate;
   bool? isResolved;
   bool? requestStatus;
-
+  String? readStatus;
   RequestResponse({
     this.requestId,
     this.text,
@@ -122,6 +122,7 @@ class RequestResponse {
     this.modifiedDate,
     this.isResolved,
     this.requestStatus,
+      this.readStatus
   });
 
   factory RequestResponse.fromJson(Map<String, dynamic> json) =>
@@ -136,6 +137,7 @@ class RequestResponse {
         modifiedDate: json["modifiedDate"],
         isResolved: json["isResolved"],
         requestStatus: json["requestStatus"],
+          readStatus: json["readStatus"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -149,6 +151,7 @@ class RequestResponse {
         "modifiedDate": modifiedDate,
         "isResolved": isResolved,
         "requestStatus": requestStatus,
+        "readStatus": readStatus
       };
 }
 

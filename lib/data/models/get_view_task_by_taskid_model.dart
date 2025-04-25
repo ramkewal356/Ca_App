@@ -122,6 +122,7 @@ class TaskResponseDto {
   String? customerMobile;
   String? priority;
   bool? emailStatus;
+  String? dueDate;
 
   TaskResponseDto({
     this.id,
@@ -147,6 +148,7 @@ class TaskResponseDto {
     this.customerMobile,
     this.priority,
     this.emailStatus,
+      this.dueDate
   });
 
   factory TaskResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -174,6 +176,8 @@ class TaskResponseDto {
         customerMobile: json["customerMobile"],
         priority: json["priority"],
         emailStatus: json["emailStatus"],
+          dueDate: json["dueDate"]
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -200,6 +204,7 @@ class TaskResponseDto {
         "customerMobile": customerMobile,
         "priority": priority,
         "emailStatus": emailStatus,
+        "dueDate": dueDate
       };
 }
 

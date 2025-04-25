@@ -13,7 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class ClientRequestScreen extends StatefulWidget {
-  const ClientRequestScreen({super.key});
+  final String role;
+  const ClientRequestScreen({super.key, required this.role});
 
   @override
   State<ClientRequestScreen> createState() => _ClientRequestScreenState();
@@ -146,6 +147,13 @@ class _ClientRequestScreenState extends State<ClientRequestScreen> {
                                         buttonWidth: 100,
                                         buttonTitle: 'View',
                                         onTap: () {
+                                          if (widget.role == 'SUBCA') {
+                                            context
+                                                .read<ChangeStatusBloc>()
+                                                .add(UnreadToReadStatusEvent(
+                                                    requestId:
+                                                        data.requestId ?? 0));
+                                          }
                                           context.push('/request_details',
                                               extra: {
                                                 "requestId": data.requestId

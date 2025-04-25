@@ -55,10 +55,12 @@ class Data {
   String? caName;
   String? caMobile;
   String? designation;
-  List<Permission>? permissions;
+  String? lastLogin;
+  Permissions? permissions;
   String? companyName;
   String? gst;
   dynamic companyLogo;
+
   List<Service>? services;
 
   Data({
@@ -88,6 +90,7 @@ class Data {
     this.caName,
     this.caMobile,
     this.designation,
+    this.lastLogin,
     this.permissions,
     this.companyName,
     this.gst,
@@ -122,10 +125,10 @@ class Data {
         caName: json["caName"],
         caMobile: json["caMobile"],
         designation: json["designation"],
+        lastLogin: json["lastLogin"],
         permissions: json["permissions"] == null
-            ? []
-            : List<Permission>.from(
-                json["permissions"]!.map((x) => Permission.fromJson(x))),
+            ? null
+            : Permissions.fromJson(json["permissions"]),
         companyName: json["companyName"],
         gst: json["gst"],
         companyLogo: json["companyLogo"],
@@ -162,9 +165,8 @@ class Data {
         "caName": caName,
         "caMobile": caMobile,
         "designation": designation,
-        "permissions": permissions == null
-            ? []
-            : List<dynamic>.from(permissions!.map((x) => x.toJson())),
+        "lastLogin": lastLogin,
+        "permissions": permissions?.toJson(),
         "companyName": companyName,
         "gst": gst,
         "companyLogo": companyLogo,
@@ -174,18 +176,68 @@ class Data {
       };
 }
 
-class Permission {
+class Permissions {
+  List<ClientActivity>? clientActivities;
+  List<ClientActivity>? documentActivities;
+  List<ClientActivity>? general;
+  List<ClientActivity>? taskActivities;
+
+  Permissions({
+    this.clientActivities,
+    this.documentActivities,
+    this.general,
+    this.taskActivities,
+  });
+
+  factory Permissions.fromJson(Map<String, dynamic> json) => Permissions(
+        clientActivities: json["CLIENT_ACTIVITIES"] == null
+            ? []
+            : List<ClientActivity>.from(json["CLIENT_ACTIVITIES"]!
+                .map((x) => ClientActivity.fromJson(x))),
+        documentActivities: json["DOCUMENT_ACTIVITIES"] == null
+            ? []
+            : List<ClientActivity>.from(json["DOCUMENT_ACTIVITIES"]!
+                .map((x) => ClientActivity.fromJson(x))),
+        general: json["GENERAL"] == null
+            ? []
+            : List<ClientActivity>.from(
+                json["GENERAL"]!.map((x) => ClientActivity.fromJson(x))),
+        taskActivities: json["TASK_ACTIVITIES"] == null
+            ? []
+            : List<ClientActivity>.from(json["TASK_ACTIVITIES"]!
+                .map((x) => ClientActivity.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "CLIENT_ACTIVITIES": clientActivities == null
+            ? []
+            : List<dynamic>.from(clientActivities!.map((x) => x.toJson())),
+        "DOCUMENT_ACTIVITIES": documentActivities == null
+            ? []
+            : List<dynamic>.from(documentActivities!.map((x) => x.toJson())),
+        "GENERAL": general == null
+            ? []
+            : List<dynamic>.from(general!.map((x) => x.toJson())),
+        "TASK_ACTIVITIES": taskActivities == null
+            ? []
+            : List<dynamic>.from(taskActivities!.map((x) => x.toJson())),
+      };
+}
+
+class ClientActivity {
   int? id;
   String? permissionName;
   String? type;
+  bool? isSelected;
 
-  Permission({
+  ClientActivity({
     this.id,
     this.permissionName,
     this.type,
+    this.isSelected
   });
 
-  factory Permission.fromJson(Map<String, dynamic> json) => Permission(
+  factory ClientActivity.fromJson(Map<String, dynamic> json) => ClientActivity(
         id: json["id"],
         permissionName: json["permissionName"],
         type: json["type"],

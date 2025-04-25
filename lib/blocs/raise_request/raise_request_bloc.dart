@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/data/models/action_on_task_model.dart';
 import 'package:ca_app/data/models/get_document_by_requestid_model.dart';
 import 'package:ca_app/data/models/get_request_by_receiverId_model.dart';
 import 'package:ca_app/data/models/get_request_model.dart';
@@ -30,7 +31,7 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       SendRaiseRequestEvent event, Emitter<RaiseRequestState> emit) async {
     int? userId = await SharedPrefsClass().getUserId();
     debugPrint('userId.,.,.,.,.,.,., $userId');
-  
+
     Map<String, dynamic> body = {
       "text": event.description,
       "senderId": userId.toString(),
@@ -217,6 +218,25 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       emit(RaiseRequestError(errorMessage: e.toString()));
     } finally {
       isFetching = false;
+    }
+  }
+
+ 
+}
+class ChangeStatusBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
+  final _myRepo = RaiseRequestRepository();
+
+  ChangeStatusBloc() : super(RaiseRequestInitial()) {
+    on<UnreadToReadStatusEvent>(_unreadToreadStatusApi);
+  }
+  Future<void> _unreadToreadStatusApi(
+      UnreadToReadStatusEvent event, Emitter<RaiseRequestState> emit) async {
+    Map<String, dynamic> query = {"requestId": event.requestId};
+    try {
+      var resp = await _myRepo.unreadToReadStatusApi(query: query);
+      emit(UnReadToReadStatusSuccess(changeStatus: resp));
+    } catch (e) {
+      emit(RaiseRequestError(errorMessage: e.toString()));
     }
   }
 }

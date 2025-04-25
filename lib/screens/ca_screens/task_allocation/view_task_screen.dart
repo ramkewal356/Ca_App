@@ -124,18 +124,32 @@ class _ViewTaskScreenState extends State<ViewTaskScreen> {
                         ],
                       ),
                       SizedBox(height: 5),
-                      Text(
-                        'Desciption : ',
-                        style: AppTextStyle().hintText,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _textItem(
+                                lable: 'Due Date',
+                                value: '${data?.taskResponseDto?.dueDate}'),
+                          ),
+                          Expanded(
+                            child: _textItem(
+                                lable: 'Desciption',
+                                value: '${data?.taskResponseDto?.description}'),
+                          )
+                        ],
                       ),
-                      SizedBox(height: 5),
-                      TextformfieldWidget(
-                          readOnly: true,
-                          maxLines: 3,
-                          minLines: 3,
-                          controller: TextEditingController(
-                              text: '${data?.taskResponseDto?.description}'),
-                          hintText: 'Description'),
+                      // Text(
+                      //   'Desciption : ',
+                      //   style: AppTextStyle().hintText,
+                      // ),
+                      // SizedBox(height: 5),
+                      // TextformfieldWidget(
+                      //     readOnly: true,
+                      //     maxLines: 3,
+                      //     minLines: 3,
+                      //     controller: TextEditingController(
+                      //         text: '${data?.taskResponseDto?.description}'),
+                      //     hintText: 'Description'),
                       SizedBox(height: 10),
                       Row(
                         children: [

@@ -46,11 +46,11 @@ class GetDeginationListSuccess extends TeamMemberState {
 }
 
 class GetPermissionListSuccess extends TeamMemberState {
-  final List<PermissionData> getPermissionList;
+  final PermissionData? getPermissionList;
 
   const GetPermissionListSuccess({required this.getPermissionList});
   @override
-  List<Object> get props => [getPermissionList];
+  List<Object> get props => [getPermissionList ?? []];
 }
 
 final class TeamMemberError extends TeamMemberState {

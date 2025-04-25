@@ -12,7 +12,7 @@ String assignCustomerModelToJson(AssignCustomerModel data) =>
 
 class AssignCustomerModel {
   Status? status;
-  Data? data;
+  List<Datum>? data;
 
   AssignCustomerModel({
     this.status,
@@ -22,16 +22,20 @@ class AssignCustomerModel {
   factory AssignCustomerModel.fromJson(Map<String, dynamic> json) =>
       AssignCustomerModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        data: json["data"] == null
+            ? []
+            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status?.toJson(),
-        "data": data?.toJson(),
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
       };
 }
 
-class Data {
+class Datum {
   int? id;
   dynamic userId;
   int? caId;
@@ -42,7 +46,7 @@ class Data {
   dynamic address;
   String? mobile;
   dynamic phone;
-  dynamic panCardNumber;
+  String? panCardNumber;
   dynamic aadhaarCardNumber;
   dynamic gender;
   String? userResponse;
@@ -52,8 +56,9 @@ class Data {
   dynamic profileName;
   dynamic status;
   dynamic countryCode;
+  dynamic reason;
 
-  Data({
+  Datum({
     this.id,
     this.userId,
     this.caId,
@@ -74,9 +79,10 @@ class Data {
     this.profileName,
     this.status,
     this.countryCode,
+    this.reason,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
         userId: json["userId"],
         caId: json["caId"],
@@ -97,6 +103,7 @@ class Data {
         profileName: json["profileName"],
         status: json["status"],
         countryCode: json["countryCode"],
+        reason: json["reason"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -120,6 +127,7 @@ class Data {
         "profileName": profileName,
         "status": status,
         "countryCode": countryCode,
+        "reason": reason,
       };
 }
 

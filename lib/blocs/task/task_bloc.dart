@@ -198,7 +198,8 @@ class CreateNewTaskBloc extends Bloc<TaskEvent, TaskState> {
       "description": event.description,
       "assignedId": event.assignedId == 0 ? userId : event.assignedId,
       "customerId": event.customerId,
-      "assigneeId": userId
+      "assigneeId": userId,
+      "dueDate": event.dueDate
     };
     try {
       emit(TaskLoading());

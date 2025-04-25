@@ -67,6 +67,7 @@ class GetRequestDetailsEvent extends RaiseRequestEvent {
   @override
   List<Object> get props => [requestId];
 }
+
 class GetRequestByReceiverIdEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
@@ -78,4 +79,12 @@ class GetRequestByReceiverIdEvent extends RaiseRequestEvent {
       required this.searchText});
   @override
   List<Object> get props => [isPagination, isSearch, searchText];
+}
+
+class UnreadToReadStatusEvent extends RaiseRequestEvent {
+  final int requestId;
+
+  const UnreadToReadStatusEvent({required this.requestId});
+  @override
+  List<Object> get props => [requestId];
 }

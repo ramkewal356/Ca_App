@@ -62,8 +62,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => GetLoginCustomerBloc()),
         BlocProvider(create: (_) => AssignServiceBloc()),
         BlocProvider(create: (_) => GetPermissionBloc()),
-        BlocProvider(create: (_) => PermissionBloc())
-
+        BlocProvider(create: (_) => PermissionBloc()),
+        BlocProvider(create: (_) => ChangeStatusBloc())
 
 
       ],

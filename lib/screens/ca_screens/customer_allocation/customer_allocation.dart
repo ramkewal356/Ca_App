@@ -24,19 +24,10 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
   final TextEditingController _searchController = TextEditingController();
   ScrollController controller = ScrollController();
 
-  // List<String> selectedItems = [];
+  List<int> selectedRowIds = [];
+  String selectedItems = '';
 
   String? selectedCa;
-  // final List<String> items = [
-  //   "Sarthak",
-  //   "Binni",
-  //   "John",
-  //   "Alex",
-  //   "Emma",
-  //   'fdgfg',
-  //   'hgfhjhgjhg',
-  //   'hghjgvvbv'
-  // ];
 
   int? selectedRowIndex; // Store the selected row index
   int? selectedSubCAId;
@@ -50,14 +41,21 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
     context.read<CustomDropdownBloc>().add(DropdownResetEvent());
   }
 
-  void _onSelectRow(int index) {
+  void _onSelectRow(int rowId) {
     setState(() {
-      if (selectedRowIndex == index) {
-        selectedRowIndex = null; // Deselect if clicking again
+      // if (selectedRowIndex == index) {
+      //   selectedRowIndex = null; // Deselect if clicking again
+      // } else {
+      //   selectedRowIndex = index; // Select new row
+      // }
+      if (selectedRowIds.contains(rowId)) {
+        selectedRowIds.remove(rowId);
       } else {
-        selectedRowIndex = index; // Select new row
+        selectedRowIds.add(rowId);
       }
-      debugPrint('selected id $selectedRowIndex');
+      selectedItems = '[${selectedRowIds.join(',')}]';
+      debugPrint('selected id $selectedRowIds');
+      debugPrint('selected item $selectedItems');
     });
   }
 
@@ -67,14 +65,16 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
         .add(GetSubCaByCaIdEvent(searhText: searchQuery));
   }
 
-  void _fetchCustomer({bool isPagination = false, bool isSearch = false}) {
+  void _fetchCustomer(
+      {bool isPagination = false, bool isSearch = false, String subCaId = ''}) {
     context.read<CustomerBloc>().add(
           GetCustomerByCaIdForTableEvent(
               searchText: searchQuery,
               isPagination: isPagination,
               isSearch: isSearch,
               pageNumber: 0,
-              pageSize: 10),
+              pageSize: 10,
+              subCaId: subCaId),
         );
   }
 
@@ -132,6 +132,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                                 '${test.firstName} ${test.lastName}' == p0)
                             .userId;
                         debugPrint('Selected sub ca id $selectedSubCAId');
+                        _fetchCustomer(subCaId: selectedSubCAId.toString());
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -145,23 +146,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                 SizedBox(height: 10),
                 Text('Select Client', style: AppTextStyle().labletext),
                 SizedBox(height: 5),
-                // MultiSelectSearchableDropdown(
-                //   hintText: 'Select client',
-                //   items: items,
-                //   selectedItems: selectedItems,
-                //   onChanged: (newSelection) {
-                //     setState(() {
-                //       selectedItems = newSelection;
-                //     });
-                //   },
-                //   validator: (value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Please select at least one item';
-                //     }
-                //     return null;
-                //   },
-                // ),
-                // SizedBox(height: 15),
+
                 Row(
                   children: [
                     Expanded(
@@ -178,6 +163,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                           _fetchCustomer();
                           _fetchTeamMembers();
                           selectedCa = null;
+                          selectedRowIds.clear();
                           context
                               .read<CustomDropdownBloc>()
                               .add(DropdownResetEvent());
@@ -186,16 +172,17 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                       builder: (context, state) {
                         return CommonButtonWidget(
                           buttonWidth: 120,
-                          disable: (selectedRowIndex == 0 ||
-                                  selectedRowIndex == null)
-                              ? true
-                              : false,
+                          // disable: (selectedRowIndex == 0 ||
+                          //         selectedRowIndex == null)
+                          //     ? true
+                          //     : false,
+                          disable: selectedRowIds.isEmpty,
                           loader: state is AssignCustomerLoading,
                           buttonTitle: 'Assign',
                           onTap: () {
                             context.read<AssigneCustomerBloc>().add(
                                 AssignCustomerEvent(
-                                    customerId: selectedRowIndex ?? 0,
+                                    customerId: selectedRowIds,
                                     subCaId: selectedSubCAId ?? 0));
                           },
                         );
@@ -243,8 +230,10 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                                               ColorConstants.buttonColor,
                                           visualDensity: VisualDensity(
                                               horizontal: -4, vertical: -4),
-                                          value: selectedRowIndex ==
-                                              toElement.userId,
+                                          // value: selectedRowIndex ==
+                                          //     toElement.userId,
+                                          value: selectedRowIds
+                                              .contains(toElement.userId),
                                           onChanged: (bool? value) {
                                             _onSelectRow(toElement.userId ?? 0);
                                           },

@@ -28,6 +28,8 @@ class EndPoints {
   static var getLoginCustomerUrl = '/customer/get_login_customers_by_caId';
   static var getLoginCustomerBySubCaIdUrl =
       '/customer/get_login_customers_by_caId';
+  static var getCustomerbyCaidAndSubCaId =
+      '/customer/get_customer_by_caId_and_subCaId';
   //Document url
   static var getRecentDocumentUrl =
       '/ca/get_recent_document_uploaded_by_customer';
@@ -66,7 +68,7 @@ class EndPoints {
   static var getRequestOfClientUrl = '/request/get_request_of_clients_by_caId';
   static var getRequestOfTeamUrl = '/request/get_requests_of_subCa_by_caId';
   static var getRequestByReceiverId = '/request/get_request_by_receiverId';
-
+  static var unreadToReadStatusUrl = '/request/unread_to_read_status';
   // Contact Url
   static var addContactUrl = '/contact/add_contact';
   static var getContactByUserIdUrl = '/contact/get_contact_by_userId';

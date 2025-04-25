@@ -158,10 +158,10 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                 "imgUrl": Icons.info,
                 "label": "My CA",
                 "onTap": () {
-                  // context.push('/myCa', extra: {"caId": user?.data?.caId}).then(
-                  //     (onValue) {
-                  //   _getUserDetails();
-                  // });
+                  context.push('/myCa', extra: {"caId": user?.data?.caId}).then(
+                      (onValue) {
+                    _getUserDetails();
+                  });
                 }
               },
               {
@@ -177,9 +177,9 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                 "imgUrl": Icons.task_outlined,
                 "label": "My Task",
                 "onTap": () {
-                  // context.push('/subca_dashboard/my_task').then((onValue) {
-                  //   _getUserDetails();
-                  // });
+                  context.push('/subca_dashboard/my_task').then((onValue) {
+                    _getUserDetails();
+                  });
                 }
               },
               {
