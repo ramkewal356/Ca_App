@@ -19,6 +19,10 @@ class CustomSearchField extends StatelessWidget {
     return TextField(
       controller: controller,
       focusNode: focusNode,
+      onTapOutside: (event) {
+        FocusScope.of(context).unfocus();
+        focusNode?.unfocus();
+      },
       decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           focusedBorder: OutlineInputBorder(

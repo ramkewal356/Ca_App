@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String companyLogoUrl = '';
   String userId = '';
   String role = '';
-
+  bool isEditable = false;
   @override
   void initState() {
     getUser();
@@ -99,6 +99,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
           appBar: CustomAppbar(
             title: 'My Profile',
             backIconVisible: true,
+            actionIcons: [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isEditable = !isEditable;
+                    });
+                  },
+                  icon: isEditable
+                      ? Icon(
+                          Icons.close,
+                          color: ColorConstants.white,
+                        )
+                      : Icon(
+                          Icons.edit_square,
+                          color: ColorConstants.white,
+                        ))
+            ],
           ),
           onRefresh: () async {
             getUser();
@@ -145,7 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   )),
                           role == 'SUBCA'
                               ? SizedBox.shrink()
-                              : Positioned(
+                              : isEditable
+                                  ? Positioned(
                                   right: 10,
                                   top: 10,
                                   child: Row(
@@ -161,7 +179,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       )
                                     ],
-                                  )),
+                                      ))
+                                  : SizedBox.shrink(),
                           BlocConsumer<ImagePickerBloc, ImagePickerState>(
                             listener: (context, state) {
                               if (state is ImagePickedSuccess) {
@@ -188,6 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: ImagePickerWidget(
                                     userImg: imageUrl,
                                     initialImage: null,
+                                    isEditable: isEditable,
                                   ),
                                 )),
                               );
@@ -284,7 +304,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     role == 'SUBCA'
                         ? SizedBox.shrink()
                         : TextformfieldWidget(
-                            readOnly: true,
+                            readOnly: !isEditable
+                                ? true
+                                : _companyController.text.isNotEmpty
+                                    ? true
+                                    : false,
                             fillColor: ColorConstants.white,
                             controller: _companyController,
                             hintText: 'Enter company name',
@@ -337,7 +361,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: 5),
                     TextformfieldWidget(
                       readOnly:
-                          _adharcardController.text.isNotEmpty ? true : false,
+                         !isEditable
+                          ? true
+                          : _adharcardController.text.isNotEmpty
+                              ? true
+                              : false,
                       controller: _adharcardController,
                       focusNode: _addharFocus,
                       hintText: 'xxx-xxxx-yyyyy',
@@ -351,15 +379,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
                     SizedBox(height: 10),
-                    Text('Location', style: AppTextStyle().labletext),
+                    Text('Address', style: AppTextStyle().labletext),
                     SizedBox(height: 5),
                     CustomSearchLocation(
                         controller: _locationController,
                         state: '',
-                        hintText: 'Select location'),
-                    SizedBox(height: 10),
+                        hintText: 'Select address'),
+                
                     SizedBox(height: 20),
-                    BlocConsumer<AuthBloc, AuthState>(
+                    isEditable
+                        ? BlocConsumer<AuthBloc, AuthState>(
                       listener: (context, state) {
                         // if (state is RegisterSuccess) {
                         //   context.push('/login');
@@ -384,11 +413,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     lastName: _lastNameController.text,
                                     panCard: _pancardController.text,
                                     addharCard: _adharcardController.text,
-                                    address: _locationController.text));
+                                              address: _locationController.text,
+                                              companyName:
+                                                  _companyController.text));
                               }
                             });
                       },
-                    )
+                          )
+                        : SizedBox.shrink()
                   ],
                 ),
               ),

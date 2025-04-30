@@ -89,8 +89,10 @@ class _PermissionHistoryScreenState extends State<PermissionHistoryScreen> {
                           children: [
                             Expanded(
                                 child: CustomTextItem(
-                                    lable: 'ID', value: '#${data.id}')),
-                            Text(dateFormate(data.createdAt))
+                                          lable: 'ID',
+                                          value: '#${data.userId}')),
+                                  Text(
+                                      '${dateFormate(data.createdAt)} ${timeFormate(data.createdAt)}')
                           ],
                         ),
                         CustomTextItem(

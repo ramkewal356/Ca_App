@@ -7,13 +7,16 @@ import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class RequestScreen extends StatefulWidget {
-  const RequestScreen({super.key});
+  final String caName;
+  final int caId;
+  const RequestScreen({super.key, required this.caName, required this.caId});
 
   @override
   State<RequestScreen> createState() => _RequestScreenState();
@@ -68,7 +71,7 @@ class _RequestScreenState extends State<RequestScreen> {
                 Expanded(
                   child: CustomSearchField(
                     controller: _searchController,
-                    serchHintText: 'search by id',
+                    serchHintText: 'search by document name & document id',
                     onChanged: _onSearchChanged,
                   ),
                 ),
@@ -81,7 +84,11 @@ class _RequestScreenState extends State<RequestScreen> {
                     buttonTitle: 'Raise request',
                     onTap: () {
                       context.push('/raise_request',
-                          extra: {'role': 'CUSTOMER'}).then((onValue) {
+                          extra: {
+                        'role': 'CUSTOMER',
+                        "selectedUser": widget.caName,
+                        "selectedId": widget.caId
+                      }).then((onValue) {
                         _getRaiseRequest(isSearch: true);
                       });
                     })
@@ -141,12 +148,28 @@ class _RequestScreenState extends State<RequestScreen> {
                                       Text(dateFormate(data.createdDate))
                                     ],
                                   ),
-                                  CustomTextItem(
+                                  CustomTextInfo(
                                       lable: 'CA NAME',
-                                      value: '${data.receiverName}'),
-                                  CustomTextItem(
+                                      value:
+                                          '${data.senderName}(#${data.senderId})'),
+                                  CustomTextInfo(
+                                    lable: 'READ STATUS',
+                                    value: data.readStatus == null
+                                        ? 'N/A'
+                                        : '${data.readStatus}',
+                                    textStyle: data.readStatus == 'READ'
+                                        ? AppTextStyle().getgreenText
+                                        : data.readStatus == 'UNREAD'
+                                            ? AppTextStyle().getredText
+                                            : AppTextStyle().getredText,
+                                  ),
+                                  CustomTextInfo(
+                                   
                                       lable: 'DOCUMENT REQUEST',
-                                      value: '${data.text}'),
+                                    value: '${data.text}',
+                                    maxLine: 1,
+                                    inOneLinetext: true,
+                                  ),
                                   SizedBox(height: 10),
                                   Row(
                                     mainAxisAlignment:
@@ -171,6 +194,13 @@ class _RequestScreenState extends State<RequestScreen> {
                                           buttonheight: 45,
                                           buttonTitle: 'View',
                                           onTap: () {
+                                          
+                                            context
+                                                .read<ChangeStatusBloc>()
+                                                .add(UnreadToReadStatusEvent(
+                                                    requestId:
+                                                        data.requestId ?? 0));
+                                        
                                             context.push('/request_details',
                                                 extra: {
                                                   "requestId": data.requestId

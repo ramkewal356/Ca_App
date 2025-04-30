@@ -136,7 +136,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                             focusNode: _searchFocusNode,
                             controller: _searchController,
                             serchHintText:
-                                'Search..by service name,subservice name,id',
+                                'Search client by id name,email',
                             onChanged: _onSearchChanged,
                           ),
                         ),

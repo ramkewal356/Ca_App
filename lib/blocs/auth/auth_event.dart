@@ -69,6 +69,7 @@ class UpdateUserEvent extends AuthEvent {
   final String? addharCard;
   final String? address;
   final List<int>? permissionIds;
+  final String? companyName;
 
   const UpdateUserEvent(
       {required this.userId,
@@ -81,7 +82,8 @@ class UpdateUserEvent extends AuthEvent {
       this.panCard,
       this.addharCard,
       this.address,
-      this.permissionIds});
+      this.permissionIds,
+      this.companyName});
   @override
   List<Object> get props => [
         userId,
@@ -94,7 +96,8 @@ class UpdateUserEvent extends AuthEvent {
         panCard ?? '',
         addharCard ?? '',
         address ?? '',
-        permissionIds ?? []
+        permissionIds ?? [],
+        companyName ?? ''
       ];
 }
 

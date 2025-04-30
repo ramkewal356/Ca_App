@@ -13,6 +13,7 @@ class CustomDrawer extends StatefulWidget {
   final String emailAddress;
   final String profileUrl;
   final List<Map<String, dynamic>> menuItems;
+  final String lastLogin;
   // final int selectedIndex;
   // final Function(int) onItemSelected;
   final bool activeButton;
@@ -23,6 +24,7 @@ class CustomDrawer extends StatefulWidget {
     required this.emailAddress,
     required this.profileUrl,
     required this.menuItems,
+    required this.lastLogin,
     // required this.selectedIndex,
     // required this.onItemSelected,
     this.activeButton = false,
@@ -43,8 +45,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
         UserAccountsDrawerHeader(
           decoration: BoxDecoration(color: ColorConstants.buttonColor),
           accountName: Row(
+            
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+            
               Text(
                 widget.userName,
                 style: AppTextStyle().buttontext,
@@ -53,7 +59,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ? Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           color: ColorConstants.white),
@@ -67,8 +73,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   : SizedBox.shrink()
             ],
           ),
-          accountEmail: Text(widget.emailAddress),
+          accountEmail: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.emailAddress),
+              Text('Last Login: ${widget.lastLogin}')
+            ],
+          ),
           currentAccountPicture: CircleAvatar(
+          
             child: ClipOval(
                 child: widget.profileUrl.isNotEmpty
                     ? Image.network(

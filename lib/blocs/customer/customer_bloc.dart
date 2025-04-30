@@ -27,6 +27,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     on<PreviousPage>(_onPreviousPage);
     on<GetCustomerByCaIdEvent>(_getCustomerByCaIdApi);
     on<GetCustomerByCaIdForTableEvent>(_getCustomerByCaIdForTableApi);
+    on<GetCustomerByCaIdForNewEvent>(_getCustomerByCaIdForNewApi);
     on<GetLogincutomerEvent>(_getLoginCustomerByCaId);
     on<GetCustomerBySubCaEvent>(_getCustomerBySubCaIdApi);
     on<UpdateClientEvent>((event, emit) {
@@ -191,25 +192,27 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     }
   }
 
-  Future<void> _getCustomerByCaIdAndSubCaIdForTableApi(
-      GetCustomerByCaIdForTableEvent event, Emitter<CustomerState> emit) async {
+  Future<void> _getCustomerByCaIdForNewApi(
+      GetCustomerByCaIdForNewEvent event, Emitter<CustomerState> emit) async {
     int? userId = await SharedPrefsClass().getUserId();
     debugPrint('userId.,.,.,.,.,.,., $userId');
     Map<String, dynamic> query = {
-      "caId": userId,
+      if (event.role == 'CA') "caId": userId,
+      if (event.role == 'SUBCA') "subCaId": userId,
       "search": event.searchText,
       "pageNumber": event.pageNumber,
       "pageSize": event.pageSize,
-      "filter": true,
-      "subCaId": event.subCaId
+     
     };
     try {
       emit(CustomerLoading());
-      var resp = await _myRepo.getCustomerByCaId(query: query);
-      allCustomers = resp.data?.content ?? [];
-      debugPrint('vxbnvcx bcvxcnnbcbnxcj bjbcb $resp');
-      emit(GetCustomerByCaIdForTableSuccess(
-          customers: allCustomers,
+      var resp = event.role == 'CA'
+          ? await _myRepo.getCustomerByCaIdForNewApi(query: query)
+          : await _myRepo.getCustomerBySubCaIdApi(query: query);
+      List<Content> allCustomerList = resp.data?.content ?? [];
+      debugPrint('get customer by ca id new $resp');
+      emit(GetCustomerForRaiseSuccess(
+          customers: allCustomerList,
           currentPage: event.pageNumber,
           rowsPerPage: event.pageSize,
           totalCustomer: resp.data?.totalElements ?? 0));
@@ -241,7 +244,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       emit(CustomerError(errorMessage: e.toString()));
     }
   }
-  
 
   void _onNextPage(NextPage event, Emitter<CustomerState> emit) {
     if (state is GetCustomerBySubCaIdSuccess) {
@@ -264,19 +266,27 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
       // Check if there are more pages
       if (newPage * currentState.rowsPerPage < currentState.totalCustomer) {
-        // emit(currentState.copyWith(
-        //   customers: allCustomers
-        //       .skip(newPage * currentState.rowsPerPage)
-        //       .take(currentState.rowsPerPage)
-        //       .toList(),
-        //   currentPage: newPage,
-        // ));\
         add(GetCustomerByCaIdForTableEvent(
             searchText: '',
             isSearch: false,
             isPagination: false,
             pageNumber: newPage,
             pageSize: currentState.rowsPerPage));
+      }
+    } else if (state is GetCustomerForRaiseSuccess) {
+      final currentState = state as GetCustomerForRaiseSuccess;
+
+      int newPage = currentState.currentPage + 1;
+
+      // Check if there are more pages
+      if (newPage * currentState.rowsPerPage < currentState.totalCustomer) {
+        add(GetCustomerByCaIdForNewEvent(
+          searchText: '',
+          isSearch: false,
+          isPagination: false,
+          pageNumber: newPage,
+          pageSize: currentState.rowsPerPage,
+        ));
       }
     }
   }
@@ -300,14 +310,19 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       int newPage = currentState.currentPage - 1;
 
       if (newPage >= 0) {
-        // emit(currentState.copyWith(
-        //   customers: allCustomers
-        //       .skip(newPage * currentState.rowsPerPage)
-        //       .take(currentState.rowsPerPage)
-        //       .toList(),
-        //   currentPage: newPage,
-        // ));
         add(GetCustomerByCaIdForTableEvent(
+            searchText: '',
+            isSearch: false,
+            isPagination: false,
+            pageNumber: newPage,
+            pageSize: currentState.rowsPerPage));
+      }
+    } else if (state is GetCustomerForRaiseSuccess) {
+      final currentState = state as GetCustomerForRaiseSuccess;
+      int newPage = currentState.currentPage - 1;
+
+      if (newPage >= 0) {
+        add(GetCustomerByCaIdForNewEvent(
             searchText: '',
             isSearch: false,
             isPagination: false,

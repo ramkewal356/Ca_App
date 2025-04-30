@@ -90,8 +90,13 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
                           )),
                     ],
                   ),
+                 
                 ],
               ),
+            ),
+            Text(
+              'Allowed types: JPEG, PNG. Max size: less than 1MB per file.',
+              style: TextStyle(color: ColorConstants.greenColor, fontSize: 12),
             ),
             SizedBox(height: 10),
             ListView.builder(

@@ -120,6 +120,7 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
             profileUrl: user?.data?.profileUrl ?? '',
             activeButton: true,
             activeTex: user?.data?.status == true ? 'Active' : "Inactive",
+            lastLogin: user?.data?.lastLogin ?? '',
             // selectedIndex: selectedValue,
             // onItemSelected: (index) {
             //   setState(() {
@@ -158,7 +159,10 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                 "imgUrl": Icons.info,
                 "label": "My CA",
                 "onTap": () {
-                  context.push('/myCa', extra: {"caId": user?.data?.caId}).then(
+                  context.push('/myCa', extra: {
+                    "caId": user?.data?.caId,
+                    "role": 'SUBCA'
+                  }).then(
                       (onValue) {
                     _getUserDetails();
                   });

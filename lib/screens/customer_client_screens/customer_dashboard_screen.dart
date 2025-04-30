@@ -3,6 +3,7 @@ import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/data/models/user_model.dart';
+import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
@@ -81,6 +82,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             time: '${getLocalizedGreeting()}, ',
             title: 'Client',
             actionIcons: [
+              
               IconButton(
                   onPressed: () {},
                   icon: Icon(
@@ -96,6 +98,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             profileUrl: userdata?.data?.profileUrl ?? '',
             activeButton: true,
             activeTex: userdata?.data?.status == true ? 'Active' : 'Inactive',
+            lastLogin: userdata?.data?.lastLogin ?? '',
             // selectedIndex: selectedValue,
             // onItemSelected: (index) {
             //   setState(() {
@@ -129,7 +132,10 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 "imgUrl": Icons.star,
                 "label": "Request",
                 "onTap": () {
-                  context.push('/customer_dashboard/request');
+                  context.push('/customer_dashboard/request', extra: {
+                    'caName': userdata?.data?.caName,
+                    "caId": userdata?.data?.caId
+                  });
                 }
               },
               {
@@ -137,7 +143,10 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 "label": "My CA",
                 "onTap": () {
                   context.push('/myCa',
-                      extra: {"caId": userdata?.data?.caId}).then((onValue) {
+                      extra: {
+                    "caId": userdata?.data?.caId,
+                    "role": 'CUSTOMER'
+                  }).then((onValue) {
                     _getUser();
                   });
                 }
@@ -232,8 +241,19 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                               );
                             } else if (state is GetRequestByRecieverIdSuccess) {
                               return state.requestData.isEmpty
-                                  ? Center(
-                                      child: Text('No Data Found'),
+                                  ? Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: ColorConstants.darkGray),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Center(
+                                        child: Text(
+                                          'No Data Found!',
+                                          style: AppTextStyle().redText,
+                                        ),
+                                      ),
                                     )
                                   : ListView.builder(
                           shrinkWrap: true,

@@ -130,3 +130,31 @@ class GetLoginCustomerSuccess extends CustomerState {
   @override
   List<Object> get props => [getLoginCustomers, selectedClientName];
 }
+class GetCustomerForRaiseSuccess extends CustomerState {
+  final List<Content> customers;
+  final int currentPage;
+  final int rowsPerPage;
+  final int totalCustomer;
+  const GetCustomerForRaiseSuccess(
+      {required this.customers,
+      required this.currentPage,
+      required this.rowsPerPage,
+      required this.totalCustomer});
+
+  // CopyWith method for updating pagination
+  GetCustomerForRaiseSuccess copyWith(
+      {List<Content>? customers,
+      int? currentPage,
+      int? rowsPerPage,
+      int? totalCustomer}) {
+    return GetCustomerForRaiseSuccess(
+        customers: customers ?? this.customers,
+        currentPage: currentPage ?? this.currentPage,
+        rowsPerPage: rowsPerPage ?? this.rowsPerPage,
+        totalCustomer: totalCustomer ?? this.totalCustomer);
+  }
+
+  @override
+  List<Object> get props =>
+      [customers, currentPage, rowsPerPage, totalCustomer];
+}

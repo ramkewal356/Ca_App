@@ -107,7 +107,7 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
                                 flex1: 3,
                                 flex2: 4,
                                 lable: 'ID',
-                                value: '#${data.id}'),
+                                value: '#${data.serviceId}'),
                             CustomTextInfo(
                                 flex1: 3,
                                 flex2: 4,

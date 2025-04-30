@@ -67,9 +67,9 @@ class _HelpAndSupportHistoryScreenState
     setState(() {
       filterText = value;
       filterTitle = value == '0'
-          ? 'Open'
+          ? 'Not Resolved'
           : value == '3'
-              ? 'Resoved'
+              ? 'Resolved'
               : 'All';
     });
     _fetchContactHistory(isFilter: true);
@@ -91,7 +91,7 @@ class _HelpAndSupportHistoryScreenState
                 Expanded(
                   child: CustomSearchField(
                     controller: _searchController,
-                    serchHintText: 'Search by id...',
+                    serchHintText: 'Search by subject name and subject id...',
                     onChanged: _onSearchChanged,
                   ),
                 ),
@@ -100,8 +100,8 @@ class _HelpAndSupportHistoryScreenState
                     title: filterTitle,
                     filterOptions: {
                       "All": "",
-                      "Open": "0",
                       "Resolved": "3",
+                      "Not Resolved": "0",
                     },
                     onFilterChanged: _onFilterChanged)
               ],
@@ -228,7 +228,8 @@ class _HelpAndSupportHistoryScreenState
                                                 extra: {
                                                   "contactId": data.contactId
                                                 }).then((onValue) {
-                                              _fetchContactHistory();
+                                              _fetchContactHistory(
+                                                  isFilter: true);
                                             });
                                           }),
                                     ],

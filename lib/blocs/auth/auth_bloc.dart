@@ -60,6 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await SharedPrefsClass().saveUser(loginResp?.data?.token ?? '',
               loginResp?.data?.role ?? '', loginResp?.data?.id ?? 0);
           emit(LoginSuccess(loginModel: loginResp));
+          Utils.toastSuccessMessage('Login Successfully');
         }
       }
     } catch (e) {
@@ -181,7 +182,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       "userId": event.userId.isEmpty ? userId : event.userId,
       "password": event.password,
       if ((event.permissionIds ?? []).isNotEmpty)
-        "permissions": event.permissionIds
+        "permissions": event.permissionIds,
+      if ((event.companyName ?? '').isNotEmpty) "companyName": event.companyName
     };
     try {
       emit(AuthLoading());

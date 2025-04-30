@@ -179,6 +179,7 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                                     },
                                     itemBuilder: (BuildContext context) =>
                                         <PopupMenuEntry<String>>[
+                                      if (data?.userResponse == 'ACCEPTED')
                                       PopupMenuItem<String>(
                                           height: 45,
                                           value: data?.status == true
@@ -231,6 +232,9 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                                   value: dateFormate(data?.createdDate)),
                               textItem(
                                   lable: 'Gender', value: data?.gender ?? '__'),
+                              textItem(
+                                  lable: 'Acceptance Status',
+                                  value: data?.userResponse ?? '__'),
                               textItem(
                                   lable: 'Status',
                                   value: data?.status == true
@@ -292,7 +296,8 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                           ));
                         },
                       ),
-                      Divider(),
+                      // Divider(),
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -335,7 +340,7 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                           ),
                         ],
                       ),
-                      Divider(),
+                      // Divider(),
                       // CommonButtonWidget(
                       //   buttonWidth: 150,
                       //   buttonColor: ColorConstants.white,

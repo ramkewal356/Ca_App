@@ -131,7 +131,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                 controller: _searchController,
                                 focusNode: _searchFocusNode,
                                 serchHintText:
-                                    'Search..by service name,subservice name,id',
+                                    'Search team member by id name,email',
                                 onChanged: _onSearchChanged),
                           ),
                           SizedBox(width: 10),
@@ -201,7 +201,8 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
                                                 title:
                                                     '${data?.firstName} ${data?.lastName}',
                                                 subtitle1: '${data?.email}',
-                                                subtitle2: '+${data?.mobile}',
+                                                subtitle2:
+                                                    '+91 ${data?.mobile}',
                                                 id: '${data?.userId}',
                                                 status: data?.status ?? false,
                                                 imgUrl: data?.profileUrl ?? '',

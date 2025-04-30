@@ -12,7 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyCaScreen extends StatefulWidget {
   final int caId;
-  const MyCaScreen({super.key, required this.caId});
+  final String role;
+  const MyCaScreen({super.key, required this.caId, required this.role});
 
   @override
   State<MyCaScreen> createState() => _MyCaScreenState();
@@ -51,7 +52,8 @@ class _MyCaScreenState extends State<MyCaScreen> {
                         decoration: BoxDecoration(
                             color: ColorConstants.buttonColor,
                             borderRadius: BorderRadius.circular(10)),
-                        child: Center(
+                        child: caData?.data?.profileUrl == null
+                            ? Center(
                             child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -65,7 +67,14 @@ class _MyCaScreenState extends State<MyCaScreen> {
                               style: AppTextStyle().mediumWhitetext,
                             ),
                           ],
-                        )),
+                              ))
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  caData?.data?.profileUrl,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                       ),
                       SizedBox(width: 10),
                       Expanded(
@@ -80,15 +89,18 @@ class _MyCaScreenState extends State<MyCaScreen> {
                           subTitle(Icons.call,
                               '+${caData?.data?.countryCode ?? ''} ${caData?.data?.mobile ?? ''}'),
                           subTitle(
-                              Icons.location_on, caData?.data?.address ?? ''),
-                          subTitle(Icons.business_rounded,
+                              Icons.location_on,
+                              caData?.data?.address ?? 'N/A'),
+                          if (widget.role == 'CUSTOMER')
+                            subTitle(Icons.business_rounded,
                               caData?.data?.companyName ?? ''),
                         ],
                       ))
                     ],
                   ),
                   SizedBox(height: 15),
-                  Container(
+                  if (widget.role == 'SUBCA')
+                    Container(
                     decoration: BoxDecoration(
                         // ignore: deprecated_member_use
                         color: ColorConstants.darkGray.withOpacity(0.5),
@@ -121,10 +133,46 @@ class _MyCaScreenState extends State<MyCaScreen> {
                               value: caData?.data?.status == true
                                   ? 'Active'
                                   : 'Inactive'),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  )
+                  widget.role == 'CUSTOMER'
+                      ? caData?.data?.caEmail == null
+                          ? SizedBox.shrink()
+                          : Container(
+                              decoration: BoxDecoration(
+                                  // ignore: deprecated_member_use
+                                  color:
+                                      // ignore: deprecated_member_use
+                                      ColorConstants.darkGray.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Firm Details',
+                                      style: AppTextStyle().cardLableText,
+                                    ),
+                                    SizedBox(height: 10),
+                                    textItem(
+                                        lable: 'Name',
+                                        value: caData?.data?.caName ?? '_'),
+                                    textItem(
+                                        lable: 'Email',
+                                        value: caData?.data?.caEmail ?? '_'),
+                                    textItem(
+                                        lable: 'Mobile No',
+                                        value:
+                                            '+${caData?.data?.countryCode ?? ''} ${caData?.data?.caMobile ?? ''}'),
+                                   
+                                  ],
+                                ),
+                              ),
+                            )
+                      : SizedBox.shrink()
                 ],
               ),
             );
@@ -144,7 +192,7 @@ class _MyCaScreenState extends State<MyCaScreen> {
         Expanded(
           child: Text(
             title,
-            style: AppTextStyle().subTitleText,
+            style: AppTextStyle().smallSubTitleText,
           ),
         )
       ],

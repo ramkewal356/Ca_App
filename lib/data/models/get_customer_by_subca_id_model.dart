@@ -117,7 +117,7 @@ class Content {
   String? profileName;
   bool? status;
   String? countryCode;
-
+dynamic reason;
   Content({
     this.id,
     this.userId,
@@ -139,6 +139,7 @@ class Content {
     this.profileName,
     this.status,
     this.countryCode,
+      this.reason
   });
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
@@ -162,6 +163,7 @@ class Content {
         profileName: json["profileName"],
         status: json["status"],
         countryCode: json["countryCode"],
+        reason: json["reason"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -185,6 +187,7 @@ class Content {
         "profileName": profileName,
         "status": status,
         "countryCode": countryCode,
+        "reason": reason
       };
 }
 

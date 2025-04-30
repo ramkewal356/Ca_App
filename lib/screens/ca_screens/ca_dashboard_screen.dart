@@ -135,6 +135,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 '${user?.data?.firstName ?? ''} ${user?.data?.lastName ?? ''}',
             emailAddress: user?.data?.email ?? '',
             profileUrl: user?.data?.profileUrl ?? '',
+            lastLogin: user?.data?.lastLogin ?? '',
             // selectedIndex: selectedValue,
             // onItemSelected: (index) {
             //   setState(() {
@@ -542,7 +543,8 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                                         builder: (context, state) {
                                           return CustomRecentDocument(
                                             id: '#${data?.uuid ?? ''}',
-                                            clientName: '${data?.customerName}',
+                                            clientName:
+                                                '${data?.customerName}(# ${data?.userId})',
                                             documentName: '${data?.docName}',
                                             category:
                                                 data?.serviceName ?? 'General',

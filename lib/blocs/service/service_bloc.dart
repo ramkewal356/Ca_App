@@ -16,7 +16,7 @@ part 'service_state.dart';
 
 class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   int pageNumber = 0;
-  final int pageSize = 4;
+  int pageSize = 10;
   bool isFetching = false;
   bool isLastPage = false;
   bool isFetchingSubService = false;

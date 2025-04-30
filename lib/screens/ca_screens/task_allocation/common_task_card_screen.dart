@@ -51,7 +51,7 @@ class CommonTaskCardScreen extends StatelessWidget {
           child: Column(
             children: [
               CustomTextInfo(
-                  flex1: 2, flex2: 3, lable: 'TASKID', value: '#$taskId'),
+                  flex1: 2, flex2: 3, lable: 'TASK ID', value: '#$taskId'),
               CustomTextInfo(
                   flex1: 2, flex2: 3, lable: 'ASSIGN DATE', value: assignDate),
               CustomTextInfo(
@@ -59,7 +59,16 @@ class CommonTaskCardScreen extends StatelessWidget {
               CustomTextInfo(
                   flex1: 2, flex2: 3, lable: 'CIENT EMAIL', value: clientEmail),
               CustomTextInfo(
-                  flex1: 2, flex2: 3, lable: 'PRIORITY', value: priority),
+                flex1: 2,
+                flex2: 3,
+                lable: 'PRIORITY',
+                value: priority,
+                textStyle: priority == 'STANDARD'
+                    ? AppTextStyle().getgreenText
+                    : priority == 'URGENT'
+                        ? AppTextStyle().getYellowText
+                        : AppTextStyle().getredText,
+              ),
               CustomTextInfo(
                   flex1: 2, flex2: 3, lable: 'ASSIGN TO', value: assignTo),
               CustomTextInfo(
@@ -89,7 +98,7 @@ class CommonTaskCardScreen extends StatelessWidget {
                           loader: completeLoader,
                           onTap: onCompleteTap)
                       : CommonButtonWidget(
-                          buttonWidth: 120,
+                          buttonWidth: 100,
                           buttonheight: 45,
                           buttonColor: ColorConstants.white,
                           buttonBorderColor: ColorConstants.buttonColor,

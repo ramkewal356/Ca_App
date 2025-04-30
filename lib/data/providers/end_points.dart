@@ -23,6 +23,8 @@ class EndPoints {
   static const getPermission = '/permission/get_permission_list';
   //Customer Url
   static var getCustomerBySubCaId = '/customer/get_customer_by_subCaId';
+  static var getCustomerBySubCaIdUrl =
+      '/customer/get_accepted_customer_by_subCaId';
   static var getCustomerByCaId = '/customer/get_customer_by_caId';
   static var assignCustomerUrl = '/ca/assign_customer';
   static var getLoginCustomerUrl = '/customer/get_login_customers_by_caId';
@@ -30,6 +32,8 @@ class EndPoints {
       '/customer/get_login_customers_by_caId';
   static var getCustomerbyCaidAndSubCaId =
       '/customer/get_customer_by_caId_and_subCaId';
+  static var getCustomerByCaIdForNewUrl =
+      '/customer/get_login_customers_by_caId_new';
   //Document url
   static var getRecentDocumentUrl =
       '/ca/get_recent_document_uploaded_by_customer';

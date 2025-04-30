@@ -136,6 +136,7 @@ final GoRouter goRouter = GoRouter(
           var data = state.extra as Map<String, dynamic>;
           return MyCaScreen(
             caId: data["caId"],
+            role: data["role"],
           );
         },
       ),
@@ -219,7 +220,11 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'request',
               builder: (context, state) {
-                return RequestScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return RequestScreen(
+                  caName: data["caName"],
+                  caId: data["caId"],
+                );
               },
             ),
           ]),

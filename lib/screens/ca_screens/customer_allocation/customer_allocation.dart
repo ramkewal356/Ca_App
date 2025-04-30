@@ -152,7 +152,7 @@ class _CustomerAllocationState extends State<CustomerAllocation> {
                     Expanded(
                       child: CustomSearchField(
                         controller: _searchController,
-                        serchHintText: 'search  id',
+                        serchHintText: 'search by id',
                         onChanged: _onSearchChanged,
                       ),
                     ),

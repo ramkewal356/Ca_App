@@ -7,6 +7,7 @@ import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,7 +67,7 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
             SizedBox(height: 10),
             CustomSearchField(
               controller: _controller,
-              serchHintText: 'Search by  id',
+              serchHintText: 'Search by id & name',
               onChanged: _onSearchChanged,
             ),
             SizedBox(height: 10),
@@ -124,24 +125,36 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                                       ),
                                     ],
                                   ),
-                                  CustomTextItem(
+                                  CustomTextInfo(
+                                      flex1: 2,
+                                      flex2: 3,
                                       lable: widget.role == 'CUSTOMER'
                                           ? 'CA (SENDER)'
                                           : 'CLIENT (RECEIVER)',
                                       value:
                                           '${data.receiverName ?? ''}(#${data.receiverId})'),
-                                  CustomTextItem(
+                                  CustomTextInfo(
+                                      flex1: 2,
+                                      flex2: 3,
                                       lable: widget.role == 'CUSTOMER'
                                           ? 'CLIENT (RECEIVER)'
                                           : 'CA (SENDER)',
                                       value:
                                           '${data.senderName}(#${data.senderId})'),
-                                  CustomTextItem(
+                                  CustomTextInfo(
+                                    flex1: 2,
+                                    flex2: 3,
                                       lable: 'READ STATUS',
                                       value: data.readStatus == null
                                           ? 'N/A'
-                                          : '${data.readStatus}'),
-                                  CustomTextItem(
+                                        : '${data.readStatus}',
+                                    textStyle: data.readStatus == 'READ'
+                                        ? AppTextStyle().getgreenText
+                                        : AppTextStyle().getredText,
+                                  ),
+                                  CustomTextInfo(
+                                      flex1: 2,
+                                      flex2: 3,
                                       lable: 'DESCRIPTION',
                                       value: '${data.text}'),
                                   BlocBuilder<RaiseRequestBloc,

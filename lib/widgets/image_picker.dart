@@ -3,18 +3,17 @@ import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_image_modal.dart';
 import 'package:flutter/material.dart';
 
-
 class ImagePickerWidget extends StatefulWidget {
   final String userImg;
   final File? initialImage;
- 
+  final bool isEditable;
   final double radius;
   const ImagePickerWidget({
     super.key,
     required this.userImg,
     this.initialImage,
     this.radius = 60,
-
+      this.isEditable = false
   });
 
   @override
@@ -58,7 +57,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     radius: widget.radius,
                     child: Icon(Icons.person, size: 60),
                   ),
-        Positioned(
+        widget.isEditable
+            ? Positioned(
           bottom: 0,
           right: -5,
           child: CustomBottomsheetImageModal(
@@ -76,11 +76,9 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                   )),
             ),
           ),
-         
-        )
+              )
+            : SizedBox.shrink()
       ],
     );
   }
-
- 
 }

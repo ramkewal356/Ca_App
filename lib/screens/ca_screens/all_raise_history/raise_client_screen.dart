@@ -116,6 +116,13 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
                               CustomTextInfo(
                                   flex1: 2,
                                   flex2: 3,
+                                  lable: 'READ STATUS',
+                                  value: data.readStatus == null
+                                      ? 'N/A'
+                                      : '${data.readStatus}'),
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
                                   lable: 'DESCRIPTION',
                                   value: '${data.text}'),
                               SizedBox(height: 10),
@@ -125,6 +132,11 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
                                   buttonWidth: 100,
                                   buttonTitle: 'View',
                                   onTap: () {
+                                   
+                                    context.read<ChangeStatusBloc>().add(
+                                        UnreadToReadStatusEvent(
+                                            requestId: data.requestId ?? 0));
+                                       
                                     context.push('/request_details', extra: {
                                       "requestId": data.requestId
                                     }).then((onValue) {

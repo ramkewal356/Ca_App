@@ -1,19 +1,15 @@
-import 'package:ca_app/blocs/auth/auth_bloc.dart';
-import 'package:ca_app/blocs/auth/auth_event.dart';
-import 'package:ca_app/blocs/auth/auth_state.dart';
+
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/data/models/get_customer_by_subca_id_model.dart';
-import 'package:ca_app/data/models/get_login_customer_model.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
-import 'package:ca_app/widgets/custom_dropdown_button.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
-import 'package:ca_app/widgets/custom_multi_select_dropdown.dart';
+import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/file_picker_widget.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:dio/dio.dart';
@@ -36,12 +32,18 @@ class RaiseRequestScreen extends StatefulWidget {
 class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  ScrollController controller = ScrollController();
+
+  List<int> selectedRowIds = [];
+  String selectedItems1 = '';
   final FocusNode _focusNode = FocusNode();
   List<String> selectedItems = [];
   String selectedUserIds = '';
-  String caId = '';
+  // String caId = '';
   List<PlatformFile> documentList = [];
   String? selectedCa;
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -57,35 +59,86 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
 
     if (widget.selectedId != null) {
       selectedUserIds = '[${widget.selectedId}]';
+      debugPrint('selectedId...${widget.selectedId}');
     }
   }
 
   void _getUser() {
-    context.read<AuthBloc>().add(GetUserByIdEvent());
+    // context.read<AuthBloc>().add(GetUserByIdEvent());
     if (widget.userRole == 'CA') {
-      _getLoginCustomer();
+      // _getLoginCustomer();
+      _fetchCustomer(role: 'CA');
     } else if (widget.userRole == 'SUBCA') {
-      _getCustomerBySubCaId();
+      // _getCustomerBySubCaId();
+      _fetchCustomer(role: 'SUBCA');
     }
   }
 
-  _getCustomerBySubCaId() {
-    context.read<CustomerBloc>().add(GetCustomerBySubCaEvent(
-        searchText: '',
-        isSearch: true,
-        isPagination: false,
-        pageNumber: -1,
-        pageSize: -1));
+  void _onSelectRow(int rowId) {
+    setState(() {
+      if (selectedRowIds.contains(rowId)) {
+        selectedRowIds.remove(rowId);
+      } else {
+        selectedRowIds.add(rowId);
+      }
+      selectedUserIds = '[${selectedRowIds.join(',')}]';
+      debugPrint('selected id $selectedRowIds');
+      debugPrint('selected item $selectedItems');
+    });
   }
 
-  _getLoginCustomer() {
-    context
-        .read<CustomerBloc>()
-        .add(GetLogincutomerEvent(selectedClientName: ''));
+  // _getCustomerBySubCaId() {
+  //   context.read<CustomerBloc>().add(GetCustomerBySubCaEvent(
+  //       searchText: '',
+  //       isSearch: true,
+  //       isPagination: false,
+  //       pageNumber: -1,
+  //       pageSize: -1));
+  // }
+
+  // _getLoginCustomer() {
+  //   context
+  //       .read<CustomerBloc>()
+  //       .add(GetLogincutomerEvent(selectedClientName: ''));
+  // }
+
+  Future<void> _fetchCustomer(
+      {bool isPagination = false,
+      bool isSearch = false,
+      required String role}) async {
+    context.read<CustomerBloc>().add(
+          GetCustomerByCaIdForNewEvent(
+              searchText: searchQuery,
+              isPagination: isPagination,
+              isSearch: isSearch,
+              pageNumber: 0,
+              pageSize: 10,
+              role: role),
+        );
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      searchQuery = value;
+    });
+    _fetchCustomer(isSearch: true, role: widget.userRole);
   }
 
   @override
   Widget build(BuildContext context) {
+    var currentSatate = context.watch<CustomerBloc>().state;
+    List<Content> customerList = currentSatate is GetCustomerForRaiseSuccess
+        ? currentSatate.customers
+        : [];
+    int currentPage = currentSatate is GetCustomerForRaiseSuccess
+        ? currentSatate.currentPage
+        : 0;
+    int rowPerPage = currentSatate is GetCustomerForRaiseSuccess
+        ? currentSatate.rowsPerPage
+        : 0;
+    int totalCustomers = currentSatate is GetCustomerForRaiseSuccess
+        ? currentSatate.totalCustomer
+        : 0;
     return CustomLayoutPage(
         appBar: CustomAppbar(
           title: 'Raise Request',
@@ -125,8 +178,7 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                                   icon: recieptrefundimg,
                                   title: 'Client Request',
                                   onTap: () {
-                                    context
-                                        .push(
+                                    context.push(
                                         '/raise_request/client_request',
                                         extra: {"role": widget.userRole});
                                   },
@@ -134,93 +186,99 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  widget.userRole == 'CUSTOMER'
-                      ? BlocBuilder<AuthBloc, AuthState>(
-                          builder: (context, state) {
-                            if (state is GetUserByIdSuccess) {
-                              selectedCa = state.getUserByIdData?.data?.caName;
-                              caId = state.getUserByIdData?.data?.caId
-                                      .toString() ??
-                                  '';
-                            }
-                            return CustomDropdownButton(
-                              dropdownItems: ['$selectedCa'],
-                              initialValue: selectedCa,
-                              hintText: 'Select your ca',
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please select your ca';
-                                }
-                                return null;
-                              },
-                            );
-                          },
-                        )
-                      : BlocBuilder<CustomerBloc, CustomerState>(
-                          builder: (context, state) {
-                            List<LoginCustomerData> customers = [];
-                            List<Content> customers1 = [];
-                            if (state is GetLoginCustomerSuccess) {
-                              customers = state.getLoginCustomers;
-                              debugPrint(
-                                  'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
-                            } else if (state is GetCustomerBySubCaSuccess) {
-                              customers1 = state.getCustomers ?? [];
-                              debugPrint(
-                                  'object???>>>>>>>????>>>> ${customers1.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
-                            }
-                            return MultiSelectSearchableDropdown(
-                              hintText: 'Select client',
-                              items: customers.isEmpty
-                                  ? customers1
-                                      .where((test) =>
-                                          test.userResponse == 'ACCEPTED')
-                                      .map((toElement) =>
-                                          '${toElement.firstName} ${toElement.lastName}')
-                                      .toList()
-                                  : customers
-                                      .map((toElement) =>
-                                          '${toElement.firstName} ${toElement.lastName}')
-                                      .toList(),
-                              selectedItems: selectedItems,
-                              onChanged: (newSelection) {
-                                setState(() {
-                                  List<int> selectedUsers = customers.isEmpty
-                                      ? customers1
-                                          .where((customer) =>
-                                              newSelection.contains(
-                                                  '${customer.firstName} ${customer.lastName}'))
-                                          .map((customer) => int.parse(customer
-                                              .userId
-                                              .toString()
-                                              .trim()))
-                                          .toList()
-                                      : customers
-                                          .where((customer) =>
-                                              newSelection.contains(
-                                                  '${customer.firstName} ${customer.lastName}'))
-                                          .map((customer) => int.parse(customer
-                                              .userId
-                                              .toString()
-                                              .trim()))
-                                          .toList();
+                  if (widget.userRole == 'CUSTOMER' ||
+                      (widget.selectedUser ?? '').isNotEmpty)
+                    TextformfieldWidget(
+                        readOnly: true,
+                        controller:
+                            TextEditingController(text: widget.selectedUser),
+                        hintText: 'select user'),
+                  // BlocBuilder<AuthBloc, AuthState>(
+                  //       builder: (context, state) {
+                  //         if (state is GetUserByIdSuccess) {
+                  //           selectedCa = state.getUserByIdData?.data?.caName;
+                  //           caId = state.getUserByIdData?.data?.caId
+                  //                   .toString() ??
+                  //               '';
+                  //         }
+                  //         return CustomDropdownButton(
+                  //           dropdownItems: ['$selectedCa'],
+                  //           initialValue: selectedCa,
+                  //           hintText: 'Select your ca',
+                  //           validator: (value) {
+                  //             if (value == null || value.isEmpty) {
+                  //               return 'Please select your ca';
+                  //             }
+                  //             return null;
+                  //           },
+                  //         );
+                  //       },
+                  // ),
+                  // : BlocBuilder<CustomerBloc, CustomerState>(
+                  //     builder: (context, state) {
+                  //       List<LoginCustomerData> customers = [];
+                  //       List<Content> customers1 = [];
+                  //       if (state is GetLoginCustomerSuccess) {
+                  //         customers = state.getLoginCustomers;
+                  //         debugPrint(
+                  //             'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
+                  //       } else if (state is GetCustomerBySubCaSuccess) {
+                  //         customers1 = state.getCustomers ?? [];
+                  //         debugPrint(
+                  //             'object???>>>>>>>????>>>> ${customers1.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
+                  //       }
+                  //       return MultiSelectSearchableDropdown(
+                  //         hintText: 'Select client',
+                  //         items: customers.isEmpty
+                  //             ? customers1
+                  //                 .where((test) =>
+                  //                     test.userResponse == 'ACCEPTED')
+                  //                 .map((toElement) =>
+                  //                     '${toElement.firstName} ${toElement.lastName}')
+                  //                 .toList()
+                  //             : customers
+                  //                 .map((toElement) =>
+                  //                     '${toElement.firstName} ${toElement.lastName}')
+                  //                 .toList(),
+                  //         selectedItems: selectedItems,
+                  //         onChanged: (newSelection) {
+                  //           setState(() {
+                  //             List<int> selectedUsers = customers.isEmpty
+                  //                 ? customers1
+                  //                     .where((customer) =>
+                  //                         newSelection.contains(
+                  //                             '${customer.firstName} ${customer.lastName}'))
+                  //                     .map((customer) => int.parse(customer
+                  //                         .userId
+                  //                         .toString()
+                  //                         .trim()))
+                  //                     .toList()
+                  //                 : customers
+                  //                     .where((customer) =>
+                  //                         newSelection.contains(
+                  //                             '${customer.firstName} ${customer.lastName}'))
+                  //                     .map((customer) => int.parse(customer
+                  //                         .userId
+                  //                         .toString()
+                  //                         .trim()))
+                  //                     .toList();
 
-                                  debugPrint('selectedItems $selectedUsers');
-                                  selectedUserIds =
-                                      '[${selectedUsers.join(',')}]';
-                                  debugPrint(
-                                      'selectedUserIds: $selectedUserIds');
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please select client';
-                                }
-                                return null;
-                              },
-                            );
-                          },
-                        ),
+                  //             debugPrint('selectedItems $selectedUsers');
+                  //             selectedUserIds =
+                  //                 '[${selectedUsers.join(',')}]';
+                  //             debugPrint(
+                  //                 'selectedUserIds: $selectedUserIds');
+                  //           });
+                  //         },
+                  //         validator: (value) {
+                  //           if (value == null || value.isEmpty) {
+                  //             return 'Please select client';
+                  //           }
+                  //           return null;
+                  //         },
+                  //       );
+                  //     },
+                  //   ),
 
                   SizedBox(height: 10),
 
@@ -257,44 +315,288 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  BlocConsumer<RaiseRequestBloc, RaiseRequestState>(
-                    listener: (context, state) {
-                      if (state is SendRaiseRequestSuccess) {
-                        _formKey.currentState!.reset();
-                        selectedItems.clear();
-                        _descriptionController.clear();
-                        _focusNode.unfocus();
-                        context
-                            .read<UploadDocumentBloc>()
-                            .add(ResetDocumentEvent());
-                      }
-                    },
-                    builder: (context, state) {
-                      return CommonButtonWidget(
-                          buttonTitle:
-                              widget.userRole == 'CA' ? 'Send' : 'Raise',
-                          loader: state is RaiseRequestLoading,
-                          onTap: () async {
-                            debugPrint('vcnvbbnmxbdxnm$selectedItems');
-                            if (_formKey.currentState!.validate()) {
-                              List<MultipartFile> multipartFiles = [];
-                              for (var file in documentList) {
-                                multipartFiles.add(
-                                  await MultipartFile.fromFile(file.path!,
-                                      filename: file.name),
-                                );
-                              }
-                              context.read<RaiseRequestBloc>().add(
-                                  SendRaiseRequestEvent(
-                                      description: _descriptionController.text,
-                                      receiverId: widget.userRole == 'CUSTOMER'
-                                          ? '[$caId]'
-                                          : selectedUserIds,
-                                      files: multipartFiles));
+                  (widget.selectedUser ?? '').isEmpty
+                      ? SizedBox.shrink()
+                      : BlocConsumer<RaiseRequestBloc, RaiseRequestState>(
+                          listener: (context, state) {
+                            if (state is SendRaiseRequestSuccess) {
+                              _formKey.currentState!.reset();
+                              selectedItems.clear();
+                              selectedRowIds.clear();
+                              _descriptionController.clear();
+                              _focusNode.unfocus();
+                              context
+                                  .read<UploadDocumentBloc>()
+                                  .add(ResetDocumentEvent());
                             }
-                          });
-                    },
-                  )
+                          },
+                          builder: (context, state) {
+                            return CommonButtonWidget(
+                                buttonTitle:
+                                    widget.userRole == 'CA' ? 'Send' : 'Raise',
+                                loader: state is RaiseRequestLoading,
+                                onTap: () async {
+                                  debugPrint('vcnvbbnmxbdxnm$selectedItems');
+                                  if (_formKey.currentState!.validate()) {
+                                    List<MultipartFile> multipartFiles = [];
+                                    for (var file in documentList) {
+                                      multipartFiles.add(
+                                        await MultipartFile.fromFile(file.path!,
+                                            filename: file.name),
+                                      );
+                                    }
+                                    context.read<RaiseRequestBloc>().add(
+                                        SendRaiseRequestEvent(
+                                            description:
+                                                _descriptionController.text,
+                                            receiverId:
+                                                widget.userRole.isNotEmpty
+                                                    ? '[${widget.selectedId}]'
+                                                    : selectedUserIds,
+                                            files: multipartFiles));
+                                  }
+                                });
+                          },
+                        ),
+                  (widget.selectedUser ?? '').isNotEmpty
+                      ? SizedBox.shrink()
+                      : Row(
+                          children: [
+                            (widget.selectedUser ?? '').isNotEmpty
+                                ? SizedBox.shrink()
+                                : Expanded(
+                                    child: CustomSearchField(
+                                      controller: _searchController,
+                                      serchHintText:
+                                          'search by userid, user name, email',
+                                      onChanged: _onSearchChanged,
+                                    ),
+                                  ),
+                            if ((widget.selectedUser ?? '').isEmpty)
+                              SizedBox(width: 10),
+                            BlocConsumer<RaiseRequestBloc, RaiseRequestState>(
+                              listener: (context, state) {
+                                if (state is SendRaiseRequestSuccess) {
+                                  _formKey.currentState!.reset();
+                                  selectedItems.clear();
+                                  selectedRowIds.clear();
+                                  _fetchCustomer(role: widget.userRole);
+                                  _descriptionController.clear();
+                                  _focusNode.unfocus();
+                                  context
+                                      .read<UploadDocumentBloc>()
+                                      .add(ResetDocumentEvent());
+                                }
+                              },
+                              builder: (context, state) {
+                                return CommonButtonWidget(
+                                    buttonWidth: 120,
+                                    buttonTitle: widget.userRole == 'CA'
+                                        ? 'Send'
+                                        : 'Raise',
+                                    disable: selectedRowIds.isEmpty,
+                                    loader: state is RaiseRequestLoading,
+                                    onTap: () async {
+                                      debugPrint(
+                                          'vcnvbbnmxbdxnm$selectedItems');
+                                      if (_formKey.currentState!.validate()) {
+                                        List<MultipartFile> multipartFiles = [];
+                                        for (var file in documentList) {
+                                          multipartFiles.add(
+                                            await MultipartFile.fromFile(
+                                                file.path!,
+                                                filename: file.name),
+                                          );
+                                        }
+                                        context.read<RaiseRequestBloc>().add(
+                                            SendRaiseRequestEvent(
+                                                description:
+                                                    _descriptionController.text,
+                                                receiverId: selectedUserIds,
+                                                files: multipartFiles));
+                                      }
+                                    });
+                              },
+                            ),
+                          ],
+                        ),
+
+                  SizedBox(height: 15),
+                  (widget.selectedUser ?? '').isNotEmpty
+                      ? SizedBox.shrink()
+                      : Scrollbar(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                headingRowColor: WidgetStatePropertyAll(
+                                    ColorConstants.buttonColor),
+                                headingTextStyle: AppTextStyle().buttontext,
+                                columnSpacing: 20,
+                                columns: [
+                                  DataColumn(
+                                      label: SizedBox(
+                                          width: 70, child: Text('USER ID'))),
+                                  DataColumn(
+                                      label: SizedBox(
+                                          width: 130, child: Text('NAME'))),
+                                  DataColumn(
+                                      label: SizedBox(
+                                          width: 80, child: Text('GENDER'))),
+                                  DataColumn(
+                                      label: SizedBox(
+                                          width: 100,
+                                          child: Text('PANCARD NO'))),
+                                  DataColumn(
+                                      label: SizedBox(
+                                          width: 120, child: Text('MOBILE'))),
+                                ],
+                                rows: currentSatate is CustomerLoading
+                                    ? [
+                                        DataRow(cells: [
+                                          DataCell.empty,
+                                          DataCell.empty,
+                                          DataCell(
+                                            Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: ColorConstants.buttonColor,
+                                            )), // Loader in table row
+                                          ),
+                                          DataCell.empty,
+                                          DataCell.empty,
+                                        ])
+                                      ]
+                                    : (customerList.isNotEmpty)
+                                        ? customerList.map((toElement) {
+                                            return DataRow(
+                                              cells: [
+                                                DataCell(Row(
+                                                  children: [
+                                                    Checkbox(
+                                                      activeColor:
+                                                          ColorConstants
+                                                              .buttonColor,
+                                                      visualDensity:
+                                                          VisualDensity(
+                                                              horizontal: -4,
+                                                              vertical: -4),
+                                                      // value: selectedRowIndex ==
+                                                      //     toElement.userId,
+                                                      value: selectedRowIds
+                                                          .contains(
+                                                              toElement.userId),
+                                                      onChanged: (bool? value) {
+                                                        _onSelectRow(
+                                                            toElement.userId ??
+                                                                0);
+                                                      },
+                                                    ),
+                                                    Expanded(
+                                                        child: Text(
+                                                            '#${toElement.userId}')),
+                                                  ],
+                                                )),
+                                                DataCell(SizedBox(
+                                                  width: 130,
+                                                  child: Text(
+                                                      '${toElement.firstName ?? ''} ${toElement.lastName ?? ''}'),
+                                                )),
+                                                DataCell(SizedBox(
+                                                    width: 80,
+                                                    child: Text(
+                                                        toElement.gender ??
+                                                            'N/A'))),
+                                                DataCell(SizedBox(
+                                                    width: 100,
+                                                    child: Text(toElement
+                                                            .panCardNumber ??
+                                                        'N/A'))),
+                                                DataCell(SizedBox(
+                                                    width: 120,
+                                                    child: Text(
+                                                        '+91 ${toElement.mobile ?? 'N/A'}'))),
+                                              ],
+                                            );
+                                          }).toList()
+                                        : [
+                                            DataRow(cells: [
+                                              DataCell.empty,
+                                              DataCell.empty,
+                                              DataCell(
+                                                Center(
+                                                  child: Text(
+                                                    'No data',
+                                                    style:
+                                                        AppTextStyle().redText,
+                                                  ),
+                                                ),
+                                              ),
+                                              DataCell.empty,
+                                              DataCell.empty,
+                                            ])
+                                          ],
+                              ),
+                            ),
+                          ),
+                        ),
+                  // SizedBox(height: 5),
+                  (widget.selectedUser ?? '').isNotEmpty
+                      ? SizedBox.shrink()
+                      : Divider(),
+                  (widget.selectedUser ?? '').isNotEmpty
+                      ? SizedBox.shrink()
+                      : Row(
+                          children: [
+                            Text(
+                                " ${currentPage + 1} - ${customerList.length} of $totalCustomers"),
+                            Spacer(),
+                            IconButton(
+                                onPressed: currentPage > 0
+                                    ? () {
+                                        context
+                                            .read<CustomerBloc>()
+                                            .add(PreviousPage());
+                                      }
+                                    : null,
+                                icon: Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: currentPage > 0
+                                            ? ColorConstants.buttonColor
+                                            : ColorConstants.buttonColor
+                                                // ignore: deprecated_member_use
+                                                .withOpacity(0.5)),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_left_rounded,
+                                      color: ColorConstants.white,
+                                    ))),
+                            SizedBox(width: 20),
+                            IconButton(
+                                onPressed: (currentPage + 1) * rowPerPage <
+                                        totalCustomers
+                                    ? () {
+                                        context
+                                            .read<CustomerBloc>()
+                                            .add(NextPage());
+                                      }
+                                    : null,
+                                icon: Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: (currentPage + 1) * rowPerPage <
+                                                totalCustomers
+                                            ? ColorConstants.buttonColor
+                                            : ColorConstants.buttonColor
+                                                // ignore: deprecated_member_use
+                                                .withOpacity(0.5)),
+                                    child: Icon(
+                                      Icons.keyboard_arrow_right_rounded,
+                                      color: ColorConstants.white,
+                                    ))),
+                          ],
+                        ),
                 ],
               ),
             ),

@@ -91,7 +91,8 @@ class _RecentDocumentScreenState extends State<RecentDocumentScreen> {
                       return CustomCard(
                           child: CustomRecentDocument(
                         id: '#${data?.uuid ?? 0}',
-                        clientName: '${data?.customerName}',
+                              clientName:
+                                  '${data?.customerName}(#${data?.userId})',
                         documentName: data?.docName ?? 'N/A',
                         category: data?.serviceName ?? 'General',
                         subCategory: data?.subService ?? 'General',

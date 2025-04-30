@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:ca_app/data/models/user_model.dart';
+
 
 GetPermissionModel getPermissionModelFromJson(String str) =>
     GetPermissionModel.fromJson(json.decode(str));

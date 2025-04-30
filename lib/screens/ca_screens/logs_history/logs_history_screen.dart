@@ -149,10 +149,12 @@ class _LogsHistoryScreenState extends State<LogsHistoryScreen> {
                                     child: CommonLogScreen(
                                   id: data?.id.toString() ?? '',
                                   action: '${data?.action}',
-                                  performerName: '${data?.actionPerformerName}',
+                                  performerName:
+                                      '${data?.actionPerformerName}(#${data?.actionPerformerId})',
                                   performerEmail:
                                       '${data?.actionPerformerEmail}',
-                                  uponName: '${data?.actionUponName}',
+                                  uponName:
+                                      '${data?.actionUponName}(#${data?.actionUponId})',
                                   uponEmail: '${data?.actionUponEmail}',
                                   createdDate: dateFormate(data?.createdDate),
                                   reason: '${data?.reason}',

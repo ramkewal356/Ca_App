@@ -6,7 +6,6 @@ import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
-import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -112,9 +111,9 @@ class _ViewTaskScreenState extends State<ViewTaskScreen> {
                         children: [
                           Expanded(
                             child: _textItem(
-                                lable: 'Client No',
+                                lable: 'Client Mobile No',
                                 value:
-                                    '${data?.taskResponseDto?.customerMobile}'),
+                                    '+91 ${data?.taskResponseDto?.customerMobile}'),
                           ),
                           Expanded(
                             child: _textItem(
@@ -129,7 +128,7 @@ class _ViewTaskScreenState extends State<ViewTaskScreen> {
                           Expanded(
                             child: _textItem(
                                 lable: 'Due Date',
-                                value: '${data?.taskResponseDto?.dueDate}'),
+                                value: data?.taskResponseDto?.dueDate ?? 'N/A'),
                           ),
                           Expanded(
                             child: _textItem(

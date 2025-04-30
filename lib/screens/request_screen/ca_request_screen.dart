@@ -138,6 +138,9 @@ class _CaRequestScreenState extends State<CaRequestScreen> {
                                     value:
                                         '${data.senderName} (#${data.senderId})'),
                                 CustomTextItem(
+                                    lable: 'READ STATUS',
+                                    value: '${data.readStatus}'),
+                                CustomTextItem(
                                     lable: 'DESCRIPTION',
                                     value: '${data.text}'),
                                 SizedBox(height: 5),
@@ -147,6 +150,12 @@ class _CaRequestScreenState extends State<CaRequestScreen> {
                                         buttonWidth: 100,
                                         buttonTitle: 'View',
                                         onTap: () {
+                                        
+                                          context.read<ChangeStatusBloc>().add(
+                                              UnreadToReadStatusEvent(
+                                                  requestId:
+                                                      data.requestId ?? 0));
+                                      
                                           context.push('/request_details',
                                               extra: {
                                                 "requestId": data.requestId

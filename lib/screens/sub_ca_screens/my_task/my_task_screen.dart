@@ -92,7 +92,7 @@ class _MyTaskScreenState extends State<MyTaskScreen> {
                   child: CustomSearchField(
                     controller: _serchController,
                     serchHintText:
-                        'search..by id ,service name,subservice name',
+                        'Search..by task id and task name',
                     onChanged: _onSearchChanged,
                   ),
                 ),
@@ -194,7 +194,10 @@ class _MyTaskScreenState extends State<MyTaskScreen> {
                                           flex1: 2,
                                           flex2: 3,
                                           lable: 'STATUS',
-                                          value: '${data.taskResponse}',
+                                          value:
+                                              data.taskResponse == 'CANCELLED'
+                                                  ? 'REJECTED'
+                                                  : '${data.taskResponse}',
                                           textStyle: data.taskResponse ==
                                                   'CANCELLED'
                                               ? AppTextStyle().getredText

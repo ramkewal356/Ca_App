@@ -62,7 +62,7 @@ class _CustomFilterPopupWidgetState extends State<CustomFilterPopupWidget> {
       position: PopupMenuPosition.under,
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 10),
-      constraints: BoxConstraints(minWidth: 150, maxWidth: 150),
+      constraints: BoxConstraints(minWidth: 150, maxWidth: 160),
       offset: Offset(0, 0),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),

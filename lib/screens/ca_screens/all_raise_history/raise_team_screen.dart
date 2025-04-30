@@ -116,6 +116,11 @@ class _RaiseTeamScreenState extends State<RaiseTeamScreen> {
                               CustomTextInfo(
                                   flex1: 2,
                                   flex2: 3,
+                                  lable: 'READ STATUS',
+                                  value: '${data.readStatus}'),
+                              CustomTextInfo(
+                                  flex1: 2,
+                                  flex2: 3,
                                   lable: 'DESCRIPTION',
                                   value: '${data.text}'),
                               SizedBox(height: 10),
@@ -125,6 +130,9 @@ class _RaiseTeamScreenState extends State<RaiseTeamScreen> {
                                   buttonWidth: 100,
                                   buttonTitle: 'View',
                                   onTap: () {
+                                    context.read<ChangeStatusBloc>().add(
+                                        UnreadToReadStatusEvent(
+                                            requestId: data.requestId ?? 0));
                                     context.push('/request_details', extra: {
                                       "requestId": data.requestId
                                     }).then((onValue) {
