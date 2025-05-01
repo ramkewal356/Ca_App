@@ -43,7 +43,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
       backgroundColor: ColorConstants.white,
       child: Column(children: [
         UserAccountsDrawerHeader(
+          currentAccountPictureSize: Size.square(68),
           decoration: BoxDecoration(color: ColorConstants.buttonColor),
+          otherAccountsPicturesSize: Size.square(70),
+          otherAccountsPictures: [
+            Image.asset(
+              appLogo,
+              color: ColorConstants.white,
+            )
+          ],
           accountName: Row(
             
             mainAxisSize: MainAxisSize.max,

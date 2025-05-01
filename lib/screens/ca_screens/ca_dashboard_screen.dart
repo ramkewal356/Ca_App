@@ -238,7 +238,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 }
               },
               {
-                "imgUrl": Icons.history_edu,
+                "imgUrl": Icons.select_all_outlined,
                 "label": "All Raise History",
                 "onTap": () {
                   context.push('/ca_dashboard/all_raise_history',
@@ -499,7 +499,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                               children: [
                                 Text(
                                   'Recent document',
-                                  style: AppTextStyle().headingtext,
+                                  style: AppTextStyle().textheadingStyle,
                                 ),
                                 CustomTextButton(
                                     buttonTitle: 'View All',
