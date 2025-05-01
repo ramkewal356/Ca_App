@@ -241,7 +241,8 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "imgUrl": Icons.history_edu,
                 "label": "All Raise History",
                 "onTap": () {
-                  context.push('/ca_dashboard/all_raise_history');
+                  context.push('/ca_dashboard/all_raise_history',
+                      extra: {'id': user?.data?.id});
                 }
               },
               {

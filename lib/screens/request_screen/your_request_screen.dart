@@ -170,14 +170,14 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                                                       state.requsetId,
                                               buttonTitle: 'View',
                                               onTap: () {
-                                                if (widget.role == 'CUSTOMER') {
-                                                  context
-                                                      .read<ChangeStatusBloc>()
-                                                      .add(UnreadToReadStatusEvent(
-                                                          requestId:
-                                                              data.requestId ??
-                                                                  0));
-                                                }
+                                                // if (widget.role == 'CUSTOMER') {
+                                                //   context
+                                                //       .read<ChangeStatusBloc>()
+                                                //       .add(UnreadToReadStatusEvent(
+                                                //           requestId:
+                                                //               data.requestId ??
+                                                //                   0));
+                                                // }
                                                 context.push('/request_details',
                                                     extra: {
                                                       "requestId":

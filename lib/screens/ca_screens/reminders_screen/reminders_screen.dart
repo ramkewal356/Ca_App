@@ -37,7 +37,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   String searchQuery = '';
   String? selectedOccurence;
   Map<String, bool> selectedFilters = {
-    "All": false,
+    "All": true,
     "Active": false,
     "Inactive": false
   };

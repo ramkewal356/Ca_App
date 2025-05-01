@@ -34,7 +34,7 @@ class ValidatorClass {
   static String? validateEmail(String? email) {
     // Check if email is null or empty
     if (email == null || email.isEmpty) {
-      return 'Enter your email';
+      return 'Please enter email';
     }
 
     // Regular expression to validate email format

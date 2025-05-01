@@ -11,7 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class RaiseClientScreen extends StatefulWidget {
-  const RaiseClientScreen({super.key});
+  final int id;
+  const RaiseClientScreen({super.key, required this.id});
 
   @override
   State<RaiseClientScreen> createState() => _RaiseClientScreenState();
@@ -51,6 +52,7 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('userid ....${widget.id}');
     return Column(
       children: [
         CustomSearchField(
@@ -132,11 +134,13 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
                                   buttonWidth: 100,
                                   buttonTitle: 'View',
                                   onTap: () {
-                                   
-                                    context.read<ChangeStatusBloc>().add(
+                                    if (widget.id == data.receiverId) {
+                                      context.read<ChangeStatusBloc>().add(
                                         UnreadToReadStatusEvent(
                                             requestId: data.requestId ?? 0));
-                                       
+                                    }
+                                   
+
                                     context.push('/request_details', extra: {
                                       "requestId": data.requestId
                                     }).then((onValue) {

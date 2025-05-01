@@ -85,7 +85,7 @@ class _TextformfieldWidgetState extends State<TextformfieldWidget> {
         suffixIcon: widget.suffixIcons,
         filled: widget.readOnly,
         fillColor: widget.readOnly
-            ? ColorConstants.buttonColor.withOpacity(0.1)
+            ? widget.fillColor ?? ColorConstants.buttonColor.withOpacity(0.1)
             : widget.fillColor,
         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         focusedBorder: OutlineInputBorder(

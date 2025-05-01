@@ -130,9 +130,9 @@ class _RaiseTeamScreenState extends State<RaiseTeamScreen> {
                                   buttonWidth: 100,
                                   buttonTitle: 'View',
                                   onTap: () {
-                                    context.read<ChangeStatusBloc>().add(
-                                        UnreadToReadStatusEvent(
-                                            requestId: data.requestId ?? 0));
+                                    // context.read<ChangeStatusBloc>().add(
+                                    //     UnreadToReadStatusEvent(
+                                    //         requestId: data.requestId ?? 0));
                                     context.push('/request_details', extra: {
                                       "requestId": data.requestId
                                     }).then((onValue) {

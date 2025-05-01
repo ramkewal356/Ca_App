@@ -433,7 +433,7 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
                           children: [
                             Text(
                               'Recent document',
-                              style: AppTextStyle().headingtext,
+                              style: AppTextStyle().textheadingStyle,
                             ),
                             CustomTextButton(
                                 buttonTitle: 'View All',

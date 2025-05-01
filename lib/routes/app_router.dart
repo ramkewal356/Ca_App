@@ -298,7 +298,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'all_raise_history',
               builder: (context, state) {
-                return AllRaiseHistoryScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return AllRaiseHistoryScreen(
+                  id: data["id"],
+                );
               },
             ),
             GoRoute(

@@ -43,7 +43,7 @@ class _TeamMemberScreenState extends State<TeamMemberScreen> {
   String countryCode = '91';
   String? selectedDegination;
   Map<String, bool> filters = {
-    "All": false,
+    "All": true,
     "Active": false,
     "Inactive": false,
   };

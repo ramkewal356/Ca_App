@@ -195,7 +195,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                     (state is GetVerifiedSubCaByCaIdSuccess)
                                         ? state.selectedSubCaName
                                         : null,
-                                hintText: 'Select Sub Ca',
+                                hintText: 'Select sub ca',
                                 onChanged: (p0) {
                                   setState(() {
                                     selectedSubCaName = p0;
@@ -243,7 +243,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                 initialValue: (state is GetLoginCustomerSuccess)
                                     ? state.selectedClientName
                                     : null,
-                                hintText: 'Select Client',
+                                hintText: 'Select client',
                                 onChanged: (p0) {
                                   setState(() {
                                     selectedClientName = p0;
@@ -294,7 +294,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                           SizedBox(height: 5),
                           TextformfieldWidget(
                             controller: _taskNameController,
-                            hintText: 'Task name',
+                            hintText: 'Enter task name',
                             validator: (p0) {
                               if (p0 == null || p0.isEmpty) {
                                 return 'Please enter task';
@@ -307,8 +307,9 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                           SizedBox(height: 5),
                           TextformfieldWidget(
                             controller: _dateController,
-                            hintText: 'due date',
+                            hintText: 'Select due date',
                             readOnly: true,
+                            fillColor: ColorConstants.white,
                             suffixIcons: Icon(Icons.calendar_month),
                             onTap: _pickDate,
                             validator: (p0) {
@@ -325,7 +326,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                           SizedBox(height: 5),
                           TextformfieldWidget(
                             controller: _descriptionController,
-                            hintText: 'Description',
+                            hintText: 'Enter description',
                             validator: (p0) {
                               if (p0 == null || p0.isEmpty) {
                                 return 'Please enter description';

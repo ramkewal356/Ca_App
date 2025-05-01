@@ -38,6 +38,8 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
               validator: (p0) {
                 if (p0 == null || p0.isEmpty) {
                   return 'Please enter your service name';
+                } else if (p0.length < 10) {
+                  return 'Service name must be atleast 10 character';
                 }
                 return null;
               },
@@ -52,6 +54,8 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
               validator: (p0) {
                 if (p0 == null || p0.isEmpty) {
                   return 'Please enter your sub service';
+                } else if (p0.length < 10) {
+                  return 'Sub service name must be atleast 10 character';
                 }
                 return null;
               },
@@ -61,6 +65,7 @@ class _CreateServiceScreenState extends State<CreateServiceScreen> {
             SizedBox(height: 5),
             TextformfieldWidget(
               fillColor: ColorConstants.white,
+              textLength: 250,
               maxLines: 3,
               minLines: 3,
               controller: _descriptioncontroller,

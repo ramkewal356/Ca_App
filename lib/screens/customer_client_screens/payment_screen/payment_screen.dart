@@ -66,10 +66,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           leading: CircleAvatar(
                             radius: 35,
                             backgroundColor: ColorConstants.buttonColor,
-                            child: Text(
+                            child: caData?.data?.profileUrl == null
+                                ? Text(
                               '${caData?.data?.firstName?[0] ?? ''} ${caData?.data?.lastName?[0] ?? ''}',
                               style: AppTextStyle().buttontext,
-                            ),
+                                  )
+                                : ClipOval(
+                                    child: Image.network(
+                                      caData?.data?.profileUrl,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                           ),
                           title: Text(
                             '${caData?.data?.firstName ?? ''} ${caData?.data?.lastName ?? ''}',

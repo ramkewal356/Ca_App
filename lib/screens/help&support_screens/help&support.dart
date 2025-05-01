@@ -87,7 +87,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                 TextformfieldWidget(
                   maxLines: 5,
                   minLines: 5,
-                  textLength: 500,
+                  textLength: 250,
                   controller: _messageController,
                   focusNode: _focusNode3,
                   hintText: 'Message',

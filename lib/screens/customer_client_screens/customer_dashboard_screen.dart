@@ -10,6 +10,8 @@ import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_drawer.dart';
+import 'package:ca_app/widgets/custom_text_button.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,7 +84,14 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             time: '${getLocalizedGreeting()}, ',
             title: 'Client',
             actionIcons: [
-              
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Image.asset(
+              //     appLogo,
+              //     width: 80,
+              //     color: ColorConstants.white,
+              //   ),
+              // ),
               IconButton(
                   onPressed: () {},
                   icon: Icon(
@@ -93,12 +102,12 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
           ),
           drawer: CustomDrawer(
             userName:
-                '${userdata?.data?.firstName} ${userdata?.data?.lastName}',
-            emailAddress: '${userdata?.data?.email}',
+                '${userdata?.data?.firstName ?? 'x'} ${userdata?.data?.lastName ?? 'y'}',
+            emailAddress: userdata?.data?.email ?? 'xyz@gmail.com',
             profileUrl: userdata?.data?.profileUrl ?? '',
             activeButton: true,
             activeTex: userdata?.data?.status == true ? 'Active' : 'Inactive',
-            lastLogin: userdata?.data?.lastLogin ?? '',
+            lastLogin: userdata?.data?.lastLogin ?? '00:00',
             // selectedIndex: selectedValue,
             // onItemSelected: (index) {
             //   setState(() {
@@ -159,7 +168,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       extra: {"caId": userdata?.data?.caId}).then((onValue) {
                     _getUser();
                   });
-                  ;
+                  
                 }
               },
               {
@@ -215,14 +224,35 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                               )),
                         ),
                         SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Text(
-                            'Recent Request',
-                            style: AppTextStyle().headingtext,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: Text(
+                                'Recent Request',
+                                style: AppTextStyle().textheadingStyle,
+                              ),
+                            ),
+                            CustomTextButton(
+                                buttonTitle: 'View All',
+                                onTap: () {
+                                  context.push('/customer_dashboard/request',
+                                      extra: {
+                                        'caName': userdata?.data?.caName,
+                                        "caId": userdata?.data?.caId
+                                      });
+                                })
+                          ],
                         ),
-                        SizedBox(height: 5),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 5),
+                        //   child: Text(
+                        //     'Recent Request',
+                        //     style: AppTextStyle().subheadingtext,
+                        //   ),
+                        // ),
+                        // SizedBox(height: 5),
                         BlocBuilder<RaiseRequestBloc, RaiseRequestState>(
                           builder: (context, state) {
                             if (state is RaiseRequestError) {
@@ -265,6 +295,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                             var data = state.requestData[index];
                             return GestureDetector(
                               onTap: () {
+                                            context
+                                                .read<ChangeStatusBloc>()
+                                                .add(UnreadToReadStatusEvent(
+                                                    requestId:
+                                                        data.requestId ?? 0));
                                 context.push('/request_details', extra: {
                                   "requestId": data.requestId
                                 }).then((onValue) {
@@ -286,13 +321,34 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                           Text(dateFormate(data.createdDate)),
                                         ],
                                       ),
-                                      CustomTextItem(
-                                          lable: 'SENDER(CA)',
+                                                  CustomTextInfo(
+                                                      lable: 'SENDER (CA) ',
                                           value:
-                                              '${data.senderName}(#${data.senderId})'),
-                                      CustomTextItem(
-                                          lable: 'DESCRIPTION',
-                                          value: '${data.text}'),
+                                                          '${data.senderName}(#${data.senderId})'),
+                                                  CustomTextInfo(
+                                                    lable: 'READ STATUS',
+                                                    value: data.readStatus ==
+                                                            null
+                                                        ? 'N/A'
+                                                        : '${data.readStatus}',
+                                                    textStyle:
+                                                        data.readStatus ==
+                                                                'READ'
+                                                            ? AppTextStyle()
+                                                                .getgreenText
+                                                            : data.readStatus ==
+                                                                    'UNREAD'
+                                                                ? AppTextStyle()
+                                                                    .getredText
+                                                                : AppTextStyle()
+                                                                    .getredText,
+                                                  ),
+                                                  CustomTextInfo(
+                                                    lable: 'DOCUMENT REQUEST',
+                                                    value: '${data.text}',
+                                                    maxLine: 1,
+                                                    inOneLinetext: true,
+                                                  ),
                                      
                                     ],
                                   ),

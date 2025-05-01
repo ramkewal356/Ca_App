@@ -24,6 +24,8 @@ class AppTextStyle {
       color: ColorConstants.buttonColor,
       fontSize: 18,
       fontWeight: FontWeight.w600);
+  TextStyle textheadingStyle = GoogleFonts.roboto(
+      color: ColorConstants.black, fontSize: 18, fontWeight: FontWeight.w600);
   TextStyle textMediumButtonStyle = GoogleFonts.roboto(
       color: ColorConstants.buttonColor.withOpacity(0.7),
       fontSize: 15,

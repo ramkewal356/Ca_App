@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (p0) {
                     if (p0 == null || p0.isEmpty) {
-                      return 'Enter password';
+                      return 'Please enter password';
                     }
 
                     return null;

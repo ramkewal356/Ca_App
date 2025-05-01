@@ -48,7 +48,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
   List<String> selectedServices = [];
   List<int> selectedServiceIds = [];
   Map<String, bool> selectedFilters = {
-    "All": false,
+    "All": true,
     "Active": false,
     "Inactive": false
   };

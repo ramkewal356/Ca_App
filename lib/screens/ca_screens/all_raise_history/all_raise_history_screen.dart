@@ -8,7 +8,8 @@ import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:flutter/material.dart';
 
 class AllRaiseHistoryScreen extends StatefulWidget {
-  const AllRaiseHistoryScreen({super.key});
+  final int id;
+  const AllRaiseHistoryScreen({super.key, required this.id});
 
   @override
   State<AllRaiseHistoryScreen> createState() => _AllRaiseHistoryScreenState();
@@ -65,7 +66,11 @@ class _AllRaiseHistoryScreenState extends State<AllRaiseHistoryScreen> {
                 ],
               ),
               SizedBox(height: 10),
-              if (selectedIndex == 0) Expanded(child: RaiseClientScreen()),
+              if (selectedIndex == 0)
+                Expanded(
+                    child: RaiseClientScreen(
+                  id: widget.id,
+                )),
               if (selectedIndex == 1) Expanded(child: RaiseTeamScreen())
             ],
           ),

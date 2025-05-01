@@ -304,6 +304,7 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                   TextformfieldWidget(
                     minLines: 4,
                     maxLines: 4,
+                    textLength: 250,
                     focusNode: _focusNode,
                     controller: _descriptionController,
                     hintText: 'Description',

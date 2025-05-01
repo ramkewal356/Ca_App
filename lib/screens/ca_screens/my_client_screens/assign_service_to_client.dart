@@ -157,6 +157,12 @@ class _AssignServiceToClientState extends State<AssignServiceToClient> {
                           debugPrint('selectedService $selectedServiceIds');
                         });
                       },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select service';
+                        }
+                        return null;
+                      },
                     );
                   },
                 ),

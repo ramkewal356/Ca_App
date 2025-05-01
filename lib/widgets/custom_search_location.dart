@@ -103,7 +103,7 @@ class _CustomSearchLocationState extends State<CustomSearchLocation> {
       onTap: _navigateToSearchPage,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please select location';
+          return 'Please select address';
         }
         return null;
       },
