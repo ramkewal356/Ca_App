@@ -97,6 +97,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ? Image.network(
                         widget.profileUrl,
                         fit: BoxFit.fill,
+                        width: double.infinity,
+                        height: double.infinity,
                       )
                     : Image.asset(appLogo)),
           ),

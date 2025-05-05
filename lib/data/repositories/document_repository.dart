@@ -8,7 +8,8 @@ import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:open_filex/open_filex.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DocumentRepository {
@@ -116,33 +117,52 @@ class DocumentRepository {
       return;
     }
 
-    // Get Download directory
-    final directory = await getExternalStorageDirectory();
-    final savedDir = directory?.path ?? "/storage/emulated/0/Download";
-
-    // Ensure directory exists
-    final dir = Directory(savedDir);
-    if (!dir.existsSync()) {
-      dir.createSync(recursive: true);
+    // Step 2: Get public download directory
+    final directory = Directory('/storage/emulated/0/Download');
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+      debugPrint("Created download directory.");
     }
 
-    // Delete existing file if exists
-    final filePath = "$savedDir/$docName";
+    final filePath = "${directory.path}/$docName";
     final file = File(filePath);
+
+    // Step 3: Delete existing file
     if (file.existsSync()) {
       await file.delete();
-      debugPrint("Existing file deleted: $docName");
+      debugPrint("Deleted existing file: $docName");
     }
 
     // Start download with notification enabled
     final taskId = await FlutterDownloader.enqueue(
       url: docUrl,
-      savedDir: savedDir,
+      savedDir: directory.path,
       fileName: docName,
-      showNotification: true, // ✅ Enables foreground notification
+      showNotification: true, 
       openFileFromNotification: true,
-      requiresStorageNotLow: true, // ✅ Prevents stopping on low storage
+      requiresStorageNotLow: true,
     );
+    debugPrint("Download started: $taskId");
+    // // Get Download directory
+    // // final directory = await getExternalStorageDirectory();
+    // final directory = Directory('/storage/emulated/0/Download');
+    // final savedDir = directory.path;
+
+    // // Ensure directory exists
+    // final dir = Directory(savedDir);
+    // if (!dir.existsSync()) {
+    //   dir.createSync(recursive: true);
+    // }
+
+    // // Delete existing file if exists
+    // final filePath = "$savedDir/$docName";
+    // final file = File(filePath);
+    // if (file.existsSync()) {
+    //   await file.delete();
+    //   debugPrint("Existing file deleted: $docName");
+    // }
+
+   
     // if (await File(filePath).exists()) {
     //   OpenFilex.open(filePath).then((result) {
     //     debugPrint("File opened: ${result.message}");
@@ -152,7 +172,7 @@ class DocumentRepository {
     // } else {
     //   debugPrint("Error: File does not exist!");
     // }
-    debugPrint("Download started: $taskId");
+  
    
   }
 

@@ -177,6 +177,8 @@ class DownloadDocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       // await Future.delayed(Duration(seconds: 3));
       await _myRepo.downloadDocumentFile(
           docUrl: event.docUrl, docName: event.docName);
+      // await _myRepo.downloadFile(docUrl: event.docUrl, docName: event.docName);
+      // await _myRepo.startDownload(event.docUrl, event.docName);
       emit(DownloadDocumentFileSuccess(docName: event.docName));
     } catch (e) {
       emit(DocumentError(errorMessage: e.toString()));

@@ -1,5 +1,6 @@
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/screens/auth_screens/forgot_screen.dart';
+import 'package:ca_app/screens/auth_screens/signup_for_individual_customer.dart';
 import 'package:ca_app/screens/ca_screens/all_raise_history/all_raise_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/customer_allocation/customer_allocation.dart';
 import 'package:ca_app/screens/ca_screens/logs_history/logs_history_screen.dart';
@@ -26,6 +27,7 @@ import 'package:ca_app/screens/ca_screens/ca_dashboard_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/customer_dashboard_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/hisoty_screen/history_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/my_ca_screen/my_ca_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/indivisual_customer_dashboard.dart';
 import 'package:ca_app/screens/my_profile_screen/profile_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/payment_screen/payment_screen.dart';
 import 'package:ca_app/screens/request_screen/ca_request_screen.dart';
@@ -73,9 +75,13 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
           path: '/otpVerify',
           builder: (context, state) {
-            final email = state.extra != null ? state.extra as String : null;
+            // final email = state.extra != null ? state.extra as String : null;
+            final extra = state.extra as Map<String, dynamic>?;
+            final email = extra?['email'] as String?;
+            final selfRegistered = extra?['selfRegistered'] as bool? ?? false;
             return OtpVerificationScreen(
               email: email,
+              selfregisterd: selfRegistered,
             );
           }),
       GoRoute(
@@ -118,6 +124,10 @@ final GoRouter goRouter = GoRouter(
             contactId: data["contactId"],
           );
         },
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) => SignupForIndividualCustomer(),
       ),
       // CA AND SUBCA COMMON MODULE ROUTES
       GoRoute(
@@ -418,4 +428,11 @@ final GoRouter goRouter = GoRouter(
               },
             ),
           ]),
+      // CUSTOMER MODULE ROUTES
+      GoRoute(
+        path: '/indivisual_customer',
+        builder: (context, state) {
+          return IndivisualCustomerDashboard();
+        },
+      )
     ]);

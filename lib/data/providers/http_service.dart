@@ -43,7 +43,7 @@ class HttpService<T> {
       this.headers = <String, String>{};
     }
     var prefsToken = await SharedPreferences.getInstance();
-    String? token = await prefsToken.getString('token');
+    String? token = prefsToken.getString('token');
     if (token != null && token.isNotEmpty) {
       this.headers?.addAll({"Authorization": "Bearer $token"});
     } else {

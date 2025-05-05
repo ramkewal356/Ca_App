@@ -17,15 +17,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class CustomerDashboardScreen extends StatefulWidget {
-  const CustomerDashboardScreen({super.key});
+class IndivisualCustomerDashboard extends StatefulWidget {
+  const IndivisualCustomerDashboard({super.key});
 
   @override
-  State<CustomerDashboardScreen> createState() =>
-      _CustomerDashboardScreenState();
+  State<IndivisualCustomerDashboard> createState() =>
+      _IndivisualCustomerDashboardState();
 }
 
-class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
+class _IndivisualCustomerDashboardState
+    extends State<IndivisualCustomerDashboard> {
   int selectedValue = 0;
   String getLocalizedGreeting() {
     final hour = DateTime.now().hour;
@@ -59,9 +60,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   Widget build(BuildContext context) {
     var requestState = context.watch<RaiseRequestBloc>().state;
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         UserModel? userdata =
             state is GetUserByIdSuccess ? state.getUserByIdData : null;
@@ -121,69 +120,67 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   _getUser();
                 }
               },
-              {
-                "imgUrl": Icons.add_photo_alternate_outlined,
-                "label": "Upload Document",
-                "onTap": () {
-                  context.push('/customer_dashboard/upload_document');
-                }
-              },
-              {
-                "imgUrl": Icons.history,
-                "label": "History",
-                "onTap": () {
-                  context.push('/customer_dashboard/history',
-                      extra: {"userId": userdata?.data?.id.toString()});
-                }
-              },
-              {
-                "imgUrl": Icons.star,
-                "label": "Request",
-                "onTap": () {
-                  context.push('/customer_dashboard/request', extra: {
-                    'caName': userdata?.data?.caName,
-                    "caId": userdata?.data?.caId
-                  });
-                }
-              },
-              {
-                "imgUrl": Icons.groups,
-                "label": "My CA",
-                "onTap": () {
-                  context.push('/myCa',
-                      extra: {
-                    "caId": userdata?.data?.caId,
-                    "role": 'CUSTOMER'
-                  }).then((onValue) {
-                    _getUser();
-                  });
-                }
-              },
-              {
-                "imgUrl": Icons.payment,
-                "label": "Payment",
-                "onTap": () {
-                  context.push('/customer_dashboard/payment',
-                      extra: {"caId": userdata?.data?.caId}).then((onValue) {
-                    _getUser();
-                  });
-                  
-                }
-              },
-              {
-                "imgUrl": Icons.account_circle_outlined,
-                "label": "My Profile",
-                "onTap": () {
-                  context.push('/myProfile');
-                }
-              },
-              {
-                "imgUrl": Icons.help_sharp,
-                "label": "Help & Support",
-                "onTap": () {
-                  context.push('/help&support', extra: true);
-                }
-              },
+              // {
+              //   "imgUrl": Icons.add_photo_alternate_outlined,
+              //   "label": "Upload Document",
+              //   "onTap": () {
+              //     context.push('/customer_dashboard/upload_document');
+              //   }
+              // },
+              // {
+              //   "imgUrl": Icons.history,
+              //   "label": "History",
+              //   "onTap": () {
+              //     context.push('/customer_dashboard/history',
+              //         extra: {"userId": userdata?.data?.id.toString()});
+              //   }
+              // },
+              // {
+              //   "imgUrl": Icons.star,
+              //   "label": "Request",
+              //   "onTap": () {
+              //     context.push('/customer_dashboard/request', extra: {
+              //       'caName': userdata?.data?.caName,
+              //       "caId": userdata?.data?.caId
+              //     });
+              //   }
+              // },
+              // {
+              //   "imgUrl": Icons.groups,
+              //   "label": "My CA",
+              //   "onTap": () {
+              //     context.push('/myCa', extra: {
+              //       "caId": userdata?.data?.caId,
+              //       "role": 'CUSTOMER'
+              //     }).then((onValue) {
+              //       _getUser();
+              //     });
+              //   }
+              // },
+              // {
+              //   "imgUrl": Icons.payment,
+              //   "label": "Payment",
+              //   "onTap": () {
+              //     context.push('/customer_dashboard/payment',
+              //         extra: {"caId": userdata?.data?.caId}).then((onValue) {
+              //       _getUser();
+              //     });
+              //   }
+              // },
+              // {
+              //   "imgUrl": Icons.account_circle_outlined,
+              //   "label": "My Profile",
+              //   "onTap": () {
+              //     context.push('/myProfile');
+              //   }
+              // },
+              // {
+              //   "imgUrl": Icons.help_sharp,
+              //   "label": "Help & Support",
+              //   "onTap": () {
+              //     context.push('/help&support', extra: true);
+              //   }
+              // },
             ],
           ),
           body: Padding(
@@ -285,44 +282,47 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                       ),
                                     )
                                   : ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.requestData.length >= 6
-                              ? 6
-                              : state.requestData.length,
-                          itemBuilder: (context, index) {
-                            var data = state.requestData[index];
-                            return GestureDetector(
-                              onTap: () {
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: state.requestData.length >= 6
+                                          ? 6
+                                          : state.requestData.length,
+                                      itemBuilder: (context, index) {
+                                        var data = state.requestData[index];
+                                        return GestureDetector(
+                                          onTap: () {
                                             context
                                                 .read<ChangeStatusBloc>()
                                                 .add(UnreadToReadStatusEvent(
                                                     requestId:
                                                         data.requestId ?? 0));
-                                context.push('/request_details', extra: {
-                                  "requestId": data.requestId
-                                }).then((onValue) {
-                                  _getRequest();
-                                });
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                child: CustomCard(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              child: CustomTextItem(
-                                                  lable: 'ID',
-                                                  value: '#${data.requestId}')),
-                                          Text(dateFormate(data.createdDate)),
-                                        ],
-                                      ),
+                                            context.push('/request_details',
+                                                extra: {
+                                                  "requestId": data.requestId
+                                                }).then((onValue) {
+                                              _getRequest();
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5),
+                                            child: CustomCard(
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                          child: CustomTextItem(
+                                                              lable: 'ID',
+                                                              value:
+                                                                  '#${data.requestId}')),
+                                                      Text(dateFormate(
+                                                          data.createdDate)),
+                                                    ],
+                                                  ),
                                                   CustomTextInfo(
                                                       lable: 'SENDER (CA) ',
-                                          value:
+                                                      value:
                                                           '${data.senderName}(#${data.senderId})'),
                                                   CustomTextInfo(
                                                     lable: 'READ STATUS',
@@ -348,12 +348,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                                     maxLine: 1,
                                                     inOneLinetext: true,
                                                   ),
-                                     
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
                                       },
                                     );
                             }

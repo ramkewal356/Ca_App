@@ -62,7 +62,7 @@ class Data {
   dynamic companyLogo;
 
   List<Service>? services;
-
+  bool? selfRegistered;
   Data({
     this.id,
     this.firstName,
@@ -96,6 +96,7 @@ class Data {
     this.gst,
     this.companyLogo,
     this.services,
+    this.selfRegistered,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -136,6 +137,7 @@ class Data {
             ? []
             : List<Service>.from(
                 json["services"]!.map((x) => Service.fromJson(x))),
+      selfRegistered: json["selfRegistered"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -173,6 +175,7 @@ class Data {
         "services": services == null
             ? []
             : List<dynamic>.from(services!.map((x) => x.toJson())),
+        "selfRegistered": selfRegistered
       };
 }
 
@@ -230,12 +233,7 @@ class ClientActivity {
   String? type;
   bool? isSelected;
 
-  ClientActivity({
-    this.id,
-    this.permissionName,
-    this.type,
-    this.isSelected
-  });
+  ClientActivity({this.id, this.permissionName, this.type, this.isSelected});
 
   factory ClientActivity.fromJson(Map<String, dynamic> json) => ClientActivity(
         id: json["id"],

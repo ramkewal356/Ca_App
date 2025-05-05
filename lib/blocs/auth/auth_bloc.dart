@@ -34,10 +34,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await Future.delayed(Duration(seconds: 2)); // a simulated delay
       String? token = await SharedPrefsClass().getToken();
       String? role = await SharedPrefsClass().getRole();
-
+      bool? selfRegistered = await SharedPrefsClass().getSelfRegistered();
       debugPrint('token:---$token');
       if (token != null) {
-        emit(AuthSuccessState(role: role ?? ''));
+        emit(AuthSuccessState(
+            role: role ?? '', selfRegistered: selfRegistered ?? false));
       } else {
         emit(AuthFail());
       }
@@ -58,7 +59,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (loginResp?.status?.httpCode == '200') {
         if (loginResp?.data?.token != null || loginResp?.data?.role != null) {
           await SharedPrefsClass().saveUser(loginResp?.data?.token ?? '',
-              loginResp?.data?.role ?? '', loginResp?.data?.id ?? 0);
+              loginResp?.data?.role ?? '',
+              loginResp?.data?.id ?? 0,
+              loginResp?.data?.selfRegistered ?? false);
           emit(LoginSuccess(loginModel: loginResp));
           Utils.toastSuccessMessage('Login Successfully');
         }
@@ -75,13 +78,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       debugPrint('userId.,.,.,.,.,.,., $userId');
 
       Map<String, dynamic> body = {
-        "caId": userId,
-        "addedBy": userId,
+        if (!event.selfRegistration) "caId": userId,
+        if (!event.selfRegistration) "addedBy": userId,
         "firstName": event.firstName,
         "lastName": event.lastName,
         "mobile": event.mobile,
         "email": event.email,
         "role": event.role,
+        if (event.selfRegistration) "gender": event.gender,
+        if (event.selfRegistration) "password": event.password,
         "countryCode": event.countryCode,
         if ((event.addharNumber ?? '').isNotEmpty)
           "aadhaarCardNumber": event.addharNumber,
@@ -92,7 +97,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (event.companyName.isNotEmpty) "companyName": event.companyName
       };
       emit(AuthLoading());
-      var userResp = await _myRepo.addNewUser(body: body);
+      var userResp = await _myRepo.addNewUser(
+          body: body, selfRegister: event.selfRegistration);
       if (userResp?.status?.httpCode == '200') {
         // Utils.toastSuccessMessage('Accound Created Successfully');
         emit(AddUserSuccess(addUserModel: userResp));

@@ -35,9 +35,9 @@ class AuthRepository {
   }
   //**** Add New User API ****//
   Future<UserModel?> addNewUser(
-      {required Map<String, dynamic> body}) async {
+      {required Map<String, dynamic> body, required bool selfRegister}) async {
     var http = HttpService(
-        isAuthorizeRequest: true,
+        isAuthorizeRequest: selfRegister ? false : true,
         baseURL: EndPoints.baseUrl,
         endURL: EndPoints.addNewUserUrl,
         body: body,

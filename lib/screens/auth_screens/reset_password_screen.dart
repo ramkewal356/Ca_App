@@ -132,9 +132,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
                     if (state is UpdateUserSuccess) {
-                      context.pop();
-                      context.pop();
-                      context.pop();
+                      // context.pop();
+                      // context.pop();
+                      // context.pop();
+                      context.push('/login');
                     }
                   },
                   builder: (context, state) {

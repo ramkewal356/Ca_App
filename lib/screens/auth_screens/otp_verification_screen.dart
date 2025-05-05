@@ -17,7 +17,9 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String? email;
-  const OtpVerificationScreen({super.key, this.email});
+  final bool selfregisterd;
+  const OtpVerificationScreen(
+      {super.key, this.email, this.selfregisterd = false});
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -51,10 +53,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint('email:-- ${widget.email}');
+    debugPrint('selfregitered:-- ${widget.selfregisterd}');
+
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is VerifyOtpForUserSuccess) {
-          context.push('/register', extra: state.verifiedUser);
+          if (state.verifiedUser?.data?.selfRegistered == true) {
+            context.push('/login');
+          } else {
+            context.push('/register', extra: state.verifiedUser);
+          }
         } else if (state is VerifyOtpSuccess) {
           context.push('/resetPassword',
               extra: {"userId": state.verifyModel?.data?.id});
@@ -229,7 +237,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       buttonTitle: 'Verify & Proceed',
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
-                          if (widget.email == null || widget.email!.isEmpty) {
+                          if (widget.selfregisterd) {
+                            context.read<AuthBloc>().add(VerifyOtpForUserEvent(
+                                email: widget.email ?? _emailController.text,
+                                otp: _otpController.text));
+                          } else if (widget.email == null ||
+                              widget.email!.isEmpty) {
                             context.read<AuthBloc>().add(VerifyOtpForUserEvent(
                                 email: _emailController.text,
                                 otp: _otpController.text));

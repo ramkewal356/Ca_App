@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
-        
+       
         <provider
         android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
         android:authorities="${applicationId}.flutter_downloader.provider"

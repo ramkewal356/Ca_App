@@ -135,8 +135,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                           child: CustomSearchField(
                             focusNode: _searchFocusNode,
                             controller: _searchController,
-                            serchHintText:
-                                'Search client by id name,email',
+                            serchHintText: 'Search client by id name,email',
                             onChanged: _onSearchChanged,
                           ),
                         ),
@@ -163,7 +162,6 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                             // _showModal();
                           },
                         ),
-                       
                       ],
                     ),
                   ),
@@ -402,6 +400,7 @@ class _MyCAClientScreenState extends State<MyCAClientScreen> {
                                     loader: state is AuthLoading,
                                     onTap: () {
                                       if (_formKey.currentState!.validate()) {
+                                        
                                         BlocProvider.of<AuthBloc>(context).add(
                                             AddUserEvent(
                                                 firstName:

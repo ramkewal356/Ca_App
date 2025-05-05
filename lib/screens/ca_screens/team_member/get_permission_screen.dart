@@ -153,7 +153,7 @@ class _GetPermissionScreenState extends State<GetPermissionScreen> {
                     SizedBox(height: 8),
                   ],
                 );
-              }).toList(),
+              }),
               SizedBox(
                 height: 20,
               ),

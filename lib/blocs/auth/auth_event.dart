@@ -123,6 +123,9 @@ class AddUserEvent extends AuthEvent {
   final String? degination;
   final String panCardNumber;
   final String companyName;
+  final String gender;
+  final String password;
+  final bool selfRegistration;
   const AddUserEvent({
     required this.firstName,
     required this.lastName,
@@ -134,6 +137,9 @@ class AddUserEvent extends AuthEvent {
     this.degination,
     this.panCardNumber = '',
     this.companyName = '',
+      this.selfRegistration = false,
+      this.gender = '',
+      this.password = ''
   });
 
   @override
@@ -147,7 +153,10 @@ class AddUserEvent extends AuthEvent {
         addharNumber ?? '',
         degination ?? '',
         panCardNumber,
-        companyName
+        companyName,
+        selfRegistration,
+        gender,
+        password
       ];
 }
 

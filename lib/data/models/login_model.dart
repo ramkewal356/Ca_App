@@ -44,7 +44,7 @@ class Data {
   bool? status;
   String? profileUrl;
   String? profileName;
-
+  bool? selfRegistered;
   Data({
     this.token,
     this.id,
@@ -60,6 +60,7 @@ class Data {
     this.status,
     this.profileUrl,
     this.profileName,
+      this.selfRegistered
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -77,6 +78,7 @@ class Data {
         status: json["status"],
         profileUrl: json["profileUrl"],
         profileName: json["profileName"],
+      selfRegistered: json["selfRegistered"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -94,6 +96,7 @@ class Data {
         "status": status,
         "profileUrl": profileUrl,
         "profileName": profileName,
+        "selfRegistered": selfRegistered
       };
 }
 
@@ -120,4 +123,3 @@ class Status {
         "message": message,
       };
 }
-

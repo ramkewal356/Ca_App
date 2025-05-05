@@ -1,4 +1,3 @@
-
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
 import 'package:ca_app/data/models/otp_send_and_verify_model.dart';
@@ -23,15 +22,16 @@ class SendOtpLoading extends AuthState {}
 /// Auth Success State///
 class AuthSuccessState extends AuthState {
   final String role;
+  final bool selfRegistered;
 
-  const AuthSuccessState({required this.role});
+  const AuthSuccessState({required this.role, required this.selfRegistered});
   @override
-  List<Object> get props => [role];
+  List<Object> get props => [role, selfRegistered];
 }
+
 /// Get User Loading State///
-class GetUserLoading extends AuthState {
-  
-}
+class GetUserLoading extends AuthState {}
+
 /// Login Success State///
 class LoginSuccess extends AuthState {
   final LoginModel? loginModel;
@@ -68,6 +68,7 @@ class VerifyOtpSuccess extends AuthState {
   @override
   List<Object> get props => [verifyModel ?? []];
 }
+
 /// VerifyOtp Success State///
 class VerifyOtpForUserSuccess extends AuthState {
   final UserModel? verifiedUser;
@@ -76,6 +77,7 @@ class VerifyOtpForUserSuccess extends AuthState {
   @override
   List<Object> get props => [verifiedUser ?? []];
 }
+
 /// Update Success State///
 class UpdateUserSuccess extends AuthState {
   final UserModel? updateUser;
@@ -93,6 +95,7 @@ class UpdateProfileImgSuccess extends AuthState {
   @override
   List<Object> get props => [updateUser ?? []];
 }
+
 /// GetUserById Success State///
 class GetUserByIdSuccess extends AuthState {
   final UserModel? getUserByIdData;
@@ -100,6 +103,7 @@ class GetUserByIdSuccess extends AuthState {
   @override
   List<Object> get props => [getUserByIdData ?? []];
 }
+
 /// Deactive Loading  State///
 class DeactiveLoading extends AuthState {}
 
@@ -110,6 +114,7 @@ class DeactiveUserSucess extends AuthState {}
 
 ///////////////**** Fail State ****////////////////
 class AuthFail extends AuthState {}
+
 ///////////////**** Error State ****////////////////
 class AuthErrorState extends AuthState {
   final String erroMessage;

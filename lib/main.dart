@@ -1,3 +1,4 @@
+
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
@@ -26,9 +27,19 @@ void main() async {
   
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   // FlutterDownloader.registerCallback(DocumentRepository.downloadCallback);
+  // await FlutterDownloader.initialize(debug: true);
+  // IsolateNameServer.registerPortWithName(
+  //     _port.sendPort, 'downloader_send_port');
+  // FlutterDownloader.registerCallback(downloadCallback);
   runApp(const MyApp());
 }
+// final ReceivePort _port = ReceivePort();
 
+// @pragma('vm:entry-point')
+// void downloadCallback(String id, int status, int progress) {
+//   IsolateNameServer.lookupPortByName('downloader_send_port')
+//       ?.send([id, status, progress]);
+// }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

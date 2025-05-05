@@ -62,7 +62,13 @@ class _ForgotScreenState extends State<ForgotScreen> {
               BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
                   if (state is SendOtpSuccess) {
-                    context.push('/otpVerify', extra: _emailController.text);
+                    context.push(
+                      '/otpVerify',
+                      extra: {
+                        'email': _emailController.text,
+                        'selfRegistered': false,
+                      },
+                    );
                     // Utils.toastSuccessMessage('Otp Sent Successfully');
                   }
                 },

@@ -36,7 +36,11 @@ class _SplashScreenState extends State<SplashScreen> {
           } else if (state.role == 'SUBCA') {
             context.pushReplacement('/subca_dashboard');
           } else if (state.role == 'CUSTOMER') {
-            context.pushReplacement('/customer_dashboard');
+            if (state.selfRegistered == true) {
+              context.pushReplacement('/indivisual_customer');
+            } else {
+              context.pushReplacement('/customer_dashboard');
+            }
           }
         } else if (state is AuthFail) {
           debugPrint('vcbnvcbcxnbcvnb');
