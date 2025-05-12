@@ -52,7 +52,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
   Future<void> _getYourRequestApi(
       GetYourRequestEvent event, Emitter<RaiseRequestState> emit) async {
     if (isFetching) return;
-    if (event.isSearch && !event.isPagination) {
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(RaiseRequestLoading()); // Show loading only for the first page
@@ -65,7 +66,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       "senderId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "search": event.searchText
+      "search": event.searchText,
+      "readStatus": event.filterText
     };
     try {
       var resp = await _myRepo.getRequestBySenderIdApi(query: query);
@@ -92,7 +94,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
   Future<void> _getRequestOfClientApi(
       GetRequestOfClientEvent event, Emitter<RaiseRequestState> emit) async {
     if (isFetching) return;
-    if (event.isSearch && !event.isPagination) {
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(RaiseRequestLoading()); // Show loading only for the first page
@@ -105,7 +108,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       "caId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "search": event.searchText
+      "search": event.searchText,
+      "readStatus": event.filterText
     };
     try {
       var resp = await _myRepo.getRequestOfClientByCaId(query: query);
@@ -132,7 +136,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
   Future<void> _getRequestOfTeamApi(
       GetRequestOfTeamEvent event, Emitter<RaiseRequestState> emit) async {
     if (isFetching) return;
-    if (event.isSearch && !event.isPagination) {
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(RaiseRequestLoading()); // Show loading only for the first page
@@ -145,7 +150,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       "caId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "search": event.searchText
+      "search": event.searchText,
+      "readStatus": event.filterText
     };
     try {
       var resp = await _myRepo.getRequestOfTeamByCaId(query: query);
@@ -184,7 +190,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
   Future<void> _getRequestByReceiverIdApi(GetRequestByReceiverIdEvent event,
       Emitter<RaiseRequestState> emit) async {
     if (isFetching) return;
-    if (event.isSearch && !event.isPagination) {
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(RaiseRequestLoading()); // Show loading only for the first page
@@ -197,7 +204,8 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
       "receiverId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "search": event.searchText
+      "search": event.searchText,
+      "readStatus": event.filterText
     };
     try {
       var resp = await _myRepo.getRequestByReceiverIdApi(query: query);

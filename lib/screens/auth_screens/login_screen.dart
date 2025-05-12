@@ -218,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           backgroundColor: ColorConstants.buttonColor,
           child: Icon(
-            Icons.help_outline,
+            Icons.headset_mic_rounded,
             color: ColorConstants.white,
             size: 30,
           ),

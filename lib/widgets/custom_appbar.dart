@@ -6,9 +6,10 @@ import 'package:go_router/go_router.dart';
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? time;
-
+  final Color? bgColor;
   final bool backIconVisible;
   final Widget? backIcon;
+  final Widget? centerIcon;
   final void Function()? onTapBack;
   final List<Widget>? actionIcons;
   const CustomAppbar(
@@ -18,6 +19,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       this.backIconVisible = false,
       this.backIcon,
       this.onTapBack,
+      this.centerIcon,
+      this.bgColor,
       this.actionIcons});
 
   @override
@@ -27,11 +30,13 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 1,
-      // shadowColor: ColorConstants.white,
+      shadowColor: bgColor,
+      surfaceTintColor: bgColor ?? ColorConstants.buttonColor,
       centerTitle: true,
       titleSpacing: 0,
-      backgroundColor: ColorConstants.buttonColor,
-      title: Row(
+      backgroundColor: bgColor ?? ColorConstants.buttonColor,
+      title: backIconVisible
+          ? Row(
         children: [
           Text(
             time ?? '',
@@ -45,7 +50,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ],
-      ),
+            )
+          : centerIcon,
       leading: backIconVisible
           // ? backIconVisible
           ? backIcon ??

@@ -227,6 +227,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     debugPrint('userId.,.,.,.,.,.,., $userId');
     Map<String, dynamic> query = {
       "caId": userId,
+      if (event.subCaId != 0) "subCaId": event.subCaId
     };
     try {
       if (event is GetLogincutomerEvent) {

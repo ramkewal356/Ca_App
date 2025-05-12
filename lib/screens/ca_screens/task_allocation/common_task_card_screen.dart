@@ -87,7 +87,9 @@ class CommonTaskCardScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   isMytaskScreen
-                      ? CommonButtonWidget(
+                      ? status == 'COMPLETED'
+                          ? SizedBox()
+                          : CommonButtonWidget(
                           buttonWidth: 120,
                           buttonheight: 45,
                           buttonColor: ColorConstants.white,

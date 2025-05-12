@@ -307,7 +307,10 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                             buttonBorderColor: ColorConstants.buttonColor,
                             tileStyle: AppTextStyle().textMediumButtonStyle,
                             disable:
-                                data?.userResponse == 'ACCEPTED' ? false : true,
+                               (data?.userResponse == 'REQUESTED' ||
+                                    data?.status == false)
+                                ? true
+                                : false,
                             buttonTitle: 'View Document',
                             onTap: () {
                               context
@@ -323,7 +326,8 @@ class _ViewClientScreenState extends State<ViewClientScreen> {
                           ),
                           CommonButtonWidget(
                             buttonWidth: 150,
-                            disable: data?.userResponse == 'REQUESTED'
+                            disable: (data?.userResponse == 'REQUESTED' ||
+                                    data?.status == false)
                                 ? true
                                 : false,
                             buttonTitle: 'Raise Request',

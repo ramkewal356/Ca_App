@@ -109,10 +109,11 @@ class AssignCustomerEvent extends CustomerEvent {
 
 class GetLogincutomerEvent extends CustomerEvent {
   final String selectedClientName;
-
-  const GetLogincutomerEvent({required this.selectedClientName});
+  final int subCaId;
+  const GetLogincutomerEvent(
+      {required this.selectedClientName, this.subCaId = 0});
   @override
-  List<Object> get props => [selectedClientName];
+  List<Object> get props => [selectedClientName, subCaId];
 }
 
 class UpdateClientEvent extends CustomerEvent {

@@ -6,6 +6,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
+import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
@@ -25,6 +26,8 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _controller = TextEditingController();
   String searchText = '';
+  String filterText = '';
+  String title = 'All';
   @override
   void initState() {
     super.initState();
@@ -32,11 +35,16 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
     _scrollController.addListener(_onSroll);
   }
 
-  void _fetchRequestList({bool isPagination = false, bool isSearch = false}) {
+  void _fetchRequestList(
+      {bool isPagination = false,
+      bool isSearch = false,
+      bool isFilter = false}) {
     context.read<RaiseRequestBloc>().add(GetYourRequestEvent(
         isPagination: isPagination,
         isSearch: isSearch,
-        searchText: searchText));
+        searchText: searchText,
+        isFilter: isFilter,
+        filterText: filterText));
   }
 
   void _onSroll() {
@@ -53,6 +61,19 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
     _fetchRequestList(isSearch: true);
   }
 
+  void _onFilterChanged(String value) {
+    setState(() {
+      title = value == '' ? 'All' : filtersList[value] ?? '';
+      filterText = value;
+    });
+    _fetchRequestList(isFilter: true);
+  }
+
+  Map<String, String> filtersList = {
+    "All": '',
+    "Read": 'read',
+    "Unread": 'unread',
+  };
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -65,10 +86,21 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
         child: Column(
           children: [
             SizedBox(height: 10),
-            CustomSearchField(
-              controller: _controller,
-              serchHintText: 'Search by id & name',
-              onChanged: _onSearchChanged,
+            Row(
+              children: [
+                Expanded(
+                  child: CustomSearchField(
+                    controller: _controller,
+                    serchHintText: 'Search by id & name',
+                    onChanged: _onSearchChanged,
+                  ),
+                ),
+                SizedBox(width: 10),
+                CustomFilterPopupWidget(
+                    title: title,
+                    filterOptions: filtersList,
+                    onFilterChanged: _onFilterChanged),
+              ],
             ),
             SizedBox(height: 10),
             BlocConsumer<RaiseRequestBloc, RaiseRequestState>(
@@ -144,9 +176,9 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                                   CustomTextInfo(
                                     flex1: 2,
                                     flex2: 3,
-                                      lable: 'READ STATUS',
-                                      value: data.readStatus == null
-                                          ? 'N/A'
+                                    lable: 'READ STATUS',
+                                    value: data.readStatus == null
+                                        ? 'N/A'
                                         : '${data.readStatus}',
                                     textStyle: data.readStatus == 'READ'
                                         ? AppTextStyle().getgreenText

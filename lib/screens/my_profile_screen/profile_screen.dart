@@ -5,6 +5,7 @@ import 'package:ca_app/blocs/image_picker/image_picker_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_bottomsheet_image_modal.dart';
@@ -45,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userId = '';
   String role = '';
   bool isEditable = false;
+  bool selfRegistered = false;
   @override
   void initState() {
     getUser();
@@ -94,6 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _companyController.text = data?.companyName ?? '';
           _deginationController.text = data?.designation ?? '';
           _gstController.text = data?.gst ?? '';
+          selfRegistered = data?.selfRegistered ?? false;
+          debugPrint('addarcard ${_adharcardController.text}');
         }
         return CustomLayoutPage(
           appBar: CustomAppbar(
@@ -145,41 +149,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           role == 'SUBCA'
                               ? SizedBox.shrink()
-                              : Positioned(
-                                  left: 8,
-                                  top: 8,
-                                  child: CircleAvatar(
-                                    radius: 32,
-                                    backgroundColor: ColorConstants.white,
-                                    child: CircleAvatar(
-                                      radius: 30,
-                                      child: companyLogoUrl.isEmpty
-                                          ? Icon(Icons.person)
-                                          : ClipOval(
-                                              child: Image.network(
-                                                  companyLogoUrl)),
-                                    ),
-                                  )),
+                              : selfRegistered
+                                  ? SizedBox.shrink()
+                                  : Positioned(
+                                      left: 8,
+                                      top: 8,
+                                      child: CircleAvatar(
+                                        radius: 32,
+                                        backgroundColor: ColorConstants.white,
+                                        child: CircleAvatar(
+                                          radius: 30,
+                                          child: companyLogoUrl.isEmpty
+                                              ? Icon(Icons.person)
+                                              : ClipOval(
+                                                  child: Image.network(
+                                                      companyLogoUrl)),
+                                        ),
+                                      )),
                           role == 'SUBCA'
                               ? SizedBox.shrink()
                               : isEditable
-                                  ? Positioned(
-                                  right: 10,
-                                  top: 10,
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'Edit Firm Logo..',
-                                        style: AppTextStyle().buttontext,
-                                      ),
-                                      CustomBottomsheetImageModal(
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: ColorConstants.white,
-                                        ),
-                                      )
-                                    ],
-                                      ))
+                                  ? selfRegistered
+                                      ? SizedBox.shrink()
+                                      : Positioned(
+                                          right: 10,
+                                          top: 10,
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                'Edit Firm Logo..',
+                                                style:
+                                                    AppTextStyle().buttontext,
+                                              ),
+                                              CustomBottomsheetImageModal(
+                                                icon: Icon(
+                                                  Icons.edit,
+                                                  color: ColorConstants.white,
+                                                ),
+                                              )
+                                            ],
+                                          ))
                                   : SizedBox.shrink(),
                           BlocConsumer<ImagePickerBloc, ImagePickerState>(
                             listener: (context, state) {
@@ -295,24 +304,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         return null;
                       },
                     ),
-                    role == 'SUBCA' ? SizedBox.shrink() : SizedBox(height: 10),
                     role == 'SUBCA'
                         ? SizedBox.shrink()
-                        : Text(role == 'CA' ? 'Firm Name' : 'Company Name',
-                            style: AppTextStyle().labletext),
+                        : selfRegistered
+                            ? SizedBox.shrink()
+                            : SizedBox(height: 10),
+                    role == 'SUBCA'
+                        ? SizedBox.shrink()
+                        : selfRegistered
+                            ? SizedBox.shrink()
+                            : Text(role == 'CA' ? 'Firm Name' : 'Company Name',
+                                style: AppTextStyle().labletext),
                     role == 'SUBCA' ? SizedBox.shrink() : SizedBox(height: 5),
                     role == 'SUBCA'
                         ? SizedBox.shrink()
-                        : TextformfieldWidget(
-                            readOnly: !isEditable
-                                ? true
-                                : _companyController.text.isNotEmpty
+                        : selfRegistered
+                            ? SizedBox.shrink()
+                            : TextformfieldWidget(
+                                readOnly: !isEditable
                                     ? true
-                                    : false,
-                            fillColor: ColorConstants.white,
-                            controller: _companyController,
-                            hintText: 'Enter company name',
-                          ),
+                                    : _companyController.text.isNotEmpty
+                                        ? true
+                                        : false,
+                                fillColor: ColorConstants.white,
+                                controller: _companyController,
+                                hintText: 'Enter company name',
+                              ),
                     role == 'SUBCA' ? SizedBox(height: 10) : SizedBox.shrink(),
                     role == 'SUBCA'
                         ? Text('Designation', style: AppTextStyle().labletext)
@@ -360,8 +377,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Text('Aadhar Card', style: AppTextStyle().labletext),
                     SizedBox(height: 5),
                     TextformfieldWidget(
-                      readOnly:
-                         !isEditable
+                      readOnly: !isEditable
                           ? true
                           : _adharcardController.text.isNotEmpty
                               ? true
@@ -385,40 +401,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _locationController,
                         state: '',
                         hintText: 'Select address'),
-                
+
                     SizedBox(height: 20),
                     isEditable
                         ? BlocConsumer<AuthBloc, AuthState>(
-                      listener: (context, state) {
-                        // if (state is RegisterSuccess) {
-                        //   context.push('/login');
-                        // }
-                      },
-                      builder: (context, state) {
-                        return CommonButtonWidget(
-                            loader: state is AuthLoading,
-                            buttonTitle: 'Save & Update',
-                            onTap: () {
-                              debugPrint('selected Value $countryCode');
-                              debugPrint(
-                                  'phone number ${_phoneController.text}');
+                            listener: (context, state) {
+                              if (state is UpdateUserSuccess) {
+                                Utils.toastSuccessMessage(
+                                    'Profile Updated Successfully');
+                                isEditable = false;
+                              }
+                            },
+                            builder: (context, state) {
+                              return CommonButtonWidget(
+                                  loader: state is AuthLoading,
+                                  buttonTitle: 'Save & Update',
+                                  onTap: () {
+                                    debugPrint('selected Value $countryCode');
+                                    debugPrint(
+                                        'phone number ${_phoneController.text}');
 
-                              if (_formKey.currentState!.validate()) {
-                                context.read<AuthBloc>().add(UpdateUserEvent(
-                                    userId: userId,
-                                    email: _emailController.text,
-                                    gender: selectedGender ?? '',
-                                    mobile: _phoneController.text,
-                                    firstName: _firstNameController.text,
-                                    lastName: _lastNameController.text,
-                                    panCard: _pancardController.text,
-                                    addharCard: _adharcardController.text,
+                                    if (_formKey.currentState!.validate()) {
+                                      context.read<AuthBloc>().add(
+                                          UpdateUserEvent(
+                                              userId: userId,
+                                              email: _emailController.text,
+                                              gender: selectedGender ?? '',
+                                              mobile: _phoneController.text,
+                                              firstName:
+                                                  _firstNameController.text,
+                                              lastName:
+                                                  _lastNameController.text,
+                                              panCard: _pancardController.text,
+                                              addharCard:
+                                                  _adharcardController.text,
                                               address: _locationController.text,
                                               companyName:
                                                   _companyController.text));
-                              }
-                            });
-                      },
+                                    }
+                                  });
+                            },
                           )
                         : SizedBox.shrink()
                   ],

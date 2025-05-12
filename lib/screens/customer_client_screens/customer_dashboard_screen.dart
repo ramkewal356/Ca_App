@@ -52,7 +52,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
 
   void _getRequest() {
     context.read<RaiseRequestBloc>().add(GetRequestByReceiverIdEvent(
-        isPagination: false, isSearch: true, searchText: ''));
+        isPagination: false,
+        isSearch: true,
+        searchText: '',
+        filterText: '',
+        isFilter: false));
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
+import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
@@ -24,6 +25,8 @@ class RequestScreen extends StatefulWidget {
 
 class _RequestScreenState extends State<RequestScreen> {
   String searchText = '';
+  String filterText = '';
+  String title = 'All';
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   @override
@@ -33,11 +36,16 @@ class _RequestScreenState extends State<RequestScreen> {
     _scrollController.addListener(_onScroll);
   }
 
-  void _getRaiseRequest({bool isPagination = false, bool isSearch = false}) {
+  void _getRaiseRequest(
+      {bool isPagination = false,
+      bool isSearch = false,
+      bool isFilter = false}) {
     context.read<RaiseRequestBloc>().add(GetRequestByReceiverIdEvent(
         isPagination: isPagination,
         isSearch: isSearch,
-        searchText: searchText));
+        searchText: searchText,
+        isFilter: isFilter,
+        filterText: filterText));
   }
 
   void _onScroll() {
@@ -54,6 +62,19 @@ class _RequestScreenState extends State<RequestScreen> {
     _getRaiseRequest(isSearch: true);
   }
 
+  void _onFilterChanged(String value) {
+    setState(() {
+      title = value == '' ? 'All' : filtersList[value] ?? '';
+      filterText = value;
+    });
+    _getRaiseRequest(isFilter: true);
+  }
+
+  Map<String, String> filtersList = {
+    "All": '',
+    "Read": 'read',
+    "Unread": 'unread',
+  };
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -76,6 +97,11 @@ class _RequestScreenState extends State<RequestScreen> {
                   ),
                 ),
                 SizedBox(width: 10),
+                CustomFilterPopupWidget(
+                    title: title,
+                    filterOptions: filtersList,
+                    onFilterChanged: _onFilterChanged),
+                SizedBox(width: 10),
                 CommonButtonWidget(
                     buttonheight: 48,
                     buttonWidth: 130,
@@ -83,8 +109,7 @@ class _RequestScreenState extends State<RequestScreen> {
                     // tileStyle: AppTextStyle().textMediumButtonStyle,
                     buttonTitle: 'Raise request',
                     onTap: () {
-                      context.push('/raise_request',
-                          extra: {
+                      context.push('/raise_request', extra: {
                         'role': 'CUSTOMER',
                         "selectedUser": widget.caName,
                         "selectedId": widget.caId
@@ -164,8 +189,7 @@ class _RequestScreenState extends State<RequestScreen> {
                                             : AppTextStyle().getredText,
                                   ),
                                   CustomTextInfo(
-                                   
-                                      lable: 'DOCUMENT REQUEST',
+                                    lable: 'DOCUMENT REQUEST',
                                     value: '${data.text}',
                                     maxLine: 1,
                                     inOneLinetext: true,
@@ -194,13 +218,12 @@ class _RequestScreenState extends State<RequestScreen> {
                                           buttonheight: 45,
                                           buttonTitle: 'View',
                                           onTap: () {
-                                          
                                             context
                                                 .read<ChangeStatusBloc>()
                                                 .add(UnreadToReadStatusEvent(
                                                     requestId:
                                                         data.requestId ?? 0));
-                                        
+
                                             context.push('/request_details',
                                                 extra: {
                                                   "requestId": data.requestId

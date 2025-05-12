@@ -101,11 +101,16 @@ class _AssignServiceToClientState extends State<AssignServiceToClient> {
                                 'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}').toList()}');
                           }
                           return MultiSelectSearchableDropdown(
-                            hintText: 'Select client',
+                            hintText: state is CustomerLoading
+                                ? 'Loading data....'
+                                : 'Select client',
                             openInModal: false,
                             items: customers
+                                .where(
+                                    (test) => test.userResponse != 'REQUESTED')
                                 .map((toElement) =>
                                     '${toElement.firstName} ${toElement.lastName}')
+                                
                                 .toList(),
                             selectedItems: selectedItems,
                             onChanged: (newSelection) {

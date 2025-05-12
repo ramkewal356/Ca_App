@@ -434,5 +434,8 @@ final GoRouter goRouter = GoRouter(
         builder: (context, state) {
           return IndivisualCustomerDashboard();
         },
+          routes: [
+           
+          ]
       )
     ]);

@@ -19,18 +19,18 @@ import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
 import 'package:ca_app/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+  await dotenv.load();
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   // FlutterDownloader.registerCallback(DocumentRepository.downloadCallback);
-  // await FlutterDownloader.initialize(debug: true);
-  // IsolateNameServer.registerPortWithName(
-  //     _port.sendPort, 'downloader_send_port');
-  // FlutterDownloader.registerCallback(downloadCallback);
+
+
   runApp(const MyApp());
 }
 // final ReceivePort _port = ReceivePort();
@@ -51,7 +51,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AuthBloc()),
         BlocProvider(create: (_) => DashboardBloc()),
         BlocProvider(create: (_) => CustomDropdownBloc()),
-    
         BlocProvider(create: (_) => UploadDocumentBloc()),
         BlocProvider(create: (_) => MultiSelectDropdownBloc()),
         BlocProvider(create: (_) => TeamMemberBloc()),
@@ -74,9 +73,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AssignServiceBloc()),
         BlocProvider(create: (_) => GetPermissionBloc()),
         BlocProvider(create: (_) => PermissionBloc()),
-        BlocProvider(create: (_) => ChangeStatusBloc())
-
-
+        BlocProvider(create: (_) => ChangeStatusBloc()),
+      
       ],
       child: ScreenUtilInit(
           designSize: const Size(360, 690),
@@ -93,8 +91,7 @@ class MyApp extends StatelessWidget {
               routerConfig: goRouter,
               // home: const MyHomePage(title: 'Flutter Demo Home Page'),
             );
-          }
-      ),
+          }),
     );
   }
 }

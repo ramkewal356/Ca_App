@@ -1,3 +1,4 @@
+import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/task/task_bloc.dart';
 import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
@@ -123,6 +124,12 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
     }
   }
 
+  void getLoginCustomer() {
+    context.read<CustomerBloc>().add(GetLogincutomerEvent(
+        selectedClientName: selectedClientName ?? '',
+        subCaId: assignedId ?? 0));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -152,8 +159,10 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                     context.read<TeamMemberBloc>().add(
                         GetVerifiedSubCaByCaIdEvent(
                             selectedSubCaName: selectedSubCaName ?? ''));
-                    context.read<CustomerBloc>().add(GetLogincutomerEvent(
-                        selectedClientName: selectedClientName ?? ''));
+                    // context
+                    //     .read<CustomDropdownBloc>()
+                    //     .add(DropdownResetEvent());
+                    getLoginCustomer();
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -176,7 +185,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                   icon: Icon(Icons.close)),
                             ],
                           ),
-                          Text('Task Assigned Name : (Optional)',
+                          Text('Task Assigned Name',
                               style: AppTextStyle().labletext),
                           SizedBox(height: 5),
                           BlocBuilder<TeamMemberBloc, TeamMemberState>(
@@ -209,9 +218,10 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                                                 p0,
                                             orElse: () => Datum(id: -1),
                                           )
-                                          .id;
+                                          .userId;
                                     }
                                   });
+                                  getLoginCustomer();
                                   context.read<TeamMemberBloc>().add(
                                       UpdateSubCaNameEvent(
                                           selectedSubCaName: p0 ?? ''));
@@ -338,13 +348,20 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
                           BlocConsumer<CreateNewTaskBloc, TaskState>(
                             listener: (context, state) {
                               if (state is CreateTaskSuccess) {
-                                context.pop();
-                                _onTaskCreated();
-                                selectedPriority = '';
+                               
+                                setState(() {
+                                  selectedPriority = '';
                                 selectedClientName = '';
                                 selectedSubCaName = '';
+                                  _dateController.clear();
                                 _taskNameController.clear();
                                 _descriptionController.clear();
+                                });
+                                _onTaskCreated();
+                                context
+                                    .read<CustomDropdownBloc>()
+                                    .add(DropdownResetEvent());
+                                context.pop();
                               }
                             },
                             builder: (context, state) {

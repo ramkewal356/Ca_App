@@ -25,39 +25,51 @@ class GetYourRequestEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-
+  final bool isFilter;
+  final String filterText;
   const GetYourRequestEvent(
       {required this.isPagination,
       required this.isSearch,
-      required this.searchText});
+      required this.searchText,
+      required this.isFilter,
+      required this.filterText});
   @override
-  List<Object> get props => [isPagination, isSearch, searchText];
+  List<Object> get props =>
+      [isPagination, isSearch, searchText, filterText, isFilter];
 }
 
 class GetRequestOfClientEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-
+final bool isFilter;
+  final String filterText;
   const GetRequestOfClientEvent(
       {required this.isPagination,
       required this.isSearch,
-      required this.searchText});
+      required this.searchText,
+      required this.isFilter,
+      required this.filterText});
   @override
-  List<Object> get props => [isPagination, isSearch, searchText];
+  List<Object> get props =>
+      [isPagination, isSearch, searchText, isFilter, filterText];
 }
 
 class GetRequestOfTeamEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-
+final bool isFilter;
+  final String filterText;
   const GetRequestOfTeamEvent(
       {required this.isPagination,
       required this.isSearch,
-      required this.searchText});
+      required this.searchText,
+      required this.isFilter,
+      required this.filterText});
   @override
-  List<Object> get props => [isPagination, isSearch, searchText];
+  List<Object> get props =>
+      [isPagination, isSearch, searchText, isFilter, filterText];
 }
 
 class GetRequestDetailsEvent extends RaiseRequestEvent {
@@ -72,13 +84,17 @@ class GetRequestByReceiverIdEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-
+final bool isFilter;
+  final String filterText;
   const GetRequestByReceiverIdEvent(
       {required this.isPagination,
       required this.isSearch,
-      required this.searchText});
+      required this.searchText,
+      required this.isFilter,
+      required this.filterText});
   @override
-  List<Object> get props => [isPagination, isSearch, searchText];
+  List<Object> get props =>
+      [isPagination, isSearch, searchText, isFilter, filterText];
 }
 
 class UnreadToReadStatusEvent extends RaiseRequestEvent {
