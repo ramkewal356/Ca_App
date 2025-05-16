@@ -89,7 +89,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                         lable: 'READ STATUS',
                         value: data?.requestResponse?.readStatus == null
                             ? 'N/A'
-                            : '${data?.requestResponse?.readStatus}'),
+                            : '${data?.requestResponse?.readStatus}',
+                        style: data?.requestResponse?.readStatus == 'READ'
+                            ? AppTextStyle().getgreenText
+                            : AppTextStyle().getredText),
                     SizedBox(height: 5),
                     Text(
                       'Desciption : ',
@@ -216,7 +219,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ));
   }
 
-  _textItem({required String lable, required String value}) {
+  _textItem({required String lable, required String value, TextStyle? style}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -226,7 +229,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         ),
         Text(
           value,
-          style: AppTextStyle().cardValueText,
+          style: style ?? AppTextStyle().cardValueText,
         )
       ],
     );

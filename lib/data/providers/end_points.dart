@@ -56,6 +56,15 @@ class EndPoints {
   static var assignServiceUrl = '/users/assign_service_to_user';
   static var updateServiceToUserUrl = '/users/update_service_by_userId';
   static var getServicesListByIdUrl = '/caServices/get_services_By_caId';
+  static var getServicesForIndivisualCustomerUrl =
+      '/caServices/get_all_service';
+  static var getCaByServiceNameUrl = '/caServices/get_ca_by_serviceId';
+  static var sendServiceOrderRequestUrl =
+      '/service_order/create_service_order_request';
+  static var getAllServiceRequestByCustomerIdUrl =
+      '/service_order/get_all_service_request_by_customerId';
+  static var getViewRequestCaByServiceIdUrl =
+      '/service_order/get_request_by_serviceOrderId';
   //task Url
   static var getSelfTaskUrl = '/task/get_self_assigned_task';
   static var getAssignTaskUrl = '/task/get_assigned_task_by_createdById';
@@ -73,6 +82,9 @@ class EndPoints {
   static var getRequestOfTeamUrl = '/request/get_requests_of_subCa_by_caId';
   static var getRequestByReceiverId = '/request/get_request_by_receiverId';
   static var unreadToReadStatusUrl = '/request/unread_to_read_status';
+  //Raise request for Customer
+  static var getRequestServiceByCaId =
+      '/service_order/get_request_service_byCaId';
   // Contact Url
   static var addContactUrl = '/contact/add_contact';
   static var getContactByUserIdUrl = '/contact/get_contact_by_userId';

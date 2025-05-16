@@ -67,6 +67,8 @@ class UnReadToReadStatusSuccess extends RaiseRequestState {
   List<Object> get props => [changeStatus];
 }
 
+
+
 class RaiseRequestError extends RaiseRequestState {
   final String errorMessage;
 

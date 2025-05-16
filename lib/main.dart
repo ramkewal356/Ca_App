@@ -6,6 +6,7 @@ import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
 import 'package:ca_app/blocs/document/document_bloc.dart';
 import 'package:ca_app/blocs/help_and_support/help_and_support_bloc.dart';
 import 'package:ca_app/blocs/image_picker/image_picker_bloc.dart';
+import 'package:ca_app/blocs/indivisual_customer/indivisual_customer_bloc.dart';
 import 'package:ca_app/blocs/logs/logs_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
 import 'package:ca_app/blocs/permission/permission_bloc.dart';
@@ -74,6 +75,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => GetPermissionBloc()),
         BlocProvider(create: (_) => PermissionBloc()),
         BlocProvider(create: (_) => ChangeStatusBloc()),
+        BlocProvider(create: (_) => IndivisualCustomerBloc()),
+
       
       ],
       child: ScreenUtilInit(

@@ -3,6 +3,7 @@ import 'package:ca_app/screens/auth_screens/forgot_screen.dart';
 import 'package:ca_app/screens/auth_screens/signup_for_individual_customer.dart';
 import 'package:ca_app/screens/ca_screens/all_raise_history/all_raise_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/customer_allocation/customer_allocation.dart';
+import 'package:ca_app/screens/ca_screens/indivisual_customer_screen/get_requested_service_of_customer.dart';
 import 'package:ca_app/screens/ca_screens/logs_history/logs_history_screen.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/assign_service_to_client.dart';
 import 'package:ca_app/screens/ca_screens/my_client_screens/my_client_screen.dart';
@@ -28,6 +29,10 @@ import 'package:ca_app/screens/customer_client_screens/customer_dashboard_screen
 import 'package:ca_app/screens/customer_client_screens/hisoty_screen/history_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/my_ca_screen/my_ca_screen.dart';
 import 'package:ca_app/screens/indivisual_customer/indivisual_customer_dashboard.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/customer_services_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/requested_ca_service_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/view_ca_by_service_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/view_requested_ca_service_screen.dart';
 import 'package:ca_app/screens/my_profile_screen/profile_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/payment_screen/payment_screen.dart';
 import 'package:ca_app/screens/request_screen/ca_request_screen.dart';
@@ -258,6 +263,12 @@ final GoRouter goRouter = GoRouter(
               },
             ),
             GoRoute(
+              path: 'indivisual_customer',
+              builder: (context, state) {
+                return GetRequestedServiceOfCustomer();
+              },
+            ),
+            GoRoute(
               path: 'view_client',
               builder: (context, state) {
                 var data = state.extra as Map<String, dynamic>;
@@ -430,12 +441,35 @@ final GoRouter goRouter = GoRouter(
           ]),
       // CUSTOMER MODULE ROUTES
       GoRoute(
-        path: '/indivisual_customer',
-        builder: (context, state) {
-          return IndivisualCustomerDashboard();
-        },
+          path: '/indivisual_customer',
+          builder: (context, state) {
+            return IndivisualCustomerDashboard();
+          },
           routes: [
-           
-          ]
-      )
+            GoRoute(
+              path: 'services',
+              builder: (context, state) => CustomerServicesScreen(),
+            ),
+            GoRoute(
+              path: 'view_service',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewCaByServiceScreen(serviceId: data['serviceId']);
+              },
+            ),
+            GoRoute(
+              path: 'requested_ca',
+              builder: (context, state) {
+                return RequestedCaServiceScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_requested_ca',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewRequestedCaServiceScreen(
+                    serviceOrderId: data["serviceOrderId"]);
+              },
+            ),
+          ])
     ]);

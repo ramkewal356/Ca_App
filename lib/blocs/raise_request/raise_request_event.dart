@@ -42,7 +42,7 @@ class GetRequestOfClientEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-final bool isFilter;
+  final bool isFilter;
   final String filterText;
   const GetRequestOfClientEvent(
       {required this.isPagination,
@@ -59,7 +59,7 @@ class GetRequestOfTeamEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-final bool isFilter;
+  final bool isFilter;
   final String filterText;
   const GetRequestOfTeamEvent(
       {required this.isPagination,
@@ -84,7 +84,7 @@ class GetRequestByReceiverIdEvent extends RaiseRequestEvent {
   final bool isPagination;
   final bool isSearch;
   final String searchText;
-final bool isFilter;
+  final bool isFilter;
   final String filterText;
   const GetRequestByReceiverIdEvent(
       {required this.isPagination,
@@ -104,3 +104,5 @@ class UnreadToReadStatusEvent extends RaiseRequestEvent {
   @override
   List<Object> get props => [requestId];
 }
+
+

@@ -1,8 +1,12 @@
 import 'package:ca_app/data/models/add_service_model.dart';
 import 'package:ca_app/data/models/assign_service_to_user_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
+import 'package:ca_app/data/models/customer_service_model.dart';
+import 'package:ca_app/data/models/get_all_service_request_by_customerid_model.dart';
+import 'package:ca_app/data/models/get_calist_by_servicename_model.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
+import 'package:ca_app/data/models/get_view_requested_ca_by_service_model.dart';
 import 'package:ca_app/data/models/get_view_service_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
@@ -211,6 +215,113 @@ class ServiceRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('assignServiceToUserResponse ${response?.data}');
       return true;
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+  
+  //****  Get View Services  API ****//
+  Future<GetServicesForIndivisualCustomerModel>
+      getServiceForIndivisualCustomerApi(
+          {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getServicesForIndivisualCustomerUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('GetServiceForIndivisualResponse ${response?.data}');
+      return GetServicesForIndivisualCustomerModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Get View Services  API ****//
+  Future<GetCaByServiceNameModel> getCaByServiceNameApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getCaByServiceNameUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('GetCaByServiceResponse ${response?.data}');
+      return GetCaByServiceNameModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Get View Services  API ****//
+  Future<AssignServiceToUserModel> sendServiceOrderRequestApi(
+      {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.sendServiceOrderRequestUrl,
+        body: body,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.POST);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('CreateServiceOrederRequestResponse ${response?.data}');
+      return AssignServiceToUserModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Get All Services Request by CustomerId  API ****//
+  Future<GetAllServiceRequestByCustomerIdModel>
+      getServiceRequestByCustomerIdApi(
+          {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getAllServiceRequestByCustomerIdUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('CreateServiceOrederRequestResponse ${response?.data}');
+      return GetAllServiceRequestByCustomerIdModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //****  Get All Services Request by CustomerId  API ****//
+  Future<GetViewRequestedCaByServiceIdModel> getViewRequestCaByServiceApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getViewRequestCaByServiceIdUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('CreateServiceOrederRequestResponse ${response?.data}');
+      return GetViewRequestedCaByServiceIdModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

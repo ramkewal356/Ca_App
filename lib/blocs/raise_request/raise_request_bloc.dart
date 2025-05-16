@@ -26,6 +26,7 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
     on<GetRequestOfClientEvent>(_getRequestOfClientApi);
     on<GetRequestOfTeamEvent>(_getRequestOfTeamApi);
     on<GetRequestByReceiverIdEvent>(_getRequestByReceiverIdApi);
+  
   }
   Future<void> _sendRequestApi(
       SendRaiseRequestEvent event, Emitter<RaiseRequestState> emit) async {
@@ -229,8 +230,9 @@ class RaiseRequestBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
     }
   }
 
- 
+
 }
+
 class ChangeStatusBloc extends Bloc<RaiseRequestEvent, RaiseRequestState> {
   final _myRepo = RaiseRequestRepository();
 

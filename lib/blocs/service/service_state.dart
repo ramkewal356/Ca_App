@@ -13,6 +13,14 @@ class ServiceLoading extends ServiceState {}
 
 class AddServiceLoading extends ServiceState {}
 
+class SendServiceRequestLoading extends ServiceState {
+  final int caId;
+
+  const SendServiceRequestLoading({required this.caId});
+  @override
+  List<Object> get props => [caId];
+}
+
 class GetServiceLoading extends ServiceState {}
 
 class DeleteServiceLoading extends ServiceState {}
@@ -105,6 +113,56 @@ class GetServiceByCaIdSuccess extends ServiceState {
       {required this.serviceList, required this.isLastPage});
   @override
   List<Object> get props => [serviceList, isLastPage];
+}
+
+class GetServiceForIndivisualCustomerSuccess extends ServiceState {
+  final List<Content> serviceForCustomerList;
+  final bool isLastPage;
+
+  const GetServiceForIndivisualCustomerSuccess(
+      {required this.serviceForCustomerList, required this.isLastPage});
+  @override
+  List<Object> get props => [serviceForCustomerList, isLastPage];
+}
+
+class GetCaByServiceNameSuccess extends ServiceState {
+  final List<CaList> caList;
+  final bool isLastPage;
+  final String serviceName;
+  final String subService;
+  final String serviceDesc;
+  final int serviceId;
+  const GetCaByServiceNameSuccess(
+      {required this.caList,
+      required this.serviceName,
+      required this.subService,
+      required this.serviceDesc,
+      required this.serviceId,
+      required this.isLastPage});
+  @override
+  List<Object> get props =>
+      [caList, serviceName, subService, serviceDesc, serviceId, isLastPage];
+}
+
+class SendSericeRequestOrderSuccess extends ServiceState {}
+
+class GetAllServiceRequestedCaSuccess extends ServiceState {
+  final List<RequestCaContent> requestedCaList;
+  final bool isLastPage;
+
+  const GetAllServiceRequestedCaSuccess(
+      {required this.requestedCaList, required this.isLastPage});
+  @override
+  List<Object> get props => [requestedCaList, isLastPage];
+}
+
+class ViewRequestedCaByServiceIdSuccess extends ServiceState {
+  final GetViewRequestedCaByServiceIdModel getViewRequestedCaByServiceIdModel;
+
+  const ViewRequestedCaByServiceIdSuccess(
+      {required this.getViewRequestedCaByServiceIdModel});
+  @override
+  List<Object> get props => [getViewRequestedCaByServiceIdModel];
 }
 
 class ServiceError extends ServiceState {

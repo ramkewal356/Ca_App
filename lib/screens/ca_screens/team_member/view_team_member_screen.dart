@@ -184,7 +184,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                 onSelected: (value) {
                                   debugPrint("Selected: $value");
                                   if (value == 'Deactive' ||
-                                      value == 'Inactive') {
+                                      value == 'Active') {
                                     _showModalBottomSheet(
                                         context: context,
                                         actionUponId: data?.id.toString() ?? '',
@@ -229,12 +229,12 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                                       height: 45,
                                       value: data?.status == true
                                           ? 'Deactive'
-                                          : 'Inactive',
+                                            : 'Active',
                                       child: SizedBox(
                                           width: 120,
                                           child: Text(data?.status == true
                                               ? 'Deactive'
-                                              : 'Inactive'))),
+                                                : 'Active'))),
                                   PopupMenuItem<String>(
                                       height: 45,
                                       value: 'Logs',

@@ -3,8 +3,12 @@ import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/add_service_model.dart';
 import 'package:ca_app/data/models/assign_service_to_user_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
+import 'package:ca_app/data/models/customer_service_model.dart';
+import 'package:ca_app/data/models/get_all_service_request_by_customerid_model.dart';
+import 'package:ca_app/data/models/get_calist_by_servicename_model.dart';
 import 'package:ca_app/data/models/get_service_and_subservice_list_model.dart';
 import 'package:ca_app/data/models/get_services_list_model.dart';
+import 'package:ca_app/data/models/get_view_requested_ca_by_service_model.dart';
 import 'package:ca_app/data/models/get_view_service_model.dart';
 import 'package:ca_app/data/repositories/service_repository.dart';
 import 'package:ca_app/utils/utils.dart';
@@ -17,6 +21,8 @@ part 'service_state.dart';
 class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   int pageNumber = 0;
   int pageSize = 10;
+  int pageSize1 = 3;
+
   bool isFetching = false;
   bool isLastPage = false;
   bool isFetchingSubService = false;
@@ -30,6 +36,10 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     on<CreateServiceEvent>(_createServiceApi);
     on<GetViewServiceEvent>(_getViewService);
     on<GetServiceByCaIdEvent>(_getServiceByCaIdApi);
+    on<GetServiceForCustomerEvent>(_getServiceForCustomereListApi);
+    on<GetCaByServiceNameEvent>(_getCaByServiceNameApi);
+    on<GetServiceRequestedCaEvent>(_getServiceRequestByCustomerIdApi);
+    on<ViewRequestedCaByServiceIdEvent>(_getViewRequestedCaByServiceIdApi);
   }
   Future<void> _getCaServiceListApi(
       GetCaServiceListEvent event, Emitter<ServiceState> emit) async {
@@ -269,6 +279,155 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       isFetching = false;
     }
   }
+
+  Future<void> _getServiceForCustomereListApi(
+      GetServiceForCustomerEvent event, Emitter<ServiceState> emit) async {
+    if (isFetching) return;
+
+    if (event.isSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(ServiceLoading()); // Show loading only for the first page
+    }
+
+    if (isLastPage) return;
+    isFetching = true;
+
+    Map<String, dynamic> query = {
+      "search": event.searchText,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+    };
+    try {
+      var resp = await _myRepo.getServiceForIndivisualCustomerApi(query: query);
+      List<Content> newData = resp.data?.content ?? [];
+      List<Content> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetServiceForIndivisualCustomerSuccess
+                  ? (state as GetServiceForIndivisualCustomerSuccess)
+                      .serviceForCustomerList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetServiceForIndivisualCustomerSuccess(
+          serviceForCustomerList: allData, isLastPage: isLastPage));
+      pageNumber++;
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  Future<void> _getCaByServiceNameApi(
+      GetCaByServiceNameEvent event, Emitter<ServiceState> emit) async {
+    if (isFetching) return;
+
+    if (!event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(ServiceLoading()); // Show loading only for the first page
+    }
+
+    if (isLastPage) return;
+    isFetching = true;
+    int? customerId = await SharedPrefsClass().getUserId();
+    Map<String, dynamic> query = {
+      "serviceId": event.serviceId,
+      "customerId": customerId,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+    };
+    try {
+      // emit(ServiceLoading());
+      var resp = await _myRepo.getCaByServiceNameApi(query: query);
+      // emit(GetCaByServiceNameSuccess(getCaByServiceNameModel: resp));
+      List<CaList> newData = resp.data?.caList ?? [];
+      List<CaList> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetCaByServiceNameSuccess
+                  ? (state as GetCaByServiceNameSuccess).caList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetCaByServiceNameSuccess(
+        caList: allData,
+        isLastPage: isLastPage,
+        serviceName: resp.data?.serviceName ?? '',
+        subService: resp.data?.subService ?? '',
+        serviceDesc: resp.data?.serviceDesc ?? '',
+        serviceId: resp.data?.serviceId ?? 0,
+      ));
+      pageNumber++;
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  Future<void> _getServiceRequestByCustomerIdApi(
+      GetServiceRequestedCaEvent event, Emitter<ServiceState> emit) async {
+    if (isFetching) return;
+    bool isNewSearch = (event.isSearch || event.isFilter);
+    if (isNewSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(ServiceLoading()); // Show loading only for the first page
+    }
+
+    if (isLastPage) return;
+    isFetching = true;
+    int? customerId = await SharedPrefsClass().getUserId();
+    Map<String, dynamic> query = {
+      "customerId": customerId,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+      "orderStatus": event.filterTex,
+      "search": event.searchText
+    };
+    try {
+      var resp = await _myRepo.getServiceRequestByCustomerIdApi(query: query);
+
+      List<RequestCaContent> newData = resp.data?.content ?? [];
+      List<RequestCaContent> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetAllServiceRequestedCaSuccess
+                  ? (state as GetAllServiceRequestedCaSuccess).requestedCaList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetAllServiceRequestedCaSuccess(
+        requestedCaList: allData,
+        isLastPage: isLastPage,
+      ));
+      pageNumber++;
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  Future<void> _getViewRequestedCaByServiceIdApi(
+      ViewRequestedCaByServiceIdEvent event, Emitter<ServiceState> emit) async {
+    Map<String, dynamic> query = {"serviceOrderId": event.serviceId};
+    try {
+      emit(ServiceLoading());
+      var resp = await _myRepo.getViewRequestCaByServiceApi(query: query);
+
+      emit(ViewRequestedCaByServiceIdSuccess(
+          getViewRequestedCaByServiceIdModel: resp));
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    }
+  }
 }
 
 class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
@@ -276,6 +435,7 @@ class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   AssignServiceBloc() : super(ServiceInitial()) {
     on<AssignServiceEvent>(_assignServiceToClient);
     on<UpdateAssignServiceEvent>(_updateAssignServiceToClient);
+    on<SendSercieRequestOrderEvent>(_sendServiceRequestOrderApi);
   }
   Future<void> _assignServiceToClient(
       AssignServiceEvent event, Emitter<ServiceState> emit) async {
@@ -304,6 +464,24 @@ class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       var resp = await _myRepo.updateAssignServiceToClientApi(body: body);
       Utils.toastSuccessMessage('Updated successfully');
       emit(UpdateAssigneService(updatedAssignService: resp));
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _sendServiceRequestOrderApi(
+      SendSercieRequestOrderEvent event, Emitter<ServiceState> emit) async {
+    int? customerId = await SharedPrefsClass().getUserId();
+    Map<String, dynamic> body = {
+      "serviceId": event.serviceId,
+      "customerId": customerId,
+      "caId": event.caId
+    };
+    try {
+      emit(SendServiceRequestLoading(caId: event.caId));
+      var resp = await _myRepo.sendServiceOrderRequestApi(body: body);
+      Utils.toastSuccessMessage('${resp.data?.body}');
+      emit(SendSericeRequestOrderSuccess());
     } catch (e) {
       emit(ServiceError(errorMessage: e.toString()));
     }

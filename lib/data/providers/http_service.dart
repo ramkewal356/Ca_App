@@ -4,6 +4,7 @@ import 'package:ca_app/data/models/response_model/base_response_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/string.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -72,7 +73,6 @@ class HttpService<T> {
         this.headers?.addAll({
           // 'Content-Type': 'application/x-www-form-urlencoded',
           "Content-Type": "multipart/form-data",
-
         });
         bodyData = this.body != null ? FormData.fromMap(this.body!) : null;
         break;
@@ -178,7 +178,7 @@ class HttpService<T> {
             receiveDataWhenStatusError: true,
           ),
         );
-        
+
       // break;
       default:
         return null;
@@ -227,11 +227,11 @@ class HttpService<T> {
         // bad request
         // print({"error 400": error.response.data["message"]});
         if (message != null) {
-          // Utils.flushBarErrorMessage(message, context);
-          Fluttertoast.showToast(
-              msg: message,
-              backgroundColor: ColorConstants.redColor,
-              textColor: ColorConstants.white);
+          Utils.toastErrorMessage(message);
+          // Fluttertoast.showToast(
+          //     msg: message,
+          //     backgroundColor: ColorConstants.redColor,
+          //     textColor: ColorConstants.white);
           break;
         } else {
           Fluttertoast.showToast(msg: kStringBadRequest);
@@ -258,7 +258,8 @@ class HttpService<T> {
       case 500:
         // internal server error
         if (message != null) {
-          Fluttertoast.showToast(msg: message);
+          // Fluttertoast.showToast(msg: message);
+          Utils.toastErrorMessage(message);
           break;
         }
         Fluttertoast.showToast(msg: kStringServerError);

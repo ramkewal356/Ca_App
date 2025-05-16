@@ -182,6 +182,20 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 }
               },
               {
+                "imgUrl": Icons.group,
+                "label": "Individual Customer",
+                "onTap": () {
+                  context
+                      .push('/ca_dashboard/indivisual_customer')
+                      .then((onValue) async {
+                    // debugPrint('bnbmnbm??????????????????????');
+                    // await _fetchCustomersData(isFilter: true);
+                    // await _getRecentDocument();
+                    // _getDashboardData();
+                  });
+                }
+              },
+              {
                 "imgUrl": Icons.groups_3,
                 "label": "Team Members",
                 "onTap": () {

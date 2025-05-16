@@ -117,3 +117,61 @@ class GetServiceByCaIdEvent extends ServiceEvent {
   @override
   List<Object> get props => [caId, isSearch, searchText, isPagination];
 }
+
+class GetServiceForCustomerEvent extends ServiceEvent {
+  final bool isSearch;
+  final String searchText;
+  final bool isPagination;
+
+  const GetServiceForCustomerEvent(
+      {required this.isSearch,
+      required this.searchText,
+      required this.isPagination});
+  @override
+  List<Object> get props => [isSearch, isPagination, searchText];
+}
+
+class GetCaByServiceNameEvent extends ServiceEvent {
+  final int serviceId;
+  final bool isPagination;
+  const GetCaByServiceNameEvent(
+      {required this.serviceId, required this.isPagination});
+  @override
+  List<Object> get props => [serviceId, isPagination];
+}
+
+class SendSercieRequestOrderEvent extends ServiceEvent {
+  final int serviceId;
+  final int caId;
+
+  const SendSercieRequestOrderEvent(
+      {required this.serviceId, required this.caId});
+  @override
+  List<Object> get props => [serviceId, caId];
+}
+
+class GetServiceRequestedCaEvent extends ServiceEvent {
+  final bool isPagination;
+  final bool isSearch;
+  final String searchText;
+  final bool isFilter;
+  final String filterTex;
+
+  const GetServiceRequestedCaEvent(
+      {required this.isPagination,
+      required this.isSearch,
+      required this.searchText,
+      required this.isFilter,
+      required this.filterTex});
+  @override
+  List<Object> get props =>
+      [isPagination, isSearch, searchText, isFilter, filterTex];
+}
+
+class ViewRequestedCaByServiceIdEvent extends ServiceEvent {
+  final int serviceId;
+
+  const ViewRequestedCaByServiceIdEvent({required this.serviceId});
+  @override
+  List<Object> get props => [serviceId];
+}

@@ -123,13 +123,13 @@ class _IndivisualCustomerDashboardState
                   _getUser();
                 }
               },
-              // {
-              //   "imgUrl": Icons.add_photo_alternate_outlined,
-              //   "label": "Upload Document",
-              //   "onTap": () {
-              //     context.push('/indivisual_customer/audio_player');
-              //   }
-              // },
+              {
+                "imgUrl": Icons.settings,
+                "label": "Services",
+                "onTap": () {
+                  context.push('/indivisual_customer/services');
+                }
+              },
               // {
               //   "imgUrl": Icons.history,
               //   "label": "History",
@@ -142,10 +142,7 @@ class _IndivisualCustomerDashboardState
               //   "imgUrl": Icons.star,
               //   "label": "Request",
               //   "onTap": () {
-              //     context.push('/customer_dashboard/request', extra: {
-              //       'caName': userdata?.data?.caName,
-              //       "caId": userdata?.data?.caId
-              //     });
+              //     context.push('/indivisual_customer/request_for_customer');
               //   }
               // },
               // {
@@ -198,7 +195,7 @@ class _IndivisualCustomerDashboardState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome back, John',
+                          'Welcome back, ${userdata?.data?.firstName ?? ''} ${userdata?.data?.lastName ?? ''}',
                           style: AppTextStyle().textButtonStyle,
                         ),
                         Text(
@@ -561,11 +558,11 @@ class _IndivisualCustomerDashboardState
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: ColorConstants
-                                                    .buttonColor
+                                                    .greenColor
                                                     // ignore: deprecated_member_use
-                                                    .withOpacity(0.5)),
+                                                    .withOpacity(0.3)),
                                             child: Icon(
-                                              Icons.note,
+                                              Icons.receipt_long_outlined,
                                               color: ColorConstants.black,
                                             ),
                                           ),

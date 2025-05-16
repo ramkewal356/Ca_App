@@ -140,89 +140,98 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
                                 );
                               }
                               var data = state.requestData[index];
-                              return CustomCard(
-                                  child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                          child: CustomTextItem(
-                                              lable: 'ID',
-                                              value: '#${data.requestId}')),
-                                      Text(
-                                        dateFormate(data.createdDate),
-                                        style: AppTextStyle().cardValueText,
-                                      ),
-                                    ],
-                                  ),
-                                  CustomTextInfo(
+                              return GestureDetector(
+                                onTap: () {
+                                  context.push('/request_details', extra: {
+                                    "requestId": data.requestId
+                                  }).then((onValue) {
+                                    _fetchRequestList(isSearch: true);
+                                  });
+                                },
+                                child: CustomCard(
+                                    child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                            child: CustomTextItem(
+                                                lable: 'ID',
+                                                value: '#${data.requestId}')),
+                                        Text(
+                                          dateFormate(data.createdDate),
+                                          style: AppTextStyle().cardValueText,
+                                        ),
+                                      ],
+                                    ),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: widget.role == 'CUSTOMER'
+                                            ? 'CA (SENDER)'
+                                            : 'CLIENT (RECEIVER)',
+                                        value:
+                                            '${data.receiverName ?? ''}(#${data.receiverId})'),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: widget.role == 'CUSTOMER'
+                                            ? 'CLIENT (RECEIVER)'
+                                            : 'CA (SENDER)',
+                                        value:
+                                            '${data.senderName}(#${data.senderId})'),
+                                    CustomTextInfo(
                                       flex1: 2,
                                       flex2: 3,
-                                      lable: widget.role == 'CUSTOMER'
-                                          ? 'CA (SENDER)'
-                                          : 'CLIENT (RECEIVER)',
-                                      value:
-                                          '${data.receiverName ?? ''}(#${data.receiverId})'),
-                                  CustomTextInfo(
-                                      flex1: 2,
-                                      flex2: 3,
-                                      lable: widget.role == 'CUSTOMER'
-                                          ? 'CLIENT (RECEIVER)'
-                                          : 'CA (SENDER)',
-                                      value:
-                                          '${data.senderName}(#${data.senderId})'),
-                                  CustomTextInfo(
-                                    flex1: 2,
-                                    flex2: 3,
-                                    lable: 'READ STATUS',
-                                    value: data.readStatus == null
-                                        ? 'N/A'
-                                        : '${data.readStatus}',
-                                    textStyle: data.readStatus == 'READ'
-                                        ? AppTextStyle().getgreenText
-                                        : AppTextStyle().getredText,
-                                  ),
-                                  CustomTextInfo(
-                                      flex1: 2,
-                                      flex2: 3,
-                                      lable: 'DESCRIPTION',
-                                      value: '${data.text}'),
-                                  BlocBuilder<RaiseRequestBloc,
-                                      RaiseRequestState>(
-                                    builder: (context, state) {
-                                      return Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: CommonButtonWidget(
-                                              buttonWidth: 100.0,
-                                              loader: state
-                                                      is GetRequestDetailsLoading &&
-                                                  data.requestId ==
-                                                      state.requsetId,
-                                              buttonTitle: 'View',
-                                              onTap: () {
-                                                // if (widget.role == 'CUSTOMER') {
-                                                //   context
-                                                //       .read<ChangeStatusBloc>()
-                                                //       .add(UnreadToReadStatusEvent(
-                                                //           requestId:
-                                                //               data.requestId ??
-                                                //                   0));
-                                                // }
-                                                context.push('/request_details',
-                                                    extra: {
-                                                      "requestId":
-                                                          data.requestId
-                                                    }).then((onValue) {
-                                                  _fetchRequestList(
-                                                      isSearch: true);
-                                                });
-                                              }));
-                                    },
-                                  )
-                                ],
-                              ));
+                                      lable: 'READ STATUS',
+                                      value: data.readStatus == null
+                                          ? 'N/A'
+                                          : '${data.readStatus}',
+                                      textStyle: data.readStatus == 'READ'
+                                          ? AppTextStyle().getgreenText
+                                          : AppTextStyle().getredText,
+                                    ),
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 3,
+                                        lable: 'DESCRIPTION',
+                                        value: '${data.text}'),
+                                    // BlocBuilder<RaiseRequestBloc,
+                                    //     RaiseRequestState>(
+                                    //   builder: (context, state) {
+                                    //     return Align(
+                                    //         alignment: Alignment.bottomRight,
+                                    //         child: CommonButtonWidget(
+                                    //             buttonWidth: 100.0,
+                                    //             loader: state
+                                    //                     is GetRequestDetailsLoading &&
+                                    //                 data.requestId ==
+                                    //                     state.requsetId,
+                                    //             buttonTitle: 'View',
+                                    //             onTap: () {
+                                    //               // if (widget.role == 'CUSTOMER') {
+                                    //               //   context
+                                    //               //       .read<ChangeStatusBloc>()
+                                    //               //       .add(UnreadToReadStatusEvent(
+                                    //               //           requestId:
+                                    //               //               data.requestId ??
+                                    //               //                   0));
+                                    //               // }
+                                    //               // context.push('/request_details',
+                                    //               //     extra: {
+                                    //               //       "requestId":
+                                    //               //           data.requestId
+                                    //               //     }).then((onValue) {
+                                    //               //   _fetchRequestList(
+                                    //               //       isSearch: true);
+                                    //               // });
+                                    //             }));
+                                    //   },
+                                    // )
+                                  ],
+                                )),
+                              );
                             },
                           ),
                   );
