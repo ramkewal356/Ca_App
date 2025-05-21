@@ -54,7 +54,7 @@ class ReminderError extends ReminderState {
 }
 
 class ActiveDeactiveReminderSucess extends ReminderState {
-  final ActiveDeactiveReminderModel activeDeactiveReminder;
+  final CommonModel activeDeactiveReminder;
 
   const ActiveDeactiveReminderSucess({required this.activeDeactiveReminder});
   @override

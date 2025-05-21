@@ -19,3 +19,16 @@ class GetRequestedServiceByCaIdEvent extends IndivisualCustomerEvent {
   @override
   List<Object> get props => [isFilter, filterText, isPagination];
 }
+
+class AcceptOrRejectServiceEvent extends IndivisualCustomerEvent {
+  final int serviceOrderId;
+  final String orderStatus;
+  final String comment;
+
+  const AcceptOrRejectServiceEvent(
+      {required this.serviceOrderId,
+      required this.orderStatus,
+      this.comment = ''});
+  @override
+  List<Object> get props => [serviceOrderId, orderStatus, comment];
+}

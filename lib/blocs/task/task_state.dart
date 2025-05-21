@@ -69,7 +69,7 @@ class ActionOnTaskLoading extends TaskState {
 }
 
 class TaskUploadDocumentSuccess extends TaskState {
-  final DocumentUploadModel taskDocumentUploadModel;
+  final CommonModel taskDocumentUploadModel;
 
   const TaskUploadDocumentSuccess({required this.taskDocumentUploadModel});
   @override
@@ -77,7 +77,7 @@ class TaskUploadDocumentSuccess extends TaskState {
 }
 
 class ActionOnTaskSuccess extends TaskState {
-  final GetActionOnTaskModel actionOnTaskData;
+  final CommonModel actionOnTaskData;
 
   const ActionOnTaskSuccess({required this.actionOnTaskData});
   @override

@@ -45,8 +45,14 @@ class Data {
   String? caEmail;
   String? caMobile;
   String? caCompanyName;
+  String? caCountryCode;
+  int? customerId;
+  String? customerName;
+  String? customerEmail;
+  String? customerMobile;
   String? orderStatus;
   int? createdDate;
+  dynamic rejectionComment;
 
   Data({
     this.serviceOrderId,
@@ -59,8 +65,14 @@ class Data {
     this.caEmail,
     this.caMobile,
     this.caCompanyName,
+    this.caCountryCode,
+    this.customerId,
+    this.customerName,
+    this.customerEmail,
+    this.customerMobile,
     this.orderStatus,
     this.createdDate,
+    this.rejectionComment,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -74,8 +86,14 @@ class Data {
         caEmail: json["caEmail"],
         caMobile: json["caMobile"],
         caCompanyName: json["caCompanyName"],
+        caCountryCode: json["caCountryCode"],
+        customerId: json["customerId"],
+        customerName: json["customerName"],
+        customerEmail: json["customerEmail"],
+        customerMobile: json["customerMobile"],
         orderStatus: json["orderStatus"],
         createdDate: json["createdDate"],
+        rejectionComment: json["rejectionComment"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -89,8 +107,14 @@ class Data {
         "caEmail": caEmail,
         "caMobile": caMobile,
         "caCompanyName": caCompanyName,
+        "caCountryCode": caCountryCode,
+        "customerId": customerId,
+        "customerName": customerName,
+        "customerEmail": customerEmail,
+        "customerMobile": customerMobile,
         "orderStatus": orderStatus,
         "createdDate": createdDate,
+        "rejectionComment": rejectionComment,
       };
 }
 

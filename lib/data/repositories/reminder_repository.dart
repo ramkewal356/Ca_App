@@ -1,4 +1,4 @@
-import 'package:ca_app/data/models/active_deactive_reminder_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_reminders_model.dart';
 import 'package:ca_app/data/models/get_view_reminder_model.dart';
 import 'package:ca_app/data/models/update_reminder_model.dart';
@@ -92,7 +92,7 @@ class ReminderRepository {
   }
 
   //**** Active Deactive Reminder by CA Id API ****//
-  Future<ActiveDeactiveReminderModel> activeDeactiveReminderById(
+  Future<CommonModel> activeDeactiveReminderById(
       {required Map<String, dynamic> query, required bool isActive}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -106,7 +106,7 @@ class ReminderRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('reminder Response ${response?.data}');
-      return ActiveDeactiveReminderModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

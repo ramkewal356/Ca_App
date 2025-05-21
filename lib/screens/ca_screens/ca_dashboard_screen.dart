@@ -188,8 +188,8 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                   context
                       .push('/ca_dashboard/indivisual_customer')
                       .then((onValue) async {
-                    // debugPrint('bnbmnbm??????????????????????');
-                    // await _fetchCustomersData(isFilter: true);
+                   
+                    await _fetchCustomersData(isFilter: true);
                     // await _getRecentDocument();
                     // _getDashboardData();
                   });

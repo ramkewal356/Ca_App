@@ -1,17 +1,22 @@
+import 'package:ca_app/blocs/indivisual_customer/indivisual_customer_bloc.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
+import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ViewRequestedCaServiceScreen extends StatefulWidget {
   final int serviceOrderId;
-  const ViewRequestedCaServiceScreen({super.key, required this.serviceOrderId});
+  final bool caSide;
+  const ViewRequestedCaServiceScreen(
+      {super.key, required this.serviceOrderId, this.caSide = false});
 
   @override
   State<ViewRequestedCaServiceScreen> createState() =>
@@ -20,6 +25,8 @@ class ViewRequestedCaServiceScreen extends StatefulWidget {
 
 class _ViewRequestedCaServiceScreenState
     extends State<ViewRequestedCaServiceScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _commentController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -62,27 +69,101 @@ class _ViewRequestedCaServiceScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 10),
-                  Text(
-                    'Ca Details',
-                    style: AppTextStyle().textButtonStyle,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.caSide ? 'Customer details' : 'Ca Details',
+                        style: AppTextStyle().textButtonStyle,
+                      ),
+                      (widget.caSide && data?.orderStatus == 'PENDING')
+                          ? BlocConsumer<IndivisualCustomerBloc,
+                              IndivisualCustomerState>(
+                              listener: (context, state) {
+                                if (state is AcceptOrRejectServiceSuccess) {
+                                  _getViewDetails();
+                                }
+                              },
+                              builder: (context, state) {
+                                return PopupMenuButton<String>(
+                                  surfaceTintColor: ColorConstants.white,
+                                  color: ColorConstants.white,
+                                  position: PopupMenuPosition.under,
+                                  onSelected: (value) {
+                                    if (value == 'Accept') {
+                                      debugPrint('vcvcv$value');
+                                      context
+                                          .read<IndivisualCustomerBloc>()
+                                          .add(AcceptOrRejectServiceEvent(
+                                              serviceOrderId:
+                                                  data?.serviceOrderId ?? 0,
+                                              orderStatus: 'ACCEPTED'));
+                                    } else if (value == 'Reject') {
+                                      debugPrint('vcvc1v$value');
+                                      _showCommentDailog(
+                                        context: context,
+                                        onTap: () {
+                                          debugPrint(
+                                              ' bnmmn     mnmnmnmbnmn   mnmnnm');
+                                          context
+                                              .read<IndivisualCustomerBloc>()
+                                              .add(AcceptOrRejectServiceEvent(
+                                                  serviceOrderId:
+                                                      data?.serviceOrderId ?? 0,
+                                                  orderStatus: 'REJECTED',
+                                                  comment:
+                                                      _commentController.text));
+                                        },
+                                      );
+                                    }
+                                  },
+                                  itemBuilder: (context) {
+                                    return <PopupMenuEntry<String>>[
+                                      PopupMenuItem<String>(
+                                          value: 'Accept',
+                                          child: Text(
+                                            'Accept',
+                                            style: AppTextStyle().getgreenText,
+                                          )),
+                                      PopupMenuItem<String>(
+                                          value: 'Reject',
+                                          child: Text(
+                                            'Reject',
+                                            style: AppTextStyle().getredText,
+                                          )),
+                                    ];
+                                  },
+                                );
+                              },
+                            )
+                          : SizedBox.shrink()
+                    ],
                   ),
                   Divider(),
                   CustomTextInfo(
                       flex1: 2,
                       flex2: 4,
-                      lable: 'Ca Name',
-                      value: '${data?.caName}'),
+                      lable: widget.caSide ? 'Customer Name' : 'Ca Name',
+                      value: widget.caSide
+                          ? data?.customerName ?? ''
+                          : '${data?.caName}'),
                   CustomTextInfo(
                       flex1: 2,
                       flex2: 4,
-                      lable: 'Ca Email',
-                      value: '${data?.caEmail}'),
+                      lable: widget.caSide ? 'Customer Email' : 'Ca Email',
+                      value: widget.caSide
+                          ? data?.customerEmail ?? ''
+                          : '${data?.caEmail}'),
                   CustomTextInfo(
                       flex1: 2,
                       flex2: 4,
-                      lable: 'Ca Mobile No',
-                      value: '${data?.caMobile}'),
-                  CustomTextInfo(
+                      lable: widget.caSide ? 'Customer Mobile' : 'Ca Mobile No',
+                      value: widget.caSide
+                          ? '+${data?.caCountryCode ?? ''} ${data?.customerMobile ?? ''}'
+                          : '+${data?.caCountryCode ?? ''} ${data?.caMobile ?? ''}'),
+                  widget.caSide
+                      ? SizedBox.shrink()
+                      : CustomTextInfo(
                       flex1: 2,
                       flex2: 4,
                       lable: 'Company Name',
@@ -146,6 +227,21 @@ class _ViewRequestedCaServiceScreenState
                       )
                     ],
                   ),
+                  SizedBox(height: 10),
+                  data?.orderStatus == 'ACCEPTED'
+                      ? CommonButtonWidget(
+                          buttonTitle: 'Raise Request',
+                          onTap: () {
+                            context.push('/raise_request', extra: {
+                              'role': widget.caSide ? 'CA' : 'CUSTOMER',
+                              "selectedUser": widget.caSide
+                                  ? data?.customerName
+                                  : data?.caName,
+                              "selectedId": data?.serviceOrderId
+                            });
+                          },
+                        )
+                      : SizedBox(),
                   // Row(
                   //   crossAxisAlignment: CrossAxisAlignment.start,
                   //   mainAxisAlignment: MainAxisAlignment.start,
@@ -257,19 +353,109 @@ class _ViewRequestedCaServiceScreenState
     );
   }
 
-  _textItem({required String lable, required String value}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          lable,
-          style: AppTextStyle().hintText,
+  Future<void> _showCommentDailog({
+    required BuildContext context,
+    required VoidCallback onTap,
+  }) {
+    return showModalBottomSheet(
+        context: context,
+        isDismissible: false,
+        backgroundColor: ColorConstants.white,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
+          ),
         ),
-        Text(
-          value,
-          style: AppTextStyle().cardValueText,
-        )
-      ],
-    );
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setstate) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text.rich(TextSpan(children: [
+                                TextSpan(
+                                    text: 'Note : ',
+                                    style: AppTextStyle().cardLableText),
+                                TextSpan(
+                                    text: 'Are you sure you want to ',
+                                    style: AppTextStyle().cardValueText),
+                                TextSpan(
+                                    text: 'Reject ?',
+                                    style: AppTextStyle().getredText)
+                              ])),
+                              IconButton(
+                                  onPressed: () {
+                                    context.pop();
+                                  },
+                                  icon: Icon(Icons.close))
+                            ],
+                          ),
+                          SizedBox(height: 15),
+                          TextformfieldWidget(
+                            controller: _commentController,
+                            hintText: 'Please enter comment',
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) {
+                                return 'Please enter comment';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 15),
+                          BlocConsumer<IndivisualCustomerBloc,
+                              IndivisualCustomerState>(
+                            listener: (context, state) {
+                              if (state is AcceptOrRejectServiceSuccess) {
+                                _commentController.clear();
+                                context.pop();
+                              }
+                            },
+                            builder: (context, state) {
+                              return CommonButtonWidget(
+                                buttonTitle: 'Reject',
+                                loader: state is IndivisualCustomerLoading,
+                                onTap: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    onTap();
+                                  }
+                                },
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                    )),
+              ),
+            );
+          });
+        });
   }
+
+  // _textItem({required String lable, required String value}) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         lable,
+  //         style: AppTextStyle().hintText,
+  //       ),
+  //       Text(
+  //         value,
+  //         style: AppTextStyle().cardValueText,
+  //       )
+  //     ],
+  //   );
+  // }
 }

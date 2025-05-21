@@ -143,7 +143,8 @@ class _GetRequestedServiceOfCustomerState
                                   context.push(
                                       '/indivisual_customer/view_requested_ca',
                                       extra: {
-                                        "serviceOrderId": data.serviceOrderId
+                                        "serviceOrderId": data.serviceOrderId,
+                                        "caSide": true
                                       }).then((onValue) {
                                     _getRequestedService(isFilter: true);
                                   });

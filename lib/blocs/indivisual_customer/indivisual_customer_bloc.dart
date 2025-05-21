@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/get_requested_service_caid_model.dart';
 import 'package:ca_app/data/repositories/indivisual_customer_repository.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class IndivisualCustomerBloc
   final _myRepo = IndivisualCustomerRepository();
   IndivisualCustomerBloc() : super(IndivisualCustomerInitial()) {
     on<GetRequestedServiceByCaIdEvent>(_getRequestedServiceByCaIdApi);
+    on<AcceptOrRejectServiceEvent>(_acceptOrRejectServiceApi);
   }
   Future<void> _getRequestedServiceByCaIdApi(
       GetRequestedServiceByCaIdEvent event,
@@ -58,6 +60,23 @@ class IndivisualCustomerBloc
       emit(IndivisualCustomerError(errorMessage: e.toString()));
     } finally {
       isFetching = false;
+    }
+  }
+
+  Future<void> _acceptOrRejectServiceApi(AcceptOrRejectServiceEvent event,
+      Emitter<IndivisualCustomerState> emit) async {
+    Map<String, dynamic> body = {
+      "serviceOrderId": event.serviceOrderId,
+      "orderStatus": event.orderStatus,
+      if (event.comment.isNotEmpty) "rejectionComment": event.comment
+    };
+    try {
+      emit(IndivisualCustomerLoading());
+      var resp = await _myRepo.acceptOrRejectServiceApi(body: body);
+      Utils.toastSuccessMessage('${resp.data?.body}');
+      emit(AcceptOrRejectServiceSuccess());
+    } catch (e) {
+      emit(IndivisualCustomerError(errorMessage: e.toString()));
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/add_service_model.dart';
-import 'package:ca_app/data/models/assign_service_to_user_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
 import 'package:ca_app/data/models/customer_service_model.dart';
 import 'package:ca_app/data/models/get_all_service_request_by_customerid_model.dart';

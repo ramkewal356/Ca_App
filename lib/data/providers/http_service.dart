@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:ca_app/data/models/response_model/base_response_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
-import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/string.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';

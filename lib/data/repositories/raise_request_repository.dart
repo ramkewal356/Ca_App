@@ -1,8 +1,8 @@
-import 'package:ca_app/data/models/action_on_task_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_document_by_requestid_model.dart';
 import 'package:ca_app/data/models/get_request_by_receiverId_model.dart';
 import 'package:ca_app/data/models/get_request_model.dart';
-import 'package:ca_app/data/models/send_raise_request.dart';
+
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class RaiseRequestRepository {
   //**** Send Raise Request API ****//
-  Future<RaiseRequestModel> sendRequestApi(
+  Future<CommonModel> sendRequestApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -22,7 +22,7 @@ class RaiseRequestRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('send raise request Response ${response?.data}');
-      return RaiseRequestModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
@@ -112,7 +112,7 @@ class RaiseRequestRepository {
     }
   }
 
-  Future<GetActionOnTaskModel> unreadToReadStatusApi(
+  Future<CommonModel> unreadToReadStatusApi(
       {required Map<String, dynamic> query}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -124,7 +124,7 @@ class RaiseRequestRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('view request of Team Response ${response?.data}');
-      return GetActionOnTaskModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

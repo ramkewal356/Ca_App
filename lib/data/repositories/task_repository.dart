@@ -1,7 +1,6 @@
-import 'package:ca_app/data/models/action_on_task_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_assign_task_model.dart';
 import 'package:ca_app/data/models/get_view_task_by_taskid_model.dart';
-import 'package:ca_app/data/models/upload_document_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
@@ -92,7 +91,7 @@ class TaskRepository {
   }
 
   //**** COMPLETE ,REJECT,ACCEPT Task API ****//
-  Future<GetActionOnTaskModel> actionOnTaskApi(
+  Future<CommonModel> actionOnTaskApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -104,7 +103,7 @@ class TaskRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('create task ${response?.data}');
-      return GetActionOnTaskModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
@@ -113,7 +112,7 @@ class TaskRepository {
   }
 
   //**** TaskUpload Document API ****//
-  Future<DocumentUploadModel> taskDocumentUploadApi(
+  Future<CommonModel> taskDocumentUploadApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -125,7 +124,7 @@ class TaskRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('create task ${response?.data}');
-      return DocumentUploadModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

@@ -90,7 +90,7 @@ class GetViewServiceSuccess extends ServiceState {
 }
 
 class AssignServiceToUserSuccess extends ServiceState {
-  final AssignServiceToUserModel assignServiceToClient;
+  final CommonModel assignServiceToClient;
 
   const AssignServiceToUserSuccess({required this.assignServiceToClient});
   @override

@@ -1,3 +1,4 @@
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_requested_service_caid_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
@@ -18,6 +19,26 @@ class IndivisualCustomerRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('view request of Team Response ${response?.data}');
       return GetRequestedServiceByCaIdModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  Future<CommonModel> acceptOrRejectServiceApi(
+      {required Map<String, dynamic> body}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.acceptOrRejectServiceUrl,
+        body: body,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.POST);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('view request of Team Response ${response?.data}');
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

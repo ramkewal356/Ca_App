@@ -60,7 +60,7 @@ class GetRequestDetailsSuccess extends RaiseRequestState {
 }
 
 class UnReadToReadStatusSuccess extends RaiseRequestState {
-  final GetActionOnTaskModel changeStatus;
+  final CommonModel changeStatus;
 
   const UnReadToReadStatusSuccess({required this.changeStatus});
   @override

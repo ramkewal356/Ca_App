@@ -1,93 +1,93 @@
-// To parse this JSON data, do
-//
-//     final activeDeactiveReminderModel = activeDeactiveReminderModelFromJson(jsonString);
+// // To parse this JSON data, do
+// //
+// //     final activeDeactiveReminderModel = activeDeactiveReminderModelFromJson(jsonString);
 
-import 'dart:convert';
+// import 'dart:convert';
 
-ActiveDeactiveReminderModel activeDeactiveReminderModelFromJson(String str) =>
-    ActiveDeactiveReminderModel.fromJson(json.decode(str));
+// ActiveDeactiveReminderModel activeDeactiveReminderModelFromJson(String str) =>
+//     ActiveDeactiveReminderModel.fromJson(json.decode(str));
 
-String activeDeactiveReminderModelToJson(ActiveDeactiveReminderModel data) =>
-    json.encode(data.toJson());
+// String activeDeactiveReminderModelToJson(ActiveDeactiveReminderModel data) =>
+//     json.encode(data.toJson());
 
-class ActiveDeactiveReminderModel {
-  Status? status;
-  Data? data;
+// class ActiveDeactiveReminderModel {
+//   Status? status;
+//   Data? data;
 
-  ActiveDeactiveReminderModel({
-    this.status,
-    this.data,
-  });
+//   ActiveDeactiveReminderModel({
+//     this.status,
+//     this.data,
+//   });
 
-  factory ActiveDeactiveReminderModel.fromJson(Map<String, dynamic> json) =>
-      ActiveDeactiveReminderModel(
-        status: json["status"] == null ? null : Status.fromJson(json["status"]),
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
-      );
+//   factory ActiveDeactiveReminderModel.fromJson(Map<String, dynamic> json) =>
+//       ActiveDeactiveReminderModel(
+//         status: json["status"] == null ? null : Status.fromJson(json["status"]),
+//         data: json["data"] == null ? null : Data.fromJson(json["data"]),
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "status": status?.toJson(),
-        "data": data?.toJson(),
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "status": status?.toJson(),
+//         "data": data?.toJson(),
+//       };
+// }
 
-class Data {
-  Headers? headers;
-  String? body;
-  String? statusCode;
-  int? statusCodeValue;
+// class Data {
+//   Headers? headers;
+//   String? body;
+//   String? statusCode;
+//   int? statusCodeValue;
 
-  Data({
-    this.headers,
-    this.body,
-    this.statusCode,
-    this.statusCodeValue,
-  });
+//   Data({
+//     this.headers,
+//     this.body,
+//     this.statusCode,
+//     this.statusCodeValue,
+//   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        headers:
-            json["headers"] == null ? null : Headers.fromJson(json["headers"]),
-        body: json["body"],
-        statusCode: json["statusCode"],
-        statusCodeValue: json["statusCodeValue"],
-      );
+//   factory Data.fromJson(Map<String, dynamic> json) => Data(
+//         headers:
+//             json["headers"] == null ? null : Headers.fromJson(json["headers"]),
+//         body: json["body"],
+//         statusCode: json["statusCode"],
+//         statusCodeValue: json["statusCodeValue"],
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "headers": headers?.toJson(),
-        "body": body,
-        "statusCode": statusCode,
-        "statusCodeValue": statusCodeValue,
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "headers": headers?.toJson(),
+//         "body": body,
+//         "statusCode": statusCode,
+//         "statusCodeValue": statusCodeValue,
+//       };
+// }
 
-class Headers {
-  Headers();
+// class Headers {
+//   Headers();
 
-  factory Headers.fromJson(Map<String, dynamic> json) => Headers();
+//   factory Headers.fromJson(Map<String, dynamic> json) => Headers();
 
-  Map<String, dynamic> toJson() => {};
-}
+//   Map<String, dynamic> toJson() => {};
+// }
 
-class Status {
-  String? httpCode;
-  bool? success;
-  String? message;
+// class Status {
+//   String? httpCode;
+//   bool? success;
+//   String? message;
 
-  Status({
-    this.httpCode,
-    this.success,
-    this.message,
-  });
+//   Status({
+//     this.httpCode,
+//     this.success,
+//     this.message,
+//   });
 
-  factory Status.fromJson(Map<String, dynamic> json) => Status(
-        httpCode: json["httpCode"],
-        success: json["success"],
-        message: json["message"],
-      );
+//   factory Status.fromJson(Map<String, dynamic> json) => Status(
+//         httpCode: json["httpCode"],
+//         success: json["success"],
+//         message: json["message"],
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "httpCode": httpCode,
-        "success": success,
-        "message": message,
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "httpCode": httpCode,
+//         "success": success,
+//         "message": message,
+//       };
+// }

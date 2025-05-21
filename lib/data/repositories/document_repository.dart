@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_view_document_by_userid_model.dart';
 import 'package:ca_app/data/models/recent_document_model.dart';
-import 'package:ca_app/data/models/upload_document_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/data/providers/http_service.dart';
 import 'package:dio/dio.dart';
@@ -55,7 +55,7 @@ class DocumentRepository {
     }
   }
   //**** Document Upload  API ****//
-  Future<DocumentUploadModel> uploadDocumentApi(
+  Future<CommonModel> uploadDocumentApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -67,7 +67,7 @@ class DocumentRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('GetUploadedDocumentResponse ${response?.data}');
-      return DocumentUploadModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

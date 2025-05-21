@@ -85,6 +85,8 @@ class EndPoints {
   //Raise request for Customer
   static var getRequestServiceByCaId =
       '/service_order/get_request_service_byCaId';
+  static var acceptOrRejectServiceUrl =
+      '/service_order/accept_reject_service_request';
   // Contact Url
   static var addContactUrl = '/contact/add_contact';
   static var getContactByUserIdUrl = '/contact/get_contact_by_userId';

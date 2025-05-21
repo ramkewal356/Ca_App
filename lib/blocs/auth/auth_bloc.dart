@@ -275,6 +275,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       };
       var resp = await _myRepo.activeDeactiveUserApi(body: body);
       if (resp?.status?.httpCode == '200') {
+       
         emit(DeactiveUserSucess());
       }
     } catch (e) {

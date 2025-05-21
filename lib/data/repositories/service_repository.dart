@@ -1,5 +1,5 @@
 import 'package:ca_app/data/models/add_service_model.dart';
-import 'package:ca_app/data/models/assign_service_to_user_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/create_new_service_model.dart';
 import 'package:ca_app/data/models/customer_service_model.dart';
 import 'package:ca_app/data/models/get_all_service_request_by_customerid_model.dart';
@@ -181,7 +181,7 @@ class ServiceRepository {
   }
 
   //****  Assign Services  API ****//
-  Future<AssignServiceToUserModel> assignServiceToClientApi(
+  Future<CommonModel> assignServiceToClientApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -193,7 +193,7 @@ class ServiceRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('assignServiceToUserResponse ${response?.data}');
-      return AssignServiceToUserModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);
@@ -266,7 +266,7 @@ class ServiceRepository {
   }
 
   //****  Get View Services  API ****//
-  Future<AssignServiceToUserModel> sendServiceOrderRequestApi(
+  Future<CommonModel> sendServiceOrderRequestApi(
       {required Map<String, dynamic> body}) async {
     var http = HttpService(
         isAuthorizeRequest: true,
@@ -278,7 +278,7 @@ class ServiceRepository {
     try {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('CreateServiceOrederRequestResponse ${response?.data}');
-      return AssignServiceToUserModel.fromJson(response?.data);
+      return CommonModel.fromJson(response?.data);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

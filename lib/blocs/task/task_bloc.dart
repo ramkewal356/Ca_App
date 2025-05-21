@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
-import 'package:ca_app/data/models/action_on_task_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_assign_task_model.dart';
 import 'package:ca_app/data/models/get_view_task_by_taskid_model.dart';
-import 'package:ca_app/data/models/upload_document_model.dart';
 import 'package:ca_app/data/repositories/task_repository.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';

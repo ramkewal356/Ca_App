@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
-import 'package:ca_app/data/models/active_deactive_reminder_model.dart';
+import 'package:ca_app/data/models/common_model.dart';
 import 'package:ca_app/data/models/get_reminders_model.dart';
 import 'package:ca_app/data/models/get_view_reminder_model.dart';
 import 'package:ca_app/data/models/update_reminder_model.dart';

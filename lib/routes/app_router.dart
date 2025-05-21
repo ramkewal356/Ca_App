@@ -466,9 +466,13 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'view_requested_ca',
               builder: (context, state) {
-                var data = state.extra as Map<String, dynamic>;
+                var extra = state.extra as Map<String, dynamic>;
+               
+
                 return ViewRequestedCaServiceScreen(
-                    serviceOrderId: data["serviceOrderId"]);
+                  serviceOrderId: extra["serviceOrderId"],
+                  caSide: extra['caSide'] ?? false,
+                );
               },
             ),
           ])

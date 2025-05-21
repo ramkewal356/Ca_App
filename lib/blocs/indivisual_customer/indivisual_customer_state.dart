@@ -20,7 +20,9 @@ class GetRequestedServiceByCaIdSuccess extends IndivisualCustomerState {
   @override
   List<Object> get props => [getRequestedServiceList, isLastPage];
 }
-
+class AcceptOrRejectServiceSuccess extends IndivisualCustomerState {
+  
+}
 final class IndivisualCustomerError extends IndivisualCustomerState {
   final String errorMessage;
 
