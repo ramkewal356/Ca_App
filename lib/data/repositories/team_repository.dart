@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:ca_app/data/models/degination_model.dart';
+import 'package:ca_app/data/models/get_active_ca_with_service_model.dart';
 import 'package:ca_app/data/models/get_permission_model.dart';
 import 'package:ca_app/data/models/get_subca_by_caid_model.dart';
 import 'package:ca_app/data/models/get_team_member_model.dart';
@@ -102,6 +105,28 @@ class TeamRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('teamResponse ${response?.data}');
       return GetPermissionModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+  
+  //**** Get Permission API ****//
+  Future<GetActiveCaWithServicesModel> getActiveCaWithServiceApi(
+      {required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: false,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.getActiveCauWithService,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.GET);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('teamResponse ${response?.data}');
+      final jsonData = json.decode(response?.data);
+      return GetActiveCaWithServicesModel.fromJson(jsonData);
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

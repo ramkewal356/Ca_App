@@ -114,6 +114,7 @@ class _SubCaDashboardScreenState extends State<SubCaDashboardScreen> {
             ],
           ),
           drawer: CustomDrawer(
+            isLogin: true,
             userName:
                 '${user?.data?.firstName ?? ''}${user?.data?.lastName ?? ''}',
             emailAddress: user?.data?.email ?? '',

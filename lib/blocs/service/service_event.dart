@@ -119,25 +119,35 @@ class GetServiceByCaIdEvent extends ServiceEvent {
 }
 
 class GetServiceForCustomerEvent extends ServiceEvent {
+  final String location;
+  final bool isFilterByLocation;
   final bool isSearch;
   final String searchText;
   final bool isPagination;
 
   const GetServiceForCustomerEvent(
-      {required this.isSearch,
+      {required this.location,
+      required this.isFilterByLocation,
+      required this.isSearch,
       required this.searchText,
       required this.isPagination});
   @override
-  List<Object> get props => [isSearch, isPagination, searchText];
+  List<Object> get props =>
+      [isSearch, isPagination, searchText, location, isFilterByLocation];
 }
 
 class GetCaByServiceNameEvent extends ServiceEvent {
   final int serviceId;
   final bool isPagination;
+  final bool isFilter;
+  final String filter;
   const GetCaByServiceNameEvent(
-      {required this.serviceId, required this.isPagination});
+      {required this.serviceId,
+      required this.isPagination,
+      required this.isFilter,
+      required this.filter});
   @override
-  List<Object> get props => [serviceId, isPagination];
+  List<Object> get props => [serviceId, isPagination, isFilter, filter];
 }
 
 class SendSercieRequestOrderEvent extends ServiceEvent {

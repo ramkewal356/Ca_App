@@ -50,7 +50,7 @@ class GetVerifiedSubCaByCaIdEvent extends TeamMemberEvent {
   @override
   List<Object> get props => [selectedSubCaName];
 }
-
+class GetActiveCaWithServiceEvent extends TeamMemberEvent {}
 class UpdateSubCaNameEvent extends TeamMemberEvent {
   final String selectedSubCaName;
 

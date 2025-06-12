@@ -144,28 +144,30 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                             )
                           ],
                         ),
-                        SizedBox(height: 10),
-                        ...List.generate(
-                          data?.users?.length ?? 0,
-                          (index) {
-                            return CustomCard(
-                                child: ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              minVerticalPadding: 0,
-                              horizontalTitleGap: 10,
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundColor: ColorConstants.buttonColor,
-                                child: Text(
-                                  '${data?.users?[index].firstName?[0] ?? ''}${data?.users?[index].lastName?[0] ?? ''}',
-                                  style: AppTextStyle().buttontext,
+                        SizedBox(height: 5),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: data?.users?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              return CustomCard(
+                                  child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                minVerticalPadding: 0,
+                                horizontalTitleGap: 10,
+                                leading: CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: ColorConstants.buttonColor,
+                                  child: Text(
+                                    '${data?.users?[index].firstName?[0] ?? ''}${data?.users?[index].lastName?[0] ?? ''}',
+                                    style: AppTextStyle().buttontext,
+                                  ),
                                 ),
-                              ),
-                              title: Text(
-                                  '${data?.users?[index].firstName} ${data?.users?[index].lastName}'),
-                              subtitle: Text(data?.users?[index].email ?? ''),
-                            ));
-                          },
+                                title: Text(
+                                    '${data?.users?[index].firstName} ${data?.users?[index].lastName}'),
+                                subtitle: Text(data?.users?[index].email ?? ''),
+                              ));
+                            },
+                          ),
                         )
                       ],
                     ),

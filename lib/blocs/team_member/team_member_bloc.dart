@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/degination_model.dart';
+import 'package:ca_app/data/models/get_active_ca_with_service_model.dart';
 import 'package:ca_app/data/models/get_permission_model.dart';
 import 'package:ca_app/data/models/get_subca_by_caid_model.dart';
 import 'package:ca_app/data/models/get_team_member_model.dart';
@@ -29,6 +30,7 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
             selectedSubCaName: event.selectedSubCaName));
       }
     });
+    on<GetActiveCaWithServiceEvent>(_getActiveCaWithServiceApi);
   }
   Future<void> _getTeamMemberApi(
       GetTeamMemberEvent event, Emitter<TeamMemberState> emit) async {
@@ -108,6 +110,17 @@ class TeamMemberBloc extends Bloc<TeamMemberEvent, TeamMemberState> {
       emit(GetVerifiedSubCaByCaIdSuccess(
           getTeamMemberModel: resp.data ?? [],
           selectedSubCaName: event.selectedSubCaName));
+    } catch (e) {
+      emit(TeamMemberError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getActiveCaWithServiceApi(
+      GetActiveCaWithServiceEvent event, Emitter<TeamMemberState> emit) async {
+    Map<String, dynamic> query = {"pageNumber": 0, "pageSize": 10};
+    try {
+      var resp = await _myRepo.getActiveCaWithServiceApi(query: query);
+      emit(GetActiveCaWithServiceSuccess(getActiveCaWithServicesModel: resp));
     } catch (e) {
       emit(TeamMemberError(errorMessage: e.toString()));
     }

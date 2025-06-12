@@ -53,6 +53,15 @@ class GetPermissionListSuccess extends TeamMemberState {
   List<Object> get props => [getPermissionList ?? []];
 }
 
+class GetActiveCaWithServiceSuccess extends TeamMemberState {
+  final GetActiveCaWithServicesModel getActiveCaWithServicesModel;
+
+  const GetActiveCaWithServiceSuccess(
+      {required this.getActiveCaWithServicesModel});
+  @override
+  List<Object> get props => [getActiveCaWithServicesModel];
+}
+
 final class TeamMemberError extends TeamMemberState {
   final String errorMessage;
 

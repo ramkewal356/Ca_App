@@ -29,8 +29,13 @@ class _CustomerServicesScreenState extends State<CustomerServicesScreen> {
     _scrollController.addListener(_onScroll);
   }
 
-  void _getServiceList({bool isSearch = false, bool isPagination = false}) {
+  void _getServiceList(
+      {bool isSearch = false,
+      bool isPagination = false,
+      bool isFilterByLocation = false}) {
     context.read<ServiceBloc>().add(GetServiceForCustomerEvent(
+        isFilterByLocation: isFilterByLocation,
+        location: '',
         isSearch: isSearch,
         searchText: searchText,
         isPagination: isPagination));

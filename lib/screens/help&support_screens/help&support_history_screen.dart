@@ -8,6 +8,7 @@ import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
+import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:ca_app/widgets/custom_text_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,6 +107,7 @@ class _HelpAndSupportHistoryScreenState
                     onFilterChanged: _onFilterChanged)
               ],
             ),
+            SizedBox(height: 5),
             Expanded(
               child: BlocBuilder<HelpAndSupportBloc, HelpAndSupportState>(
                 builder: (context, state) {
@@ -182,40 +184,25 @@ class _HelpAndSupportHistoryScreenState
                                         )
                                       ],
                                     ),
-                                    CustomTextItem(
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 4,
                                         lable: 'SUBJECT',
                                         value: '${data.subject}'),
-                                    CustomTextItem(
+                                    CustomTextInfo(
+                                        flex1: 2,
+                                        flex2: 4,
                                         lable: 'CREATE DATE',
                                         value: dateFormate(data.createdDate)),
-                                    CustomTextItem(
+                                    CustomTextInfo(
+                                      flex1: 2,
+                                      flex2: 4,
                                       lable: 'MESSAGE',
                                       value: '${data.message}',
                                       inOneLinetext: true,
                                       maxLine: 1,
                                     ),
-                                    // CustomTextItem(
-                                    //     lable: 'COMMENT', value: '${data.comment}'),
-                                
-                                    // Row(
-                                    //   mainAxisAlignment: MainAxisAlignment.end,
-                                    //   children: [
-
-                                    //     CommonButtonWidget(
-                                    //         buttonWidth: 100,
-                                    //         buttonheight: 45,
-                                    //         buttonTitle: 'View',
-                                    //         onTap: () {
-                                    //           context.push('/view_history',
-                                    //               extra: {
-                                    //                 "contactId": data.contactId
-                                    //               }).then((onValue) {
-                                    //             _fetchContactHistory(
-                                    //                 isFilter: true);
-                                    //           });
-                                    //         }),
-                                    //   ],
-                                    // )
+                                   
                                   ],
                                 )),
                               );

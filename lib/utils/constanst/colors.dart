@@ -18,4 +18,5 @@ static const Color lightGreenColor = Color(0xFFC8E6C9);
   static const Color black = Color(0xFF000000);
   static const Color white = Color(0xFFFFFFFF);
   static const Color buttonColor = Color(0xFF1c5773);
+  static const Color containerbgColor = Color(0x475C661A);
 }

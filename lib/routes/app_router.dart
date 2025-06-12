@@ -44,6 +44,10 @@ import 'package:ca_app/screens/request_screen/your_request_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/upload_document/upload_document_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support_history_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support_view_screen.dart';
+import 'package:ca_app/screens/starting_screens/landing_screen/landing_screen.dart';
+import 'package:ca_app/screens/starting_screens/search_ca_list_screen/ca_details_screen.dart';
+import 'package:ca_app/screens/starting_screens/search_ca_list_screen/ca_search_list_screen.dart';
+import 'package:ca_app/screens/starting_screens/search_ca_list_screen/chat_screen.dart';
 import 'package:ca_app/screens/starting_screens/splash_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_clients/my_clients_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_services/my_services_screen.dart';
@@ -63,6 +67,31 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
         path: '/splash',
         builder: (context, state) => SplashScreen(),
+      ),
+      GoRoute(
+        path: '/landing_screen',
+        builder: (context, state) => LandingScreen(),
+      ),
+      GoRoute(
+          path: '/ca_search',
+          builder: (context, state) {
+            var data = state.extra as Map<String, dynamic>;
+            return CaSearchListScreen(
+              serviceId: data["serviceId"],
+            );
+          }),
+      GoRoute(
+        path: '/ca_details',
+        builder: (context, state) {
+          var data = state.extra as Map<String, dynamic>;
+          return CaDetailsScreen(
+            userId: data["userId"],
+          );
+        },
+      ),
+      GoRoute(
+        path: '/chat_screen',
+        builder: (context, state) => ChatScreen(),
       ),
       GoRoute(
         path: '/login',
@@ -467,7 +496,6 @@ final GoRouter goRouter = GoRouter(
               path: 'view_requested_ca',
               builder: (context, state) {
                 var extra = state.extra as Map<String, dynamic>;
-               
 
                 return ViewRequestedCaServiceScreen(
                   serviceOrderId: extra["serviceOrderId"],

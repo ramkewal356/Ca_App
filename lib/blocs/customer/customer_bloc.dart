@@ -17,7 +17,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   final int pageSize = 10;
   int pageNumber1 = 0;
 
-  final int pageSize1 = 7;
+  final int pageSize1 = 10;
   bool isFetching = false;
   bool isLastPage = false;
   final _myRepo = CustomerRepository();

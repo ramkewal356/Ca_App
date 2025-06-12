@@ -1,29 +1,26 @@
 // To parse this JSON data, do
 //
-//     final getServicesForIndivisualCustomerModel = getServicesForIndivisualCustomerModelFromJson(jsonString);
+//     final getActiveCaWithServicesModel = getActiveCaWithServicesModelFromJson(jsonString);
 
 import 'dart:convert';
 
-GetServicesForIndivisualCustomerModel
-    getServicesForIndivisualCustomerModelFromJson(String str) =>
-        GetServicesForIndivisualCustomerModel.fromJson(json.decode(str));
+GetActiveCaWithServicesModel getActiveCaWithServicesModelFromJson(String str) =>
+    GetActiveCaWithServicesModel.fromJson(json.decode(str));
 
-String getServicesForIndivisualCustomerModelToJson(
-        GetServicesForIndivisualCustomerModel data) =>
+String getActiveCaWithServicesModelToJson(GetActiveCaWithServicesModel data) =>
     json.encode(data.toJson());
 
-class GetServicesForIndivisualCustomerModel {
+class GetActiveCaWithServicesModel {
   Status? status;
   Data? data;
 
-  GetServicesForIndivisualCustomerModel({
+  GetActiveCaWithServicesModel({
     this.status,
     this.data,
   });
 
-  factory GetServicesForIndivisualCustomerModel.fromJson(
-          Map<String, dynamic> json) =>
-      GetServicesForIndivisualCustomerModel(
+  factory GetActiveCaWithServicesModel.fromJson(Map<String, dynamic> json) =>
+      GetActiveCaWithServicesModel(
         status: json["status"] == null ? null : Status.fromJson(json["status"]),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
@@ -98,49 +95,102 @@ class Data {
 }
 
 class Content {
-  int? id;
-  int? serviceId;
-  String? serviceName;
-  String? serviceDesc;
-  String? subService;
-  int? caId;
+  int? userId;
+  String? firstName;
+  String? lastName;
+  String? email;
+  String? address;
+  String? mobile;
+  dynamic phone;
+  String? role;
+  String? otp;
+  bool? otpVerify;
+  bool? status;
   int? createdDate;
   int? modifiedDate;
-  String? caAddress;
+  String? profileUrl;
+  String? profileName;
+  String? gender;
+  String? panCardNumber;
+  dynamic aadhaarCardNumber;
+  String? userResponse;
+  String? countryCode;
+  dynamic reason;
+  dynamic lastDeactivatedAt;
+
   Content({
-    this.id,
-    this.serviceId,
-    this.serviceName,
-    this.serviceDesc,
-    this.subService,
-    this.caId,
+    this.userId,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.address,
+    this.mobile,
+    this.phone,
+    this.role,
+    this.otp,
+    this.otpVerify,
+    this.status,
     this.createdDate,
     this.modifiedDate,
-      this.caAddress
+    this.profileUrl,
+    this.profileName,
+    this.gender,
+    this.panCardNumber,
+    this.aadhaarCardNumber,
+    this.userResponse,
+    this.countryCode,
+    this.reason,
+    this.lastDeactivatedAt,
   });
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
-        id: json["id"],
-        serviceId: json["serviceId"],
-        serviceName: json["serviceName"],
-        serviceDesc: json["serviceDesc"],
-        subService: json["subService"],
-        caId: json["caId"],
+        userId: json["userId"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        email: json["email"],
+        address: json["address"],
+        mobile: json["mobile"],
+        phone: json["phone"],
+        role: json["role"],
+        otp: json["otp"],
+        otpVerify: json["otpVerify"],
+        status: json["status"],
         createdDate: json["createdDate"],
         modifiedDate: json["modifiedDate"],
-      caAddress: json["caAddress"]
+        profileUrl: json["profileUrl"],
+        profileName: json["profileName"],
+        gender: json["gender"],
+        panCardNumber: json["panCardNumber"],
+        aadhaarCardNumber: json["aadhaarCardNumber"],
+        userResponse: json["userResponse"],
+        countryCode: json["countryCode"],
+        reason: json["reason"],
+        lastDeactivatedAt: json["lastDeactivatedAt"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "serviceId": serviceId,
-        "serviceName": serviceName,
-        "serviceDesc": serviceDesc,
-        "subService": subService,
-        "caId": caId,
+        "userId": userId,
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "address": address,
+        "mobile": mobile,
+        "phone": phone,
+        "role": role,
+        "otp": otp,
+        "otpVerify": otpVerify,
+        "status": status,
         "createdDate": createdDate,
         "modifiedDate": modifiedDate,
-        "caAddress": caAddress
+        "profileUrl": profileUrl,
+        "profileName": profileName,
+        "gender": gender,
+        "panCardNumber": panCardNumber,
+        "aadhaarCardNumber": aadhaarCardNumber,
+        "userResponse": userResponse,
+        "countryCode": countryCode,
+        "reason": reason,
+        "lastDeactivatedAt": lastDeactivatedAt,
       };
 }
 

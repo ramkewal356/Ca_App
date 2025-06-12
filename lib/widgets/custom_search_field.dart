@@ -7,12 +7,18 @@ class CustomSearchField extends StatelessWidget {
   final String serchHintText;
   final FocusNode? focusNode;
   final Function(String)? onChanged;
+  final double? borderRadius;
+  final Widget? prefixIcon;
+  final Color? borderColor;
   const CustomSearchField(
       {super.key,
       required this.controller,
       this.focusNode,
       required this.serchHintText,
-      this.onChanged});
+      this.onChanged,
+      this.borderRadius,
+      this.prefixIcon,
+      this.borderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +30,24 @@ class CustomSearchField extends StatelessWidget {
         focusNode?.unfocus();
       },
       decoration: InputDecoration(
+          prefixIcon: prefixIcon,
+          prefixIconConstraints: BoxConstraints(maxWidth: 35, minWidth: 30),
           contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: const BorderSide(
-              color: ColorConstants.darkGray,
+            borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
+            borderSide: BorderSide(
+              color: borderColor ?? ColorConstants.darkGray,
               // width: 2.0,
             ),
           ),
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: ColorConstants.darkGray)),
+              borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
+              borderSide:
+                  BorderSide(color: borderColor ?? ColorConstants.darkGray)),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
+              borderSide:
+                  BorderSide(color: borderColor ?? ColorConstants.darkGray)),
           hintText: serchHintText,
           hintStyle: AppTextStyle().hintText),
       onChanged: onChanged,

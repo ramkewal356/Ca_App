@@ -17,6 +17,7 @@ class CommonButtonWidget extends StatefulWidget {
   final Function()? onTap;
   final Color? buttonBorderColor;
   final Color? loaderColor;
+  final double? borderRadius;
   const CommonButtonWidget(
       {super.key,
       this.buttonWidth,
@@ -30,7 +31,9 @@ class CommonButtonWidget extends StatefulWidget {
       this.disable = false,
       this.buttonBorderColor,
       this.loaderColor,
-      required this.onTap});
+    required this.onTap,
+    this.borderRadius,
+  });
 
   @override
   State<CommonButtonWidget> createState() => _CommonButtonWidgetState();
@@ -45,7 +48,7 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
           ? ColorConstants.buttonColor.withOpacity(0.2)
           : widget.buttonColor ?? ColorConstants.buttonColor,
       shadowColor: widget.buttonColor ?? ColorConstants.buttonColor,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
       child: InkWell(
         onTap: (widget.disable || widget.loader) ? null : widget.onTap,
         child: Container(
@@ -60,12 +63,11 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
                 color: widget.buttonBorderColor ??
                     ColorConstants.darkGray.withOpacity(0.2),
               ),
-              borderRadius: BorderRadius.circular(8)),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 8)),
           child: Center(
               child: widget.loader
                   ? CircularProgressIndicator(
                       color: widget.loaderColor ?? ColorConstants.white,
-                   
                     )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -13,6 +13,7 @@ class CustomSearchLocation extends StatefulWidget {
   final Color? fillColor;
   final FocusNode? focusNode;
   final String state;
+  final Widget? prefixIcon;
   // final bool stateValidation;
   const CustomSearchLocation({
     super.key,
@@ -21,6 +22,7 @@ class CustomSearchLocation extends StatefulWidget {
     required this.hintText,
     this.fillColor,
     this.focusNode,
+      this.prefixIcon
     // required this.stateValidation,
   });
 
@@ -52,7 +54,9 @@ class _CustomSearchLocationState extends State<CustomSearchLocation> {
       readOnly: true,
       focusNode: widget.focusNode,
       decoration: InputDecoration(
+        prefixIcon: widget.prefixIcon,
         hintText: widget.hintText,
+        prefixIconConstraints: BoxConstraints(maxWidth: 30),
         hintStyle: AppTextStyle().hintText,
         fillColor: widget.fillColor ?? ColorConstants.white,
         filled: true,
@@ -97,8 +101,8 @@ class _CustomSearchLocationState extends State<CustomSearchLocation> {
         ),
 
         errorStyle: TextStyle(
-          color: Colors.red[900], // Change error text color
-          fontSize: 13, // Adjust error text size if needed
+          color: Colors.red[900],
+          fontSize: 13, 
         ),
       ),
       onTap: _navigateToSearchPage,

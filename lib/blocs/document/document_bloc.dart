@@ -13,11 +13,11 @@ part 'document_state.dart';
 
 class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   int pageNumber = 0;
-  final int pageSize = 6;
+  final int pageSize = 10;
   bool isFetching = false;
   bool isLastPage = false;
   int pageNumber1 = 0;
-  final int pageSize1 = 6;
+  final int pageSize1 = 10;
   bool isFetching1 = false;
   bool isLastPage1 = false;
   bool isLoading = false;
@@ -179,6 +179,7 @@ class DownloadDocumentBloc extends Bloc<DocumentEvent, DocumentState> {
           docUrl: event.docUrl, docName: event.docName);
       // await _myRepo.downloadFile(docUrl: event.docUrl, docName: event.docName);
       // await _myRepo.startDownload(event.docUrl, event.docName);
+      Utils.toastSuccessMessage('Downloaded Successfully');
       emit(DownloadDocumentFileSuccess(docName: event.docName));
     } catch (e) {
       emit(DocumentError(errorMessage: e.toString()));

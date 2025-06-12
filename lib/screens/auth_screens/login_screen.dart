@@ -121,7 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           context.pushReplacement('/subca_dashboard');
                         } else if (state.loginModel?.data?.role == 'CUSTOMER') {
                           if (state.loginModel?.data?.selfRegistered == true) {
-                            context.pushReplacement('/indivisual_customer');
+                            // context.pushReplacement('/indivisual_customer');
+                            context.pushReplacement('/landing_screen');
                           } else {
                             context.pushReplacement('/customer_dashboard');
                           }

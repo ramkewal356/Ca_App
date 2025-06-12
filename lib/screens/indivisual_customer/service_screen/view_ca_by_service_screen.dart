@@ -24,22 +24,22 @@ class _ViewCaByServiceScreenState extends State<ViewCaByServiceScreen> {
   @override
   void initState() {
     super.initState();
-    _getViewCaByService();
-    _scrollController.addListener(_onScroll);
+    // _getViewCaByService();
+    // _scrollController.addListener(_onScroll);
   }
 
-  _getViewCaByService({bool isPagination = false}) {
-    context.read<ServiceBloc>().add(GetCaByServiceNameEvent(
-        serviceId: widget.serviceId, isPagination: isPagination));
-  }
+  // _getViewCaByService({bool isPagination = false}) {
+  //   context.read<ServiceBloc>().add(GetCaByServiceNameEvent(
+  //       serviceId: widget.serviceId, isPagination: isPagination));
+  // }
 
-  _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      debugPrint('nvbnxcbvbvmnxcbmnvcmn');
-      _getViewCaByService(isPagination: true);
-    }
-  }
+  // _onScroll() {
+  //   if (_scrollController.position.pixels >=
+  //       _scrollController.position.maxScrollExtent - 200) {
+  //     debugPrint('nvbnxcbvbvmnxcbmnvcmn');
+  //     _getViewCaByService(isPagination: true);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -144,98 +144,98 @@ class _ViewCaByServiceScreenState extends State<ViewCaByServiceScreen> {
                     ),
                   ),
                   SizedBox(height: 5),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount:
-                          state.caList.length + (state.isLastPage ? 0 : 1),
-                      itemBuilder: (context, index) {
-                        if (index == state.caList.length) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: ColorConstants.buttonColor,
-                            ),
-                          );
-                        }
-                        List<CaList> caList = state.caList;
-                        var caData = state.caList[index];
-                        return CustomCard(
-                            child: Column(
-                          children: [
-                            CustomTextInfo(
-                                flex1: 2,
-                                flex2: 3,
-                                lable: 'Ca Name',
-                                value: '${caData.fullName}'),
-                            CustomTextInfo(
-                                flex1: 2,
-                                flex2: 3,
-                                lable: 'Email id',
-                                value: '${caData.email}'),
-                            CustomTextInfo(
-                                flex1: 2,
-                                flex2: 3,
-                                lable: 'Mobile No',
-                                value: '${caData.mobile}'),
-                            CustomTextInfo(
-                                flex1: 2,
-                                flex2: 3,
-                                lable: 'Company Name',
-                                value: '${caData.companyName}'),
-                            (caData.orderStatus ?? '').isEmpty
-                                ? SizedBox.shrink()
-                                : CustomTextInfo(
-                                    flex1: 2,
-                                    flex2: 3,
-                                    lable: 'Status',
-                                    value: caData.orderStatus ?? '',
-                                    textStyle: caData.orderStatus == 'PENDING'
-                                        ? AppTextStyle().getYellowText
-                                        : caData.orderStatus == 'ACCEPTED'
-                                            ? AppTextStyle().getgreenText
-                                            : caData.orderStatus == 'REJECTED'
-                                                ? AppTextStyle().getredText
-                                                : AppTextStyle().getredText,
-                                  ),
-                            (caData.orderStatus ?? '').isNotEmpty
-                                ? SizedBox.shrink()
-                                : BlocConsumer<AssignServiceBloc, ServiceState>(
-                                    listener: (context, state) {
-                                      if (state
-                                          is SendSericeRequestOrderSuccess) {
-                                        _getViewCaByService();
-                                      }
-                                    },
-                                    builder: (context, state) {
-                                      return Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: CommonButtonWidget(
-                                          disable: (caList.any((test) =>
-                                              test.orderStatus == 'PENDING')),
-                                          loader: state
-                                                  is SendServiceRequestLoading &&
-                                              (state.caId == caData.caId),
-                                          buttonWidth: 130,
-                                          buttonheight: 45,
-                                          buttonTitle: 'Send Request',
-                                          onTap: () {
-                                            context
-                                                .read<AssignServiceBloc>()
-                                                .add(
-                                                    SendSercieRequestOrderEvent(
-                                                        serviceId: serviceId,
-                                                        caId:
-                                                            caData.caId ?? 0));
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  )
-                          ],
-                        ));
-                      },
-                    ),
-                  )
+                  // Expanded(
+                  //   child: ListView.builder(
+                  //     controller: _scrollController,
+                  //     itemCount:
+                  //         state.caList.length + (state.isLastPage ? 0 : 1),
+                  //     itemBuilder: (context, index) {
+                  //       if (index == state.caList.length) {
+                  //         return Center(
+                  //           child: CircularProgressIndicator(
+                  //             color: ColorConstants.buttonColor,
+                  //           ),
+                  //         );
+                  //       }
+                  //       List<CaList> caList = state.caList;
+                  //       var caData = state.caList[index];
+                  //       return CustomCard(
+                  //           child: Column(
+                  //         children: [
+                  //           CustomTextInfo(
+                  //               flex1: 2,
+                  //               flex2: 3,
+                  //               lable: 'Ca Name',
+                  //               value: '${caData.fullName}'),
+                  //           CustomTextInfo(
+                  //               flex1: 2,
+                  //               flex2: 3,
+                  //               lable: 'Email id',
+                  //               value: '${caData.email}'),
+                  //           CustomTextInfo(
+                  //               flex1: 2,
+                  //               flex2: 3,
+                  //               lable: 'Mobile No',
+                  //               value: '${caData.mobile}'),
+                  //           CustomTextInfo(
+                  //               flex1: 2,
+                  //               flex2: 3,
+                  //               lable: 'Company Name',
+                  //               value: '${caData.companyName}'),
+                  //           (caData.orderStatus ?? '').isEmpty
+                  //               ? SizedBox.shrink()
+                  //               : CustomTextInfo(
+                  //                   flex1: 2,
+                  //                   flex2: 3,
+                  //                   lable: 'Status',
+                  //                   value: caData.orderStatus ?? '',
+                  //                   textStyle: caData.orderStatus == 'PENDING'
+                  //                       ? AppTextStyle().getYellowText
+                  //                       : caData.orderStatus == 'ACCEPTED'
+                  //                           ? AppTextStyle().getgreenText
+                  //                           : caData.orderStatus == 'REJECTED'
+                  //                               ? AppTextStyle().getredText
+                  //                               : AppTextStyle().getredText,
+                  //                 ),
+                  //           (caData.orderStatus ?? '').isNotEmpty
+                  //               ? SizedBox.shrink()
+                  //               : BlocConsumer<AssignServiceBloc, ServiceState>(
+                  //                   listener: (context, state) {
+                  //                     if (state
+                  //                         is SendSericeRequestOrderSuccess) {
+                  //                       // _getViewCaByService();
+                  //                     }
+                  //                   },
+                  //                   builder: (context, state) {
+                  //                     return Align(
+                  //                       alignment: Alignment.bottomRight,
+                  //                       child: CommonButtonWidget(
+                  //                         disable: (caList.any((test) =>
+                  //                             test.orderStatus == 'PENDING')),
+                  //                         loader: state
+                  //                                 is SendServiceRequestLoading &&
+                  //                             (state.caId == caData.caId),
+                  //                         buttonWidth: 130,
+                  //                         buttonheight: 45,
+                  //                         buttonTitle: 'Send Request',
+                  //                         onTap: () {
+                  //                           context
+                  //                               .read<AssignServiceBloc>()
+                  //                               .add(
+                  //                                   SendSercieRequestOrderEvent(
+                  //                                       serviceId: serviceId,
+                  //                                       caId:
+                  //                                           caData.caId ?? 0));
+                  //                         },
+                  //                       ),
+                  //                     );
+                  //                   },
+                  //                 )
+                  //         ],
+                  //       ));
+                  //     },
+                  //   ),
+                  // )
                 ],
               );
             }

@@ -131,6 +131,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
             ],
           ),
           drawer: CustomDrawer(
+            isLogin: true,
             userName:
                 '${user?.data?.firstName ?? ''} ${user?.data?.lastName ?? ''}',
             emailAddress: user?.data?.email ?? '',

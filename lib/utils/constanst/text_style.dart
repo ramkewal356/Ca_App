@@ -20,9 +20,85 @@ class AppTextStyle {
       color: ColorConstants.white, fontSize: 15, fontWeight: FontWeight.w500);
   TextStyle checkboxTitle = GoogleFonts.roboto(
       color: ColorConstants.white, fontSize: 13, fontWeight: FontWeight.w500);
+  TextStyle landingTopTitle = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 28,
+      fontWeight: FontWeight.w700);
+  TextStyle landingSubTitle = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 12,
+      fontWeight: FontWeight.w400);
+  TextStyle landingviewAll = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 12,
+      decoration: TextDecoration.underline,
+      decorationThickness: 2,
+      decorationColor: ColorConstants.buttonColor,
+      fontWeight: FontWeight.w500);
+  TextStyle landingAccountTitle = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 24,
+      fontWeight: FontWeight.w600);
+  TextStyle landingAccountTitle20 = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 20,
+      fontWeight: FontWeight.w600);
+  TextStyle landingCardTitle = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 12,
+      fontWeight: FontWeight.w600);
+  TextStyle landingCardSubTitle = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 10,
+      fontWeight: FontWeight.w500);
+  TextStyle landingSubTitletext11 = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 11,
+      fontWeight: FontWeight.w400);
+  TextStyle landingCardbutton = GoogleFonts.poppins(
+      color: ColorConstants.white, fontSize: 12, fontWeight: FontWeight.w600);
+  TextStyle landingSubtitletext22 = GoogleFonts.poppins(
+      color: ColorConstants.white, fontSize: 12, fontWeight: FontWeight.w400);
+  TextStyle headingText24 = GoogleFonts.poppins(
+      color: ColorConstants.white, fontSize: 24, fontWeight: FontWeight.w700);
+  TextStyle landinghinttext = GoogleFonts.poppins(
+      color: ColorConstants.darkGray,
+      fontSize: 12,
+      fontWeight: FontWeight.w400);
+  TextStyle landinghinttextblack = GoogleFonts.poppins(
+      color: ColorConstants.black, fontSize: 12, fontWeight: FontWeight.w400);
+  TextStyle landingratingText = GoogleFonts.poppins(
+      fontStyle: FontStyle.italic,
+      color: ColorConstants.black,
+      fontSize: 12,
+      fontWeight: FontWeight.w500);
+  TextStyle chatButton = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 12,
+      fontWeight: FontWeight.w500);
+  TextStyle enquiryButton = GoogleFonts.poppins(
+      color: ColorConstants.white, fontSize: 12, fontWeight: FontWeight.w500);
+  TextStyle landingCardsubtitle2 = GoogleFonts.poppins(
+      color: ColorConstants.black, fontSize: 10, fontWeight: FontWeight.w400);
+  TextStyle rating10 = GoogleFonts.poppins(
+      color: ColorConstants.black, fontSize: 10, fontWeight: FontWeight.w500);
+  TextStyle onlineText = GoogleFonts.poppins(
+      color: ColorConstants.greenColor,
+      fontSize: 12,
+      fontWeight: FontWeight.w500);
+  TextStyle offlineText = GoogleFonts.poppins(
+      color: ColorConstants.darkRedColor,
+      fontSize: 12,
+      fontWeight: FontWeight.w500);
+  TextStyle rating8 = GoogleFonts.poppins(
+      color: ColorConstants.black, fontSize: 8, fontWeight: FontWeight.w500);
   TextStyle textButtonStyle = GoogleFonts.roboto(
       color: ColorConstants.buttonColor,
       fontSize: 18,
+      fontWeight: FontWeight.w600);
+  TextStyle textCardStyle = GoogleFonts.roboto(
+      color: ColorConstants.buttonColor,
+      fontSize: 16,
       fontWeight: FontWeight.w600);
   TextStyle textheadingStyle = GoogleFonts.roboto(
       color: ColorConstants.black, fontSize: 18, fontWeight: FontWeight.w600);

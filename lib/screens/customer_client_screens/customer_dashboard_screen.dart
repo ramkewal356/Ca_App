@@ -104,6 +104,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             ],
           ),
           drawer: CustomDrawer(
+            isLogin: true,
             userName:
                 '${userdata?.data?.firstName ?? 'x'} ${userdata?.data?.lastName ?? 'y'}',
             emailAddress: userdata?.data?.email ?? 'xyz@gmail.com',

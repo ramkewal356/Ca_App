@@ -89,22 +89,41 @@ class CaList {
   String? email;
   String? mobile;
   String? companyName;
-  String? orderStatus;
-  CaList(
-      {this.caId,
-      this.fullName,
-      this.email,
-      this.mobile,
-      this.companyName,
-      this.orderStatus});
+  String? countryCode;
+  String? profileUrl;
+  DateTime? lastLogin;
+  DateTime? lastLogout;
+  bool? isOnline;
+
+  CaList({
+    this.caId,
+    this.fullName,
+    this.email,
+    this.mobile,
+    this.companyName,
+    this.countryCode,
+    this.profileUrl,
+    this.lastLogin,
+    this.lastLogout,
+    this.isOnline,
+  });
 
   factory CaList.fromJson(Map<String, dynamic> json) => CaList(
-      caId: json["caId"],
-      fullName: json["fullName"],
-      email: json["email"],
-      mobile: json["mobile"],
-      companyName: json["companyName"],
-      orderStatus: json["orderStatus"]);
+        caId: json["caId"],
+        fullName: json["fullName"],
+        email: json["email"],
+        mobile: json["mobile"],
+        companyName: json["companyName"],
+        countryCode: json["countryCode"],
+        profileUrl: json["profileUrl"],
+        lastLogin: json["lastLogin"] == null
+            ? null
+            : DateTime.parse(json["lastLogin"]),
+        lastLogout: json["lastLogout"] == null
+            ? null
+            : DateTime.parse(json["lastLogout"]),
+        isOnline: json["isOnline"],
+      );
 
   Map<String, dynamic> toJson() => {
         "caId": caId,
@@ -112,7 +131,11 @@ class CaList {
         "email": email,
         "mobile": mobile,
         "companyName": companyName,
-        "orderStatus": orderStatus
+        "countryCode": countryCode,
+        "profileUrl": profileUrl,
+        "lastLogin": lastLogin?.toIso8601String(),
+        "lastLogout": lastLogout?.toIso8601String(),
+        "isOnline": isOnline,
       };
 }
 

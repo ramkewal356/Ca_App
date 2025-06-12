@@ -14,6 +14,7 @@ class CustomDrawer extends StatefulWidget {
   final String profileUrl;
   final List<Map<String, dynamic>> menuItems;
   final String lastLogin;
+  final bool isLogin;
   // final int selectedIndex;
   // final Function(int) onItemSelected;
   final bool activeButton;
@@ -25,6 +26,7 @@ class CustomDrawer extends StatefulWidget {
     required this.profileUrl,
     required this.menuItems,
     required this.lastLogin,
+    required this.isLogin,
     // required this.selectedIndex,
     // required this.onItemSelected,
     this.activeButton = false,
@@ -53,12 +55,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
             )
           ],
           accountName: Row(
-            
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-            
               Text(
                 widget.userName,
                 style: AppTextStyle().buttontext,
@@ -81,17 +81,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   : SizedBox.shrink()
             ],
           ),
-          accountEmail: Column(
+          accountEmail: widget.isLogin
+              ? Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(widget.emailAddress),
-              Text('Last Login: ${widget.lastLogin}')
+                    (widget.lastLogin.isEmpty || widget.lastLogin == '')
+                        ? SizedBox.shrink()
+                        : Text('Last Login: ${widget.lastLogin}')
             ],
-          ),
+                )
+              : SizedBox.shrink(),
           currentAccountPicture: CircleAvatar(
-          
             child: ClipOval(
                 child: widget.profileUrl.isNotEmpty
                     ? Image.network(
@@ -103,8 +106,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     : Image.asset(appLogo)),
           ),
         ),
-        Expanded(
-          child: ListView.builder(
+        widget.isLogin
+            ? Expanded(
+                child: ListView.builder(
               // shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemCount: widget.menuItems.length,
@@ -152,8 +156,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ),
                   ),
                 );
-              }),
-        ),
+                    }))
+            : Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: CommonButtonWidget(
+                  buttonTitle: 'Login/Register',
+                  onTap: () {
+                    context.push('/login');
+                  },
+                ),
+              ),
+        Spacer(),
         Material(
           elevation: 4,
           color: ColorConstants.white,

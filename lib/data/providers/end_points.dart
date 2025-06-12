@@ -21,6 +21,7 @@ class EndPoints {
   static const getVerifiedSubCaByCaId = '/sub_ca/get_verified_subCA_by_caId';
   static const getDegination = '/designation/all_designation';
   static const getPermission = '/permission/get_permission_list';
+  static var getActiveCauWithService = '/ca/active_ca_with_services';
   //Customer Url
   static var getCustomerBySubCaId = '/customer/get_customer_by_subCaId';
   static var getCustomerBySubCaIdUrl =

@@ -37,7 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
             context.pushReplacement('/subca_dashboard');
           } else if (state.role == 'CUSTOMER') {
             if (state.selfRegistered == true) {
-              context.pushReplacement('/indivisual_customer');
+              // context.pushReplacement('/indivisual_customer');
+              context.pushReplacement('/landing_screen');
             } else {
               context.pushReplacement('/customer_dashboard');
             }
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
         } else if (state is AuthFail) {
           debugPrint('vcbnvcbcxnbcvnb');
 
-          context.pushReplacement('/login');
+          context.pushReplacement('/landing_screen');
         }
       },
       child: Scaffold(

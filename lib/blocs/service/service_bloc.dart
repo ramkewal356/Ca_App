@@ -21,7 +21,7 @@ part 'service_state.dart';
 class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   int pageNumber = 0;
   int pageSize = 10;
-  int pageSize1 = 3;
+  int pageSize1 = 10;
 
   bool isFetching = false;
   bool isLastPage = false;
@@ -283,8 +283,8 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   Future<void> _getServiceForCustomereListApi(
       GetServiceForCustomerEvent event, Emitter<ServiceState> emit) async {
     if (isFetching) return;
-
-    if (event.isSearch && !event.isPagination) {
+    bool isSearch = (event.isSearch || event.isFilterByLocation);
+    if (isSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(ServiceLoading()); // Show loading only for the first page
@@ -297,6 +297,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       "search": event.searchText,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
+      "address": event.location
     };
     try {
       var resp = await _myRepo.getServiceForIndivisualCustomerApi(query: query);
@@ -325,7 +326,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       GetCaByServiceNameEvent event, Emitter<ServiceState> emit) async {
     if (isFetching) return;
 
-    if (!event.isPagination) {
+    if (event.isFilter && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(ServiceLoading()); // Show loading only for the first page
@@ -333,12 +334,13 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
 
     if (isLastPage) return;
     isFetching = true;
-    int? customerId = await SharedPrefsClass().getUserId();
+  
     Map<String, dynamic> query = {
       "serviceId": event.serviceId,
-      "customerId": customerId,
+     
       "pageNumber": pageNumber,
       "pageSize": pageSize,
+      "filter": event.filter
     };
     try {
       // emit(ServiceLoading());

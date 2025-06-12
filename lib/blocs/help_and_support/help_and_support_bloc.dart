@@ -15,7 +15,7 @@ class HelpAndSupportBloc
     extends Bloc<HelpAndSupportEvent, HelpAndSupportState> {
   final _myRepo = HelpAndSupportRepository();
   int pageNumber = 0;
-  int pageSize = 4;
+  int pageSize = 10;
   bool isLastPage = false;
   bool isFetching = false;
   HelpAndSupportBloc() : super(HelpAndSupportInitial()) {
