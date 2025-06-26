@@ -24,6 +24,8 @@ class _RaiseTeamScreenState extends State<RaiseTeamScreen> {
   String searchText = '';
   String filterText = '';
   String title = 'All';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     _fetchRequestOfTeam(isSearch: true);
@@ -76,6 +78,7 @@ class _RaiseTeamScreenState extends State<RaiseTeamScreen> {
           children: [
             Expanded(
               child: CustomSearchField(
+                focusNode: _searchFocus,
                 controller: _searchController,
                 serchHintText: 'search',
                 onChanged: _onSearchChanged,

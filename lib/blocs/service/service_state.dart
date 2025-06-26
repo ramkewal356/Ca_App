@@ -14,7 +14,7 @@ class ServiceLoading extends ServiceState {}
 class AddServiceLoading extends ServiceState {}
 
 class SendServiceRequestLoading extends ServiceState {
-  final int caId;
+  final String caId;
 
   const SendServiceRequestLoading({required this.caId});
   @override

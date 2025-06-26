@@ -33,6 +33,8 @@ import 'package:ca_app/screens/indivisual_customer/service_screen/customer_servi
 import 'package:ca_app/screens/indivisual_customer/service_screen/requested_ca_service_screen.dart';
 import 'package:ca_app/screens/indivisual_customer/service_screen/view_ca_by_service_screen.dart';
 import 'package:ca_app/screens/indivisual_customer/service_screen/view_requested_ca_service_screen.dart';
+import 'package:ca_app/screens/my_profile_screen/ca_profile_screen.dart';
+import 'package:ca_app/screens/my_profile_screen/individual_customer_profile.dart';
 import 'package:ca_app/screens/my_profile_screen/profile_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/payment_screen/payment_screen.dart';
 import 'package:ca_app/screens/request_screen/ca_request_screen.dart';
@@ -75,24 +77,40 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
           path: '/ca_search',
           builder: (context, state) {
-            var data = state.extra as Map<String, dynamic>;
+            final data = state.extra as Map<String, dynamic>;
+
             return CaSearchListScreen(
               serviceId: data["serviceId"],
+              serviceName: data["serviceName"],
+              searchText: data["searchText"],
             );
           }),
       GoRoute(
         path: '/ca_details',
         builder: (context, state) {
-          var data = state.extra as Map<String, dynamic>;
+          final data = state.extra as Map<String, dynamic>? ?? {};
+
+          final int? serviceId = data["serviceId"] as int?;
+          final String? serviceName = data["serviceName"] as String?;
+          final String userId = data["userId"] as String;
           return CaDetailsScreen(
-            userId: data["userId"],
+            userId: userId,
+            serviceId: serviceId,
+            serviceName: serviceName,
           );
         },
       ),
       GoRoute(
-        path: '/chat_screen',
-        builder: (context, state) => ChatScreen(),
-      ),
+          path: '/chat_screen',
+          builder: (context, state) {
+            final data = state.extra as Map<String, dynamic>;
+            return ChatScreen(
+              name: data["name"],
+              title: data["title"],
+              profileImg: data["profileImg"],
+              isOnline: data["isOnline"],
+            );
+          }),
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(),
@@ -134,6 +152,18 @@ final GoRouter goRouter = GoRouter(
         path: '/myProfile',
         builder: (context, state) {
           return ProfileScreen();
+        },
+      ),
+      GoRoute(
+        path: '/caProfile',
+        builder: (context, state) {
+          return CaProfileScreen();
+        },
+      ),
+      GoRoute(
+        path: '/individual_customer_Profile',
+        builder: (context, state) {
+          return IndividualCustomerProfile();
         },
       ),
       GoRoute(

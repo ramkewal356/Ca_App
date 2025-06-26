@@ -1,8 +1,10 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/auth/auth_state.dart';
+import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
+import 'package:ca_app/blocs/service/service_bloc.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
-import 'package:ca_app/utils/assets.dart';
+import 'package:ca_app/data/models/get_services_list_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
@@ -17,7 +19,10 @@ import 'package:go_router/go_router.dart';
 
 class CaDetailsScreen extends StatefulWidget {
   final String userId;
-  const CaDetailsScreen({super.key, required this.userId});
+  final int? serviceId;
+  final String? serviceName;
+  const CaDetailsScreen(
+      {super.key, required this.userId, this.serviceId, this.serviceName});
 
   @override
   State<CaDetailsScreen> createState() => _CaDetailsScreenState();
@@ -26,15 +31,33 @@ class CaDetailsScreen extends StatefulWidget {
 class _CaDetailsScreenState extends State<CaDetailsScreen> {
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
+  int? serviceId;
+  String serviceName = '';
+  String selectedUrgencyLevel = '';
   @override
   void initState() {
     super.initState();
     _getUser();
+    _fetchService();
   }
 
   void _getUser() {
     BlocProvider.of<AuthBloc>(context)
         .add(GetUserByIdEvent(userId: widget.userId));
+  }
+
+  void _fetchService() {
+    setState(() {
+      serviceId = widget.serviceId ?? 0;
+      serviceName = widget.serviceName ?? '';
+    });
+    context.read<ServiceBloc>().add(GetCaServiceListEvent(
+        caId: widget.userId,
+        isSearch: true,
+        searchText: '',
+        isPagination: false,
+        pageNumber: -1,
+        pageSize: -1));
   }
 
   final Map<int, int> ratingStats = {
@@ -56,6 +79,9 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    debugPrint('service Name ${widget.serviceName}');
+    debugPrint('user id ${widget.userId}');
+
     return CustomLayoutPage(
       bgColor: ColorConstants.white,
       appBar: AppBar(
@@ -87,20 +113,27 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                     CommonCaContainer(
                       imageUrl: '${userData?.profileUrl ?? ''}',
                       name: '${userData?.firstName} ${userData?.lastName}',
-                      title: 'Certified Public Accountant',
-                      tag: 'Tax Planning & Preparation',
-                      address: '${userData?.address ?? ''}',
-                      isOnline: true,
+                      title: userData?.professionalTitle ?? '',
+                      tag: widget.serviceName ?? '',
+                      address: userData?.firmAddress ?? userData?.address ?? '',
+                      isOnline: userData?.isOnline ?? false,
                       rating: 4.9,
                       reviews: 174,
-                      exprience: '12',
+                      exprience:
+                          '${userData?.years ?? '0'}.${userData?.months ?? '0'}',
                       totalClient: '500',
                       isVisibleButton: true,
                       onChatTap: () async {
                         String? token = await SharedPrefsClass().getToken();
 
                         if (token != null) {
-                          context.push('/chat_screen');
+                          context.push('/chat_screen', extra: {
+                            "name":
+                                '${userData?.firstName} ${userData?.lastName}',
+                            "title": userData?.professionalTitle ?? '',
+                            "profileImg": userData?.profileUrl ?? '',
+                            "isOnline": userData?.isOnline
+                          });
                         } else {
                           context.push('/login');
                         }
@@ -110,7 +143,15 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
 
                         if (token != null) {
                           _sendEnquiryModal(
-                            onTap: () {},
+                            onTap: () {
+                              context.read<AssignServiceBloc>().add(
+                                  SendSercieRequestOrderEvent(
+                                      serviceId: serviceId ?? 0,
+                                      caId: widget.userId.toString(),
+                                      message: _messageController.text,
+                                      subject: _subjectController.text,
+                                      urgencyLevel: selectedUrgencyLevel));
+                            },
                           );
                         } else {
                           context.push('/login');
@@ -125,11 +166,12 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'About ${userData?.firstName??''} ${userData?.lastName??''}',
+                              'About ${userData?.firstName ?? ''} ${userData?.lastName ?? ''}',
                               style: AppTextStyle().landingAccountTitle20,
                             ),
                             Text(
-                              'Jennifer is a seasoned CPA with over 12 years of experience in tax planning and preparation. She specializes in helping small to medium businesses optimize their tax strategies and ensure compliance with current regulations.',
+                              userData?.about ??
+                                  'Jennifer is a seasoned CPA with over 12 years of experience in tax planning and preparation. She specializes in helping small to medium businesses optimize their tax strategies and ensure compliance with current regulations.',
                               style: AppTextStyle().textSmallButtonStyle,
                             ),
                             SizedBox(height: 20),
@@ -137,22 +179,46 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                               'Certifications',
                               style: AppTextStyle().landingAccountTitle20,
                             ),
+                            // SizedBox(height: 10),
+                            (userData?.userCertifications ?? []).isEmpty
+                                ? Text(
+                                    'N/A',
+                                    style: AppTextStyle().listTileText,
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        userData?.userCertifications?.length ??
+                                            0,
+                                    itemBuilder: (context, index) {
+                                      return itemText(
+                                          '${userData?.userCertifications?[index].toString()}');
+                                    }),
+
+                            // SizedBox(height: 10),
+                            // itemText('Enrolled Agent (EA)'),
+                            // SizedBox(height: 10),
+                            // itemText('QuickBooks ProAdvisor'),
                             SizedBox(height: 10),
-                            itemText('Certified Public Accountant (CPA)'),
-                            SizedBox(height: 10),
-                            itemText('Enrolled Agent (EA)'),
-                            SizedBox(height: 10),
-                            itemText('QuickBooks ProAdvisor'),
-                            SizedBox(height: 20),
                             Text(
                               'Education',
                               style: AppTextStyle().landingAccountTitle20,
                             ),
-                            SizedBox(height: 10),
-                            itemText1('MBA in Accounting - UC Berkeley'),
-                            SizedBox(height: 10),
-                            itemText1(
-                                'Bachelor of Accounting - San Jose State University')
+                            (userData?.caEducations ?? []).isEmpty
+                                ? Text(
+                                    'N/A',
+                                    style: AppTextStyle().listTileText,
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        userData?.caEducations?.length ?? 0,
+                                    itemBuilder: (context, index) {
+                                      return itemText(
+                                          '${userData?.caEducations?[index].degree} (${userData?.caEducations?[index].university})');
+                                    }),
                           ],
                         )),
                     CustomCard(
@@ -165,18 +231,44 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                               'Services',
                               style: AppTextStyle().landingAccountTitle20,
                             ),
-                            SizedBox(height: 20),
-                            itemText('Tax Planning & Preparation'),
-                            SizedBox(height: 10),
-                            itemText('Business Tax Returns'),
-                            SizedBox(height: 10),
-                            itemText('Individual Tax Returns'),
-                            SizedBox(height: 10),
-                            itemText('Tax Consultation'),
-                            SizedBox(height: 10),
-                            itemText('IRS Representation'),
-                            SizedBox(height: 10),
-                            itemText('Financial Planning')
+                            BlocBuilder<ServiceBloc, ServiceState>(
+                              builder: (context, state) {
+                                if (state is GetCaServiceListSuccess) {
+                                  return state.getCaServicesList.isEmpty
+                                      ? Text('N/A')
+                                      : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              state.getCaServicesList.length,
+                                          itemBuilder: (context, index) {
+                                            var services =
+                                                state.getCaServicesList[index];
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 5),
+                                              child: itemText(
+                                                  services.subService ?? ''),
+                                            );
+                                          },
+                                        );
+                                }
+                                return Container();
+                              },
+                            ),
+                            // SizedBox(height: 20),
+                            // itemText('Tax Planning & Preparation'),
+                            // SizedBox(height: 10),
+                            // itemText('Business Tax Returns'),
+                            // SizedBox(height: 10),
+                            // itemText('Individual Tax Returns'),
+                            // SizedBox(height: 10),
+                            // itemText('Tax Consultation'),
+                            // SizedBox(height: 10),
+                            // itemText('IRS Representation'),
+                            // SizedBox(height: 10),
+                            // itemText('Financial Planning')
                           ],
                         )),
                     Row(
@@ -274,7 +366,7 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
     );
   }
 
-  void _sendEnquiryModal({required VoidCallback onTap}) {
+  _sendEnquiryModal({required VoidCallback onTap}) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -320,10 +412,44 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                       style: AppTextStyle().listTileText,
                     ),
                     SizedBox(height: 5),
-                    CustomDropdownButton(
-                        dropdownItems: [],
-                        initialValue: '',
-                        hintText: 'select service'),
+                    (widget.serviceName ?? '').isNotEmpty
+                        ? TextformfieldWidget(
+                            readOnly: true,
+                            controller:
+                                TextEditingController(text: serviceName),
+                            hintText: 'Select service')
+                        : BlocBuilder<ServiceBloc, ServiceState>(
+                            builder: (context, state) {
+                              List<ServicesListData> listData = [];
+                              if (state is GetCaServiceListSuccess) {
+                                listData = state.getCaServicesList;
+                                debugPrint(
+                                    'cvsdfdsd ${listData.map((toElement) => '${toElement.subService} (${toElement.serviceName})').toList()}');
+                              }
+                              return CustomDropdownButton(
+                                dropdownItems: listData
+                                    .map((toElement) =>
+                                        toElement.subService ?? '')
+                                    .toList(),
+                                initialValue: serviceName,
+                                hintText: 'select service',
+                                onChanged: (p0) {
+                                  final selectedService = listData.firstWhere(
+                                    (service) => service.subService == p0,
+                                    orElse: () =>
+                                        ServicesListData(), // or handle null more strictly
+                                  );
+
+                                  setState(() {
+                                    serviceName = p0!;
+                                    serviceId = selectedService.serviceId;
+                                  });
+
+                                  debugPrint('Selected serviceId: $serviceId');
+                                },
+                              );
+                            },
+                          ),
                     SizedBox(height: 8),
                     Text(
                       'Subject',
@@ -340,9 +466,15 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                     ),
                     SizedBox(height: 5),
                     CustomDropdownButton(
-                        dropdownItems: [],
-                        initialValue: '',
-                        hintText: 'General Enquiry'),
+                      dropdownItems: ['LOW', 'MEDIUM', 'HIGH'],
+                      initialValue: selectedUrgencyLevel,
+                      hintText: 'General Enquiry',
+                      onChanged: (p0) {
+                        setState(() {
+                          selectedUrgencyLevel = p0!;
+                        });
+                      },
+                    ),
                     SizedBox(height: 8),
                     Text(
                       'Message',
@@ -356,10 +488,28 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                         hintText:
                             'Please describe your accounting needs in details'),
                     SizedBox(height: 15),
-                    CommonButtonWidget(
-                      buttonheight: 45,
-                      buttonTitle: 'Send Enquiry',
-                      onTap: onTap,
+                    BlocConsumer<AssignServiceBloc, ServiceState>(
+                      listener: (context, state) {
+                        if (state is SendSericeRequestOrderSuccess) {
+                          context
+                              .read<CustomDropdownBloc>()
+                              .add(DropdownResetEvent());
+                          context.pop();
+                        } else if (state is ServiceError) {
+                          context.pop();
+                          context
+                              .read<CustomDropdownBloc>()
+                              .add(DropdownResetEvent());
+                        }
+                      },
+                      builder: (context, state) {
+                        return CommonButtonWidget(
+                          buttonheight: 45,
+                          loader: state is SendServiceRequestLoading,
+                          buttonTitle: 'Send Enquiry',
+                          onTap: onTap,
+                        );
+                      },
                     )
                   ],
                 ),

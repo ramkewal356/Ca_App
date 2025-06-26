@@ -27,6 +27,8 @@ class _CaRequestScreenState extends State<CaRequestScreen> {
   String title = 'All';
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     _getRaiseRequest(isFilter: true);
@@ -92,6 +94,7 @@ class _CaRequestScreenState extends State<CaRequestScreen> {
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _searchController,
                     serchHintText: 'search by userId',
                     onChanged: _onSearchChanged,

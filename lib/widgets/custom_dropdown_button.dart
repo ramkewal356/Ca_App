@@ -30,8 +30,8 @@ class CustomDropdownButton extends StatefulWidget {
 class _CustomDropdownButtonState extends State<CustomDropdownButton> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CustomDropdownBloc, CustomDropdownState>(
-      listener: (context, state) {},
+    return BlocBuilder<CustomDropdownBloc, CustomDropdownState>(
+    
       builder: (context, state) {
         List<String> uniqueDropdownItems =
             widget.dropdownItems.toSet().toList();
@@ -65,6 +65,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
                 ? selectedValue
                 : null,
             validator: widget.validator,
+            
             builder: (FormFieldState<String> fieldState) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,22 +4,25 @@ import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
   final Color? cardColor;
+  final Color? cardBgColor;
+
   final Widget child;
-  const CustomCard({super.key, required this.child, this.cardColor});
+  const CustomCard(
+      {super.key, required this.child, this.cardColor, this.cardBgColor});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       elevation: 2,
-      surfaceTintColor: ColorConstants.white,
+      surfaceTintColor: cardBgColor ?? ColorConstants.white,
       shape: RoundedRectangleBorder(
           // ignore: deprecated_member_use
           side: BorderSide(
               // ignore: deprecated_member_use
               color: cardColor ?? ColorConstants.darkGray.withOpacity(0.5)),
           borderRadius: BorderRadius.circular(10)),
-      color: ColorConstants.white,
+      color: cardBgColor ?? ColorConstants.white,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: child,

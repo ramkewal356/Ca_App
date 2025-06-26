@@ -29,6 +29,8 @@ class _HelpAndSupportHistoryScreenState
   String searchText = '';
   String filterText = '';
   String filterTitle = 'All';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     _fetchContactHistory(isFilter: true);
@@ -91,6 +93,7 @@ class _HelpAndSupportHistoryScreenState
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _searchController,
                     serchHintText: 'Search by subject name and subject id...',
                     onChanged: _onSearchChanged,

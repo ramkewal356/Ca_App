@@ -95,24 +95,30 @@ class CommonCaContainer extends StatelessWidget {
                           )
                         ],
                       ),
-
+        
                       /// Title
-                      Text(title, style: AppTextStyle().landingSubTitle),
-
+                      title.isEmpty
+                          ? SizedBox.shrink()
+                          : Text(title, style: AppTextStyle().landingSubTitle),
+        
                       /// Tag
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 4),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          // ignore: deprecated_member_use
-                          color: ColorConstants.buttonColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(tag, style: AppTextStyle().landingSubTitle),
-                      ),
+                      tag.isEmpty
+                          ? SizedBox.shrink()
+                          : Container(
+                              margin: EdgeInsets.symmetric(vertical: 4),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                // ignore: deprecated_member_use
+                                color:
+                                    ColorConstants.buttonColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(tag,
+                                  style: AppTextStyle().landingSubTitle),
+                            ),
                       SizedBox(height: 5),
-
+        
                       /// Address
                       Row(
                         children: [
@@ -127,7 +133,7 @@ class CommonCaContainer extends StatelessWidget {
                           ),
                         ],
                       ),
-
+        
                       /// exprience
                       exprience.isEmpty
                           ? SizedBox.shrink()
@@ -143,7 +149,7 @@ class CommonCaContainer extends StatelessWidget {
                                 ),
                               ],
                             ),
-
+        
                       /// exprience
                       totalClient.isEmpty
                           ? SizedBox.shrink()
@@ -159,7 +165,7 @@ class CommonCaContainer extends StatelessWidget {
                                 ),
                               ],
                             ),
-
+        
                       /// Buttons
                       isVisibleButton
                           ? Row(

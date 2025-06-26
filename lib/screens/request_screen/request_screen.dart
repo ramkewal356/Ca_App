@@ -29,6 +29,8 @@ class _RequestScreenState extends State<RequestScreen> {
   String title = 'All';
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     _getRaiseRequest(isSearch: true);
@@ -91,6 +93,7 @@ class _RequestScreenState extends State<RequestScreen> {
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _searchController,
                     serchHintText: 'search by document name & document id',
                     onChanged: _onSearchChanged,

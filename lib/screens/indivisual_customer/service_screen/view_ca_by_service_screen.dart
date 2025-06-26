@@ -1,12 +1,12 @@
 import 'package:ca_app/blocs/service/service_bloc.dart';
-import 'package:ca_app/data/models/get_calist_by_servicename_model.dart';
+// import 'package:ca_app/data/models/get_calist_by_servicename_model.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
-import 'package:ca_app/widgets/common_button_widget.dart';
+// import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
-import 'package:ca_app/widgets/custom_card.dart';
+// import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
-import 'package:ca_app/widgets/custom_text_info.dart';
+// import 'package:ca_app/widgets/custom_text_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +19,7 @@ class ViewCaByServiceScreen extends StatefulWidget {
 }
 
 class _ViewCaByServiceScreenState extends State<ViewCaByServiceScreen> {
-  final ScrollController _scrollController = ScrollController();
+  // final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _ViewCaByServiceScreenState extends State<ViewCaByServiceScreen> {
                 child: Text('No Data Found'),
               );
             } else if (state is GetCaByServiceNameSuccess) {
-              int serviceId = state.serviceId;
+              // int serviceId = state.serviceId;
               return Column(
                 children: [
                   Container(

@@ -25,6 +25,7 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
   String searchText = '';
   String filterText = '';
   String title = 'All';
+  final _searchFocus = FocusNode();
   @override
   void initState() {
     _fetchRequestOfClient(isSearch: true);
@@ -78,6 +79,7 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
           children: [
             Expanded(
               child: CustomSearchField(
+                focusNode: _searchFocus,
                 controller: _searchController,
                 serchHintText: 'search',
                 onChanged: _onSearchChanged,
@@ -147,11 +149,11 @@ class _RaiseClientScreenState extends State<RaiseClientScreen> {
                                   lable: 'DATE',
                                   value: dateFormate(data.createdDate)),
                               CustomTextInfo(
-                                  flex1: 2,
-                                  flex2: 3,
-                                  lable: 'READ STATUS',
-                                  value: data.readStatus == null
-                                      ? 'N/A'
+                                flex1: 2,
+                                flex2: 3,
+                                lable: 'READ STATUS',
+                                value: data.readStatus == null
+                                    ? 'N/A'
                                     : '${data.readStatus}',
                                 textStyle: data.readStatus == 'READ'
                                     ? AppTextStyle().getgreenText

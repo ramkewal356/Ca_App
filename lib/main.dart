@@ -10,6 +10,7 @@ import 'package:ca_app/blocs/indivisual_customer/indivisual_customer_bloc.dart';
 import 'package:ca_app/blocs/logs/logs_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
 import 'package:ca_app/blocs/permission/permission_bloc.dart';
+import 'package:ca_app/blocs/profile/profile_bloc.dart';
 import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
 import 'package:ca_app/blocs/reminder/reminder_bloc.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
@@ -76,6 +77,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => PermissionBloc()),
         BlocProvider(create: (_) => ChangeStatusBloc()),
         BlocProvider(create: (_) => IndivisualCustomerBloc()),
+        BlocProvider(create: (_) => ProfileBloc()),
+        BlocProvider(create: (_) => GetDegreeBloc()),
+
+
 
       
       ],

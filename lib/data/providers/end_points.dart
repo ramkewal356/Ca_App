@@ -15,6 +15,11 @@ class EndPoints {
   // dashboard url
   static const getCaDashboardUrl = '/ca/ca_dashboard_stats';
   static const getSubCaDashboardUrl = '/sub_ca/subca_dashboard_stats';
+  //profile
+  static var getAllTitleUrl = '/title/all_title';
+  static var getCaDegreeListUrl = '/degree/get_all';
+  static var getOccupationListUrl = '/occupation/get_all_occupation';
+
   //Team member
   static const getSubCaByCaId = '/sub_ca/get_subCA_by_CAId';
   static const getSubCaByCaIdUrl = '/sub_ca/get_subCa_by_caId';

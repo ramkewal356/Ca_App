@@ -8,6 +8,7 @@ sealed class ServiceEvent extends Equatable {
 }
 
 class GetCaServiceListEvent extends ServiceEvent {
+  final String? caId;
   final bool isPagination;
   final bool isSearch;
   final String searchText;
@@ -16,13 +17,20 @@ class GetCaServiceListEvent extends ServiceEvent {
 
   const GetCaServiceListEvent(
       {required this.isSearch,
+      this.caId,
       required this.searchText,
       required this.isPagination,
       this.pageNumber,
       this.pageSize});
   @override
-  List<Object> get props =>
-      [isSearch, searchText, isPagination, pageNumber ?? 0, pageSize ?? 0];
+  List<Object> get props => [
+        isSearch,
+        searchText,
+        isPagination,
+        pageNumber ?? 0,
+        pageSize ?? 0,
+        caId ?? 0
+      ];
 }
 
 class GetServiceListEvent extends ServiceEvent {}
@@ -141,23 +149,34 @@ class GetCaByServiceNameEvent extends ServiceEvent {
   final bool isPagination;
   final bool isFilter;
   final String filter;
+  final String searchText;
+  final bool isSearch;
   const GetCaByServiceNameEvent(
       {required this.serviceId,
       required this.isPagination,
       required this.isFilter,
-      required this.filter});
+      required this.filter,
+      required this.searchText,
+      required this.isSearch});
   @override
   List<Object> get props => [serviceId, isPagination, isFilter, filter];
 }
 
 class SendSercieRequestOrderEvent extends ServiceEvent {
   final int serviceId;
-  final int caId;
+  final String caId;
+  final String message;
+  final String subject;
+  final String urgencyLevel;
 
   const SendSercieRequestOrderEvent(
-      {required this.serviceId, required this.caId});
+      {required this.serviceId,
+      required this.caId,
+      required this.message,
+      required this.subject,
+      required this.urgencyLevel});
   @override
-  List<Object> get props => [serviceId, caId];
+  List<Object> get props => [serviceId, caId, message, subject, urgencyLevel];
 }
 
 class GetServiceRequestedCaEvent extends ServiceEvent {

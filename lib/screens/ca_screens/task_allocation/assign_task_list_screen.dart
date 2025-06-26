@@ -46,6 +46,8 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
   String filterText = '';
   String searchText = '';
   String filterTitle = 'All';
+  final _searchFocus = FocusNode();
+
   String? selectedSubCaName;
   String? selectedClientName;
   String? selectedPriority;
@@ -140,6 +142,7 @@ class _AssignTaskListScreenState extends State<AssignTaskListScreen> {
             children: [
               Expanded(
                 child: CustomSearchField(
+                  focusNode: _searchFocus,
                   controller: _searchController,
                   serchHintText: 'Search..by task name,id',
                   onChanged: _onSearchChanged,

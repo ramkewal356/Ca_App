@@ -25,6 +25,8 @@ class _MyTaskScreenState extends State<MyTaskScreen> {
   String searchText = '';
   String filterText = '';
   String filterTitle = 'All';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +92,7 @@ class _MyTaskScreenState extends State<MyTaskScreen> {
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _serchController,
                     serchHintText:
                         'Search..by task id and task name',

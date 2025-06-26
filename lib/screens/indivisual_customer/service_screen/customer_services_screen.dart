@@ -22,6 +22,8 @@ class _CustomerServicesScreenState extends State<CustomerServicesScreen> {
   final _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String searchText = '';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -33,7 +35,7 @@ class _CustomerServicesScreenState extends State<CustomerServicesScreen> {
       {bool isSearch = false,
       bool isPagination = false,
       bool isFilterByLocation = false}) {
-    context.read<ServiceBloc>().add(GetServiceForCustomerEvent(
+    context.read<AssignServiceBloc>().add(GetServiceForCustomerEvent(
         isFilterByLocation: isFilterByLocation,
         location: '',
         isSearch: isSearch,
@@ -70,6 +72,7 @@ class _CustomerServicesScreenState extends State<CustomerServicesScreen> {
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _searchController,
                     serchHintText: 'search services',
                     onChanged: _onSearchChanged,
@@ -91,9 +94,9 @@ class _CustomerServicesScreenState extends State<CustomerServicesScreen> {
               ],
             ),
             SizedBox(height: 5),
-            Expanded(child: BlocBuilder<ServiceBloc, ServiceState>(
+            Expanded(child: BlocBuilder<AssignServiceBloc, ServiceState>(
               builder: (context, state) {
-                if (state is ServiceLoading) {
+                if (state is GetServiceLoading) {
                   return Center(
                     child: CircularProgressIndicator(
                       color: ColorConstants.buttonColor,

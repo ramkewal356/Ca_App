@@ -26,6 +26,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   ScrollController controller = ScrollController();
+  final _searchFocus = FocusNode();
 
   String searchQuery = '';
   @override
@@ -310,6 +311,7 @@ class _ViewTeamMemberScreenState extends State<ViewTeamMemberScreen> {
                           ],
                         ),
                         CustomSearchField(
+                          focusNode: _searchFocus,
                           controller: _searchController,
                           serchHintText: 'search',
                           onChanged: _onSearchChanged,

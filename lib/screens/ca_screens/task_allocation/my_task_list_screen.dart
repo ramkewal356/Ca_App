@@ -19,6 +19,8 @@ class _MyTaskListScreenState extends State<MyTaskListScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String searchQuery = '';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     _fetchAssignTask();
@@ -55,6 +57,7 @@ class _MyTaskListScreenState extends State<MyTaskListScreen> {
       children: [
         SizedBox(height: 5),
         CustomSearchField(
+          focusNode: _searchFocus,
           controller: _searchController,
           serchHintText: 'search task',
           onChanged: _onSearchChanged,

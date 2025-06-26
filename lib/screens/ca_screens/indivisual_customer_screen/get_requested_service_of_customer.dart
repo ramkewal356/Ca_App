@@ -26,6 +26,8 @@ class _GetRequestedServiceOfCustomerState
   String filterText = '';
   String searchText = '';
   String title = 'All';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -75,7 +77,7 @@ class _GetRequestedServiceOfCustomerState
   Widget build(BuildContext context) {
     return CustomLayoutPage(
       appBar: CustomAppbar(
-        title: 'Individual Customer',
+        title: 'Enquiry History',
         backIconVisible: true,
       ),
       child: Padding(
@@ -86,6 +88,7 @@ class _GetRequestedServiceOfCustomerState
               children: [
                 Expanded(
                     child: CustomSearchField(
+                  focusNode: _searchFocus,
                   controller: _searchController,
                   serchHintText: 'Search by name.',
                   onChanged: _onSearchChanged,

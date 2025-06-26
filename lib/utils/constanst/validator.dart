@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ValidatorClass {
@@ -62,6 +63,16 @@ class ValidatorClass {
     final RegExp aadhaarRegex = RegExp(r'^[2-9][0-9]{11}$');
     return aadhaarRegex.hasMatch(aadhaar);
   }
+
+  static bool isValidICAI(String input) {
+    final RegExp regex = RegExp(r'^(M|FM)?\d{6,7}$');
+    return regex.hasMatch(input);
+  }
+
+  static bool isValidCARegNumber(String input) {
+    final regex = RegExp(r'^[A-Z]{3}\d{7}$');
+    return regex.hasMatch(input);
+  }
 }
 
 String formatValue(String? value) {
@@ -80,7 +91,24 @@ String dateFormate(int? date) {
   return DateFormat('dd/MM/yyyy')
       .format(DateTime.fromMillisecondsSinceEpoch(date ?? 0));
 }
+
 String timeFormate(int? date) {
   return DateFormat('h:mm a')
       .format(DateTime.fromMillisecondsSinceEpoch(date ?? 0));
+}
+
+Future<String?> selectDateOfBirth(BuildContext context) async {
+  final DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now()
+        .subtract(Duration(days: 365 * 18)), // default 18 years back
+    firstDate: DateTime(1900), // earliest DOB
+    lastDate: DateTime.now(), // cannot pick future date
+  );
+
+  if (pickedDate != null) {
+    return DateFormat('dd/MM/yyyy').format(pickedDate);
+    // _dobController.text = formattedDate;
+  }
+  return null;
 }

@@ -1,6 +1,7 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
+import 'package:ca_app/screens/starting_screens/landing_screen/search_service_widget.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -10,42 +11,68 @@ import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/custom_popup_filter.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-import 'package:ca_app/widgets/custom_search_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class CaSearchListScreen extends StatefulWidget {
   final int serviceId;
-  const CaSearchListScreen({super.key, required this.serviceId});
+  final String serviceName;
+  final String searchText;
+  const CaSearchListScreen(
+      {super.key,
+      required this.serviceId,
+      required this.serviceName,
+      required this.searchText});
 
   @override
   State<CaSearchListScreen> createState() => _CaSearchListScreenState();
 }
 
 class _CaSearchListScreenState extends State<CaSearchListScreen> {
-  final TextEditingController _locationController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _serviceController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+  bool _showSearch = true;
   String filter = '';
   String filterTitle = 'All';
   Map<String, String> filterOptions = {"All": '', "Online": 'true'};
+  int? selectedServiceId;
+  String? selectedServiceName;
+  int totalca = 0;
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
+    selectedServiceId = widget.serviceId;
+    selectedServiceName = widget.serviceName;
+    _serviceController.text = widget.serviceName;
+    _searchController.text = widget.searchText;
     _getViewCaByService(isFilter: true);
     _scrollController.addListener(_onScroll);
   }
 
-  _getViewCaByService({bool isPagination = false, bool isFilter = false}) {
+  _getViewCaByService(
+      {bool isPagination = false,
+      bool isFilter = false,
+      bool isSearch = false}) {
     context.read<ServiceBloc>().add(GetCaByServiceNameEvent(
-        serviceId: widget.serviceId,
+        serviceId: selectedServiceId ?? 0,
         isPagination: isPagination,
         isFilter: isFilter,
-        filter: filter));
+        filter: filter,
+        isSearch: isSearch,
+        searchText: _searchController.text));
   }
 
   void _onScroll() {
+    if (_scrollController.offset > 250 && _showSearch) {
+      setState(() => _showSearch = false);
+    } else if (_scrollController.offset <= 250 && !_showSearch) {
+      setState(() => _showSearch = true);
+    }
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       _getViewCaByService(isPagination: true);
@@ -65,8 +92,14 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint('servviceoid.....${widget.serviceId}');
+    debugPrint('servviceoid.....${widget.serviceName}');
     return CustomLayoutPage(
       bgColor: ColorConstants.white,
       appBar: AppBar(
@@ -83,26 +116,29 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
           AnimatedContainer(
             duration: Duration(milliseconds: 600),
             width: double.infinity,
-            height: 220,
+            height: _showSearch ? 220 : 0,
             decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(searchCaTopImg), fit: BoxFit.cover),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 50),
-                Text(
-                  'Find Your Perfect Chartered Accountant',
-                  style: AppTextStyle().headingText24,
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  'Connect with certified professionals who understand your business needs. Search, compare, and schedule consultations with expert CAs in your area.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyle().landingSubtitletext22,
-                )
-              ],
+            child: SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 70),
+                  Text(
+                    'Find Your Perfect Chartered Accountant',
+                    style: AppTextStyle().headingText24,
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    'Connect with certified professionals who understand your business needs. Search, compare, and schedule consultations with expert CAs in your area.',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle().landingSubtitletext22,
+                  )
+                ],
+              ),
             ),
           ),
           Padding(
@@ -113,30 +149,25 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                 Expanded(
                     child: SizedBox(
                   height: 40,
-                  child: CustomSearchField(
-                      borderRadius: 5.0,
-                      // ignore: deprecated_member_use
-                      borderColor: ColorConstants.darkGray.withOpacity(0.5),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: ColorConstants.darkGray,
-                      ),
-                      controller: _searchController,
-                      serchHintText: 'Search'),
+                  child: SearchServiceWidget(
+                    controller: _serviceController,
+                    hintText: 'Service',
+                    onServiceSelected: (id) {
+                      setState(() {
+                        selectedServiceId = id;
+                        selectedServiceName = _serviceController.text;
+                      });
+                    },
+                  ),
                 )),
                 SizedBox(width: 8),
                 Expanded(
                   child: SizedBox(
-                    height: 40,
-                    child: CustomSearchLocation(
-                        prefixIcon: Icon(
-                          Icons.location_on_outlined,
-                          color: ColorConstants.darkGray,
-                        ),
-                        controller: _locationController,
-                        state: '',
-                        hintText: 'Location'),
-                  ),
+                      height: 40,
+                      child: CustomSearchField(
+                          focusNode: _searchFocus,
+                          controller: _searchController,
+                          serchHintText: 'Search ca')),
                 ),
                 SizedBox(width: 8),
                 CommonButtonWidget(
@@ -146,6 +177,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                   buttonTitle: 'Search',
                   onTap: () {
                     // context.push('/ca_search');
+                    _getViewCaByService(isFilter: true);
                   },
                 )
               ],
@@ -188,7 +220,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                   );
                 } else if (state is GetCaByServiceNameSuccess) {
                   return ListView.builder(
-                    // controller: _scrollController,
+                    controller: _scrollController,
                     itemCount: state.caList.length + (state.isLastPage ? 0 : 1),
                     itemBuilder: (context, index) {
                       if (index == state.caList.length) {
@@ -208,9 +240,13 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                         child: GestureDetector(
                           onTap: () {
                             context.push('/ca_details', extra: {
-                              "userId": data.caId.toString()
+                              "userId": data.caId.toString(),
+                              "serviceId": selectedServiceId,
+                              "serviceName": selectedServiceName
                             }).then((onValue) {
                               _getUser();
+
+                              _getViewCaByService(isFilter: true);
                             });
                           },
                           child: CommonCaContainer(
@@ -219,7 +255,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                             title: 'Certified Public Accountant',
                             tag: state.subService,
                             address:
-                                '123 Marine Drive, Mumbai, Maharashtra, 400020, India',
+                                data.firmAddress ?? data.address ?? '',
                             isOnline: data.isOnline ?? false,
                             rating: 4.9,
                             reviews: 174,

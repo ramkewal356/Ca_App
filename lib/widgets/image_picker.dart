@@ -63,6 +63,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           right: -5,
           child: CustomBottomsheetImageModal(
             isProfileChange: true,
+                  isEditable: widget.isEditable,
             icon: Card(
               elevation: 0,
               shape: CircleBorder(),

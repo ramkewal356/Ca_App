@@ -101,6 +101,14 @@ class UpdateUserEvent extends AuthEvent {
       ];
 }
 
+class UpdateCaProfileEvent extends AuthEvent {
+  final Map<String, dynamic> body;
+
+  const UpdateCaProfileEvent({required this.body});
+  @override
+  List<Object> get props => [body];
+}
+
 //**** Login Event ****//
 class LoginEvent extends AuthEvent {
   final String userName;
@@ -126,21 +134,20 @@ class AddUserEvent extends AuthEvent {
   final String gender;
   final String password;
   final bool selfRegistration;
-  const AddUserEvent({
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.countryCode,
-    required this.mobile,
-    required this.role,
-    this.addharNumber,
-    this.degination,
-    this.panCardNumber = '',
-    this.companyName = '',
+  const AddUserEvent(
+      {required this.firstName,
+      required this.lastName,
+      required this.email,
+      required this.countryCode,
+      required this.mobile,
+      required this.role,
+      this.addharNumber,
+      this.degination,
+      this.panCardNumber = '',
+      this.companyName = '',
       this.selfRegistration = false,
       this.gender = '',
-      this.password = ''
-  });
+      this.password = ''});
 
   @override
   List<Object> get props => [

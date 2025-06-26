@@ -36,7 +36,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     on<CreateServiceEvent>(_createServiceApi);
     on<GetViewServiceEvent>(_getViewService);
     on<GetServiceByCaIdEvent>(_getServiceByCaIdApi);
-    on<GetServiceForCustomerEvent>(_getServiceForCustomereListApi);
+    // on<GetServiceForCustomerEvent>(_getServiceForCustomereListApi);
     on<GetCaByServiceNameEvent>(_getCaByServiceNameApi);
     on<GetServiceRequestedCaEvent>(_getServiceRequestByCustomerIdApi);
     on<ViewRequestedCaByServiceIdEvent>(_getViewRequestedCaByServiceIdApi);
@@ -56,7 +56,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     int? userId = await SharedPrefsClass().getUserId();
     debugPrint('userId.,.,.,.,.,.,., $userId');
     Map<String, dynamic> query = {
-      "caId": userId,
+      "caId": event.caId ?? userId,
       "search": event.searchText,
       "pageNumber": event.pageNumber ?? pageNumber,
       "pageSize": event.pageSize ?? pageSize,
@@ -280,53 +280,53 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     }
   }
 
-  Future<void> _getServiceForCustomereListApi(
-      GetServiceForCustomerEvent event, Emitter<ServiceState> emit) async {
-    if (isFetching) return;
-    bool isSearch = (event.isSearch || event.isFilterByLocation);
-    if (isSearch && !event.isPagination) {
-      pageNumber = 0;
-      isLastPage = false;
-      emit(ServiceLoading()); // Show loading only for the first page
-    }
+  // Future<void> _getServiceForCustomereListApi(
+  //     GetServiceForCustomerEvent event, Emitter<ServiceState> emit) async {
+  //   if (isFetching) return;
+  //   bool isSearch = (event.isSearch || event.isFilterByLocation);
+  //   if (isSearch && !event.isPagination) {
+  //     pageNumber = 0;
+  //     isLastPage = false;
+  //     emit(GetServiceLoading()); // Show loading only for the first page
+  //   }
 
-    if (isLastPage) return;
-    isFetching = true;
+  //   if (isLastPage) return;
+  //   isFetching = true;
 
-    Map<String, dynamic> query = {
-      "search": event.searchText,
-      "pageNumber": pageNumber,
-      "pageSize": pageSize,
-      "address": event.location
-    };
-    try {
-      var resp = await _myRepo.getServiceForIndivisualCustomerApi(query: query);
-      List<Content> newData = resp.data?.content ?? [];
-      List<Content> allData = (pageNumber == 0)
-          ? newData
-          : [
-              ...(state is GetServiceForIndivisualCustomerSuccess
-                  ? (state as GetServiceForIndivisualCustomerSuccess)
-                      .serviceForCustomerList
-                  : []),
-              ...newData
-            ];
-      isLastPage = newData.length < pageSize;
-      emit(GetServiceForIndivisualCustomerSuccess(
-          serviceForCustomerList: allData, isLastPage: isLastPage));
-      pageNumber++;
-    } catch (e) {
-      emit(ServiceError(errorMessage: e.toString()));
-    } finally {
-      isFetching = false;
-    }
-  }
+  //   Map<String, dynamic> query = {
+  //     "search": event.searchText,
+  //     "pageNumber": pageNumber,
+  //     "pageSize": pageSize,
+  //     "address": event.location
+  //   };
+  //   try {
+  //     var resp = await _myRepo.getServiceForIndivisualCustomerApi(query: query);
+  //     List<Content> newData = resp.data?.content ?? [];
+  //     List<Content> allData = (pageNumber == 0)
+  //         ? newData
+  //         : [
+  //             ...(state is GetServiceForIndivisualCustomerSuccess
+  //                 ? (state as GetServiceForIndivisualCustomerSuccess)
+  //                     .serviceForCustomerList
+  //                 : []),
+  //             ...newData
+  //           ];
+  //     isLastPage = newData.length < pageSize;
+  //     emit(GetServiceForIndivisualCustomerSuccess(
+  //         serviceForCustomerList: allData, isLastPage: isLastPage));
+  //     pageNumber++;
+  //   } catch (e) {
+  //     emit(ServiceError(errorMessage: e.toString()));
+  //   } finally {
+  //     isFetching = false;
+  //   }
+  // }
 
   Future<void> _getCaByServiceNameApi(
       GetCaByServiceNameEvent event, Emitter<ServiceState> emit) async {
     if (isFetching) return;
-
-    if (event.isFilter && !event.isPagination) {
+    bool isNewSearch = (event.isFilter || event.isSearch);
+    if (isNewSearch && !event.isPagination) {
       pageNumber = 0;
       isLastPage = false;
       emit(ServiceLoading()); // Show loading only for the first page
@@ -334,13 +334,13 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
 
     if (isLastPage) return;
     isFetching = true;
-  
+
     Map<String, dynamic> query = {
       "serviceId": event.serviceId,
-     
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "filter": event.filter
+      "filter": event.filter,
+      "search": event.searchText
     };
     try {
       // emit(ServiceLoading());
@@ -433,11 +433,18 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
 }
 
 class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
+  int pageNumber = 0;
+  int pageSize = 10;
+  int pageSize1 = 10;
+
+  bool isFetching = false;
+  bool isLastPage = false;
   final _myRepo = ServiceRepository();
   AssignServiceBloc() : super(ServiceInitial()) {
     on<AssignServiceEvent>(_assignServiceToClient);
     on<UpdateAssignServiceEvent>(_updateAssignServiceToClient);
     on<SendSercieRequestOrderEvent>(_sendServiceRequestOrderApi);
+    on<GetServiceForCustomerEvent>(_getServiceForCustomereListApi);
   }
   Future<void> _assignServiceToClient(
       AssignServiceEvent event, Emitter<ServiceState> emit) async {
@@ -477,7 +484,10 @@ class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     Map<String, dynamic> body = {
       "serviceId": event.serviceId,
       "customerId": customerId,
-      "caId": event.caId
+      "caId": event.caId,
+      "message": event.message,
+      "subject": event.subject,
+      "urgencyLevel": event.urgencyLevel
     };
     try {
       emit(SendServiceRequestLoading(caId: event.caId));
@@ -486,6 +496,48 @@ class AssignServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       emit(SendSericeRequestOrderSuccess());
     } catch (e) {
       emit(ServiceError(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getServiceForCustomereListApi(
+      GetServiceForCustomerEvent event, Emitter<ServiceState> emit) async {
+    if (isFetching) return;
+    bool isSearch = (event.isSearch || event.isFilterByLocation);
+    if (isSearch && !event.isPagination) {
+      pageNumber = 0;
+      isLastPage = false;
+      emit(GetServiceLoading()); // Show loading only for the first page
+    }
+
+    if (isLastPage) return;
+    isFetching = true;
+
+    Map<String, dynamic> query = {
+      "search": event.searchText,
+      "pageNumber": pageNumber,
+      "pageSize": pageSize,
+      "address": event.location
+    };
+    try {
+      var resp = await _myRepo.getServiceForIndivisualCustomerApi(query: query);
+      List<Content> newData = resp.data?.content ?? [];
+      List<Content> allData = (pageNumber == 0)
+          ? newData
+          : [
+              ...(state is GetServiceForIndivisualCustomerSuccess
+                  ? (state as GetServiceForIndivisualCustomerSuccess)
+                      .serviceForCustomerList
+                  : []),
+              ...newData
+            ];
+      isLastPage = newData.length < pageSize;
+      emit(GetServiceForIndivisualCustomerSuccess(
+          serviceForCustomerList: allData, isLastPage: isLastPage));
+      pageNumber++;
+    } catch (e) {
+      emit(ServiceError(errorMessage: e.toString()));
+    } finally {
+      isFetching = false;
     }
   }
 }

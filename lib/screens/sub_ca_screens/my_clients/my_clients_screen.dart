@@ -21,6 +21,8 @@ class _MyClientsScreenState extends State<MyClientsScreen> {
   final TextEditingController _serchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String searchText = '';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +67,7 @@ class _MyClientsScreenState extends State<MyClientsScreen> {
             SizedBox(height: 5),
             CustomSearchField(
               controller: _serchController,
+              focusNode: _searchFocus,
               serchHintText: 'search..by user id ,user name,email',
               onChanged: _onSearchChanged,
             ),

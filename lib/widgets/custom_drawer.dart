@@ -109,7 +109,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         widget.isLogin
             ? Expanded(
                 child: ListView.builder(
-              // shrinkWrap: true,
+                    shrinkWrap: true,
               padding: EdgeInsets.zero,
               itemCount: widget.menuItems.length,
               itemBuilder: (context, index) {
@@ -167,11 +167,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   },
                 ),
               ),
-        Spacer(),
+        widget.isLogin ? SizedBox.shrink() : Spacer(),
         Material(
           elevation: 4,
           color: ColorConstants.white,
           child: Container(
+            
             decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: ColorConstants.darkGray)),
                 color: ColorConstants.white),
@@ -184,8 +185,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     final box = context.findRenderObject() as RenderBox?;
 
                     await Share.share(
-                      'Check out this Flutter app: https://example.com',
-                      subject: 'ram',
+                      'https://github.com/ramkewal356/Ca_App/releases/download/v1.0.0/Ca_App.V1.0._28May25.apk',
+                      subject: 'download ca apk',
                       sharePositionOrigin:
                           box!.localToGlobal(Offset.zero) & box.size,
                     );

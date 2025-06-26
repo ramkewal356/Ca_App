@@ -94,7 +94,8 @@ class CaList {
   DateTime? lastLogin;
   DateTime? lastLogout;
   bool? isOnline;
-
+  String? address;
+  String? firmAddress;
   CaList({
     this.caId,
     this.fullName,
@@ -106,6 +107,8 @@ class CaList {
     this.lastLogin,
     this.lastLogout,
     this.isOnline,
+      this.address,
+      this.firmAddress
   });
 
   factory CaList.fromJson(Map<String, dynamic> json) => CaList(
@@ -123,6 +126,8 @@ class CaList {
             ? null
             : DateTime.parse(json["lastLogout"]),
         isOnline: json["isOnline"],
+      address: json["address"],
+      firmAddress: json["firmAddress"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -136,6 +141,8 @@ class CaList {
         "lastLogin": lastLogin?.toIso8601String(),
         "lastLogout": lastLogout?.toIso8601String(),
         "isOnline": isOnline,
+        "address": address,
+        "firmAddress": firmAddress,
       };
 }
 

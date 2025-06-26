@@ -23,6 +23,8 @@ class _ViewPreviousScreenState extends State<ViewPreviousScreen> {
   String searchQuery = '';
   String filterText = '';
   String filterTitle = 'All';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     _fetchViewservice();
@@ -78,6 +80,7 @@ class _ViewPreviousScreenState extends State<ViewPreviousScreen> {
           children: [
             Expanded(
               child: CustomSearchField(
+                focusNode: _searchFocus,
                 controller: _searchcontroller,
                 serchHintText: 'Search..by service name,sub service,id',
                 onChanged: _onSearchChanged,

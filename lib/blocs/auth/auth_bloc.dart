@@ -22,6 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyOtpForUserEvent>(_verifyOtpForUserApi);
 
     on<UpdateUserEvent>(_updateUserApi);
+    on<UpdateCaProfileEvent>(_updateCaProfileApi);
     on<UpdateProfileImageEvent>(_uploadProfileImageApi);
 
     on<GetUserByIdEvent>(_getUserById);
@@ -58,7 +59,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       var loginResp = await _myRepo.loginApi(body: body);
       if (loginResp?.status?.httpCode == '200') {
         if (loginResp?.data?.token != null || loginResp?.data?.role != null) {
-          await SharedPrefsClass().saveUser(loginResp?.data?.token ?? '',
+          await SharedPrefsClass().saveUser(
+              loginResp?.data?.token ?? '',
               loginResp?.data?.role ?? '',
               loginResp?.data?.id ?? 0,
               loginResp?.data?.selfRegistered ?? false);
@@ -203,6 +205,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  //**** Call Update User API ****//
+  Future<void> _updateCaProfileApi(
+      UpdateCaProfileEvent event, Emitter<AuthState> emit) async {
+    Map<String, dynamic> body = event.body;
+    try {
+      emit(AuthLoading());
+      var resp = await _myRepo.updateUser(body: body);
+      if (resp?.status?.httpCode == '200') {
+        emit(UpdateUserSuccess(updateUser: resp));
+        // Utils.toastSuccessMessage('Profile Updated Successfully');
+      }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
+  }
+
 //**** Call Upload profile image API ****//
   Future<void> _uploadProfileImageApi(
       UpdateProfileImageEvent event, Emitter<AuthState> emit) async {
@@ -231,7 +249,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       var resp = await _myRepo.updateProfileImage(body: body);
       if (resp?.status?.httpCode == '200') {
         emit(UpdateProfileImgSuccess(updateUser: resp));
-        
+
         Utils.toastSuccessMessage('Profile Image Updated Successfully');
       }
     } catch (e) {
@@ -275,7 +293,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       };
       var resp = await _myRepo.activeDeactiveUserApi(body: body);
       if (resp?.status?.httpCode == '200') {
-       
         emit(DeactiveUserSucess());
       }
     } catch (e) {

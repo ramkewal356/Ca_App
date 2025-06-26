@@ -33,6 +33,8 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
   String selectedFilter = '';
   String searchQuery = '';
   String filterTitle = 'All';
+  final _searchFocus = FocusNode();
+
   Map<String, String> filtersList = {
     "All": '',
     "General": '-1',
@@ -101,6 +103,7 @@ class _ViewDocumentScreenState extends State<ViewDocumentScreen> {
                 child: Row(children: [
                   Expanded(
                     child: CustomSearchField(
+                      focusNode: _searchFocus,
                       controller: _searchController,
                       serchHintText:
                           'Search..by service name,subservice name,id',

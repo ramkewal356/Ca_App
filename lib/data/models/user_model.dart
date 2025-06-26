@@ -63,6 +63,21 @@ class Data {
 
   List<Service>? services;
   bool? selfRegistered;
+  List<CaEducation>? caEducations;
+  List<String>? userCertifications;
+  String? about;
+  List<String>? specializations;
+  String? icaiMembershipId;
+  String? registrationNumber;
+  String? years;
+  String? months;
+  String? firmAddress;
+  String? professionalTitle;
+  bool? isOnline;
+  String? occupation;
+  String? dateOfBirth;
+  String? typeOfBusiness;
+  int? profileCompletion;
   Data({
     this.id,
     this.firstName,
@@ -97,6 +112,21 @@ class Data {
     this.companyLogo,
     this.services,
     this.selfRegistered,
+      this.caEducations,
+      this.userCertifications,
+      this.about,
+      this.specializations,
+      this.icaiMembershipId,
+      this.registrationNumber,
+      this.years,
+      this.months,
+      this.firmAddress,
+      this.professionalTitle,
+      this.isOnline,
+      this.occupation,
+      this.dateOfBirth,
+      this.typeOfBusiness,
+      this.profileCompletion
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -137,7 +167,29 @@ class Data {
             ? []
             : List<Service>.from(
                 json["services"]!.map((x) => Service.fromJson(x))),
-      selfRegistered: json["selfRegistered"]
+      selfRegistered: json["selfRegistered"],
+      caEducations: json["caEducations"] == null
+          ? []
+          : List<CaEducation>.from(
+              json["caEducations"]!.map((x) => CaEducation.fromJson(x))),
+      userCertifications: json["userCertifications"] == null
+          ? []
+          : List<String>.from(json["userCertifications"]!.map((x) => x)),
+      about: json["about"],
+      specializations: json["specializations"] == null
+          ? []
+          : List<String>.from(json["specializations"]!.map((x) => x)),
+      icaiMembershipId: json["icaiMembershipId"],
+      registrationNumber: json["registrationNumber"],
+      years: json["years"],
+      months: json["months"],
+      firmAddress: json["firmAddress"],
+      professionalTitle: json["professionalTitle"],
+      isOnline: json["isOnline"],
+      occupation: json["occupation"],
+      dateOfBirth: json["dateOfBirth"],
+      typeOfBusiness: json["typeOfBusiness"],
+      profileCompletion: json["profileCompletion"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -175,7 +227,28 @@ class Data {
         "services": services == null
             ? []
             : List<dynamic>.from(services!.map((x) => x.toJson())),
-        "selfRegistered": selfRegistered
+        "selfRegistered": selfRegistered,
+        "caEducations": caEducations == null
+            ? []
+            : List<dynamic>.from(caEducations!.map((x) => x.toJson())),
+        "userCertifications": userCertifications == null
+            ? []
+            : List<dynamic>.from(userCertifications!.map((x) => x)),
+        "about": about,
+        "specializations": specializations == null
+            ? []
+            : List<dynamic>.from(specializations!.map((x) => x)),
+        "icaiMembershipId": icaiMembershipId,
+        "registrationNumber": registrationNumber,
+        "years": years,
+        "months": months,
+        "firmAddress": firmAddress,
+        "professionalTitle": professionalTitle,
+        "isOnline": isOnline,
+        "occupation": occupation,
+        "dateOfBirth": dateOfBirth,
+        "typeOfBusiness": typeOfBusiness,
+        "profileCompletion": profileCompletion
       };
 }
 
@@ -247,7 +320,25 @@ class ClientActivity {
         "type": type,
       };
 }
+class CaEducation {
+  String? degree;
+  String? university;
 
+  CaEducation({
+    this.degree,
+    this.university,
+  });
+
+  factory CaEducation.fromJson(Map<String, dynamic> json) => CaEducation(
+        degree: json["degree"],
+        university: json["university"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "degree": degree,
+        "university": university,
+      };
+}
 class Service {
   int? serviceId;
   String? serviceName;

@@ -260,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onChanged: (phone) {
                         debugPrint(
                             'complete phone number ${phone.completeNumber}');
-                      },
+                      }, 
                       onCountryChanged: (country) {
                         setState(() {
                           countryCode = country.dialCode;

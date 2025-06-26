@@ -16,6 +16,13 @@ class UploadDocumentLoaded extends UploadDocumentState {
   @override
   List<Object> get props => [documents];
 }
+class SingleDocumentUploaded extends UploadDocumentState {
+  final PlatformFile documentfile;
+
+  const SingleDocumentUploaded({required this.documentfile});
+  @override
+  List<Object> get props => [documentfile];
+}
 
 class UploadDocumentError extends UploadDocumentState {
   final String message;

@@ -25,6 +25,8 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
   String title = 'All';
   String filterText = '';
   String searchText = '';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -78,7 +80,7 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
   Widget build(BuildContext context) {
     return CustomLayoutPage(
       appBar: CustomAppbar(
-        title: 'Requested CA By Services',
+        title: 'Enquiry History',
         backIconVisible: true,
       ),
       child: Padding(
@@ -89,6 +91,7 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _searchController,
                     serchHintText: 'Search by ca name ',
                     onChanged: _onSearchChanged,

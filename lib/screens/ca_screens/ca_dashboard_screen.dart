@@ -184,7 +184,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
               },
               {
                 "imgUrl": Icons.group,
-                "label": "Individual Customer",
+                "label": "Enquiry History",
                 "onTap": () {
                   context
                       .push('/ca_dashboard/indivisual_customer')
@@ -265,7 +265,7 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "label": "My Profile",
                 "onTap": () {
                   context.push(
-                    '/myProfile',
+                    '/caProfile',
                   );
                 }
               },

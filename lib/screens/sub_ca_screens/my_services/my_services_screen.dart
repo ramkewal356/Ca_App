@@ -22,6 +22,8 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
   final TextEditingController _serchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String searchText = '';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +66,7 @@ class _MyServicesScreenState extends State<MyServicesScreen> {
         child: Column(
           children: [
             CustomSearchField(
+              focusNode: _searchFocus,
                 controller: _serchController,
               serchHintText: 'search..by id ,service name,subservice name',
               onChanged: _onSearchChanged,

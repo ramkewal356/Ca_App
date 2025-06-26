@@ -17,7 +17,6 @@ import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_card.dart';
 import 'package:ca_app/widgets/custom_drawer.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
-import 'package:ca_app/widgets/custom_search_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,10 +30,11 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   final TextEditingController _controller = TextEditingController();
   String searchText = '';
   bool isLogin = false;
+  final _searchFocus = FocusNode();
   int? serviceId;
   @override
   void initState() {
@@ -106,10 +106,21 @@ class _LandingScreenState extends State<LandingScreen> {
               IconButton(
                   visualDensity: VisualDensity(horizontal: -4),
                   onPressed: () {},
-                  icon: Icon(
+                  icon: (userdata?.data?.profileUrl.toString() ?? '').isEmpty
+                      ? Icon(
                     Icons.account_circle_outlined,
                     // color: ColorConstants.white,
-                  )),
+                        )
+                      : CircleAvatar(
+                          radius: 18,
+                          child: ClipOval(
+                              child: Image.network(
+                            userdata?.data?.profileUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          )),
+                        )),
             ],
           ),
           drawer: CustomDrawer(
@@ -131,7 +142,14 @@ class _LandingScreenState extends State<LandingScreen> {
                 "imgUrl": Icons.account_circle_outlined,
                 "label": "My Profile",
                 "onTap": () {
-                  context.push('/myProfile');
+                  context.push('/individual_customer_Profile');
+                }
+              },
+              {
+                "imgUrl": Icons.star,
+                "label": "Enquiry History",
+                "onTap": () {
+                  context.push('/indivisual_customer/requested_ca');
                 }
               },
               {
@@ -203,14 +221,10 @@ class _LandingScreenState extends State<LandingScreen> {
                       Expanded(
                         child: SizedBox(
                           height: 40,
-                          child: CustomSearchLocation(
-                              prefixIcon: Icon(
-                                Icons.location_on_outlined,
-                                color: ColorConstants.darkGray,
-                              ),
-                              controller: _locationController,
-                              state: '',
-                              hintText: 'Location'),
+                            child: CustomSearchField(
+                                focusNode: _searchFocus,
+                                controller: _searchController,
+                                serchHintText: 'Search ca..')
                         ),
                       ),
                       SizedBox(width: 8),
@@ -220,7 +234,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         child: SearchServiceWidget(
                           controller: _controller,
                           hintText: 'Service',
-                          serviceController: _locationController,
+                      
                           onServiceSelected: (id) {
                             serviceId = id;
                           },
@@ -251,8 +265,14 @@ class _LandingScreenState extends State<LandingScreen> {
                               _controller.text == '') {
                             Utils.toastErrorMessage('Please select service');
                           } else {
-                            context.push('/ca_search',
-                                extra: {"serviceId": serviceId});
+                            context.push('/ca_search', extra: {
+                              "serviceId": serviceId,
+                              "serviceName": _controller.text,
+                              "searchText": _searchController.text
+                            }).then((onValue) {
+                              _getUser();
+                              _getActiveCaList();
+                            });
                           }
                         },
                       )
@@ -276,25 +296,38 @@ class _LandingScreenState extends State<LandingScreen> {
                           state.getActiveCaWithServicesModel.data?.content ??
                               [];
                       return SizedBox(
-                        height: 315,
+                        height: 280,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
                           itemCount: caData.length,
                           itemBuilder: (context, index) {
                             var data = caData[index];
                             return Padding(
                               padding: EdgeInsets.only(
                                   left: index == 0 ? 10 : 0, right: 10),
-                              child: cacard(
-                                  image: clientImg,
-                                  title: '${data.firstName} ${data.lastName}',
-                                  subtilte: 'Tax Planning & Compliance',
-                                  subtitle2:
-                                      'Specialized in corporate tax, GST, and regulatory compliance',
-                                  totalCa: '45',
-                                  viewAllOnTap: () {},
-                                  allCaOnTap: () {},
-                                  rating: '4.7'),
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.push('/ca_details', extra: {
+                                    "userId": data.userId.toString(),
+                                    // "serviceId": widget.serviceId,
+                                    // "serviceName": widget.serviceName
+                                  }).then((onValue) {
+                                    _getUser();
+                                    _getActiveCaList();
+                                  });
+                                },
+                                child: cacard(
+                                    image: data.profileUrl ?? '',
+                                    title: '${data.firstName} ${data.lastName}',
+                                    subtilte: 'Tax Planning & Compliance',
+                                    subtitle2:
+                                        '',
+                                    totalCa: '45',
+                                    viewAllOnTap: () {},
+                                    allCaOnTap: () {},
+                                    rating: '4.7'),
+                              ),
                             );
                           },
                         ),
@@ -454,6 +487,7 @@ class _LandingScreenState extends State<LandingScreen> {
                               size: 18,
                               // ignore: deprecated_member_use
                               color:
+                                  // ignore: deprecated_member_use
                                   ColorConstants.buttonColor.withOpacity(0.7),
                             )
                           ],
@@ -831,14 +865,23 @@ class _LandingScreenState extends State<LandingScreen> {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(8),
                       topRight: Radius.circular(8)),
-                  child: Image.asset(
-                    image,
+                  child: image.isEmpty
+                      ? Image.asset(
+                          clientImg,
                     width: 212,
                     height: 176,
                     fit: BoxFit.cover,
-                  ),
+                        )
+                      : Image.network(
+                          image,
+                          width: 212,
+                          height: 176,
+                          fit: BoxFit.fill,
+                        ),
                 ),
-                Padding(
+                title.isEmpty
+                    ? SizedBox.shrink()
+                    : Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   child: Text(
@@ -846,7 +889,9 @@ class _LandingScreenState extends State<LandingScreen> {
                     style: AppTextStyle().landingCardTitle,
                   ),
                 ),
-                Container(
+                subtilte.isEmpty
+                    ? SizedBox.shrink()
+                    : Container(
                   margin: EdgeInsets.symmetric(horizontal: 8),
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
@@ -859,8 +904,10 @@ class _LandingScreenState extends State<LandingScreen> {
                     style: AppTextStyle().landingCardSubTitle,
                   ),
                 ),
-                SizedBox(height: 5),
-                Padding(
+                subtitle2.isEmpty ? SizedBox.shrink() : SizedBox(height: 5),
+                subtitle2.isEmpty
+                    ? SizedBox.shrink()
+                    : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
                     subtitle2,

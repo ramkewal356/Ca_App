@@ -55,6 +55,14 @@ class AppTextStyle {
       color: ColorConstants.buttonColor,
       fontSize: 11,
       fontWeight: FontWeight.w400);
+  TextStyle titletext8 = GoogleFonts.poppins(
+      color: ColorConstants.buttonColor,
+      fontSize: 8,
+      fontWeight: FontWeight.w400);
+  TextStyle titletext8green = GoogleFonts.poppins(
+      color: ColorConstants.greenColor,
+      fontSize: 8,
+      fontWeight: FontWeight.w400);
   TextStyle landingCardbutton = GoogleFonts.poppins(
       color: ColorConstants.white, fontSize: 12, fontWeight: FontWeight.w600);
   TextStyle landingSubtitletext22 = GoogleFonts.poppins(

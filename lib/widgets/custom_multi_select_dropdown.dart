@@ -163,6 +163,8 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
   final TextEditingController _searchController = TextEditingController();
   OverlayEntry? _overlayEntry;
   List<String> filterList = [];
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -232,6 +234,7 @@ class _CustomDropdownSerchableState extends State<CustomDropdownSerchable> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           CustomSearchField(
+                            focusNode: _searchFocus,
                             controller: _searchController,
                             serchHintText: 'search',
                             onChanged: (value) {

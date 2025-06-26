@@ -7,13 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SearchServiceWidget extends StatefulWidget {
   final TextEditingController? controller;
   final String hintText;
-  final TextEditingController serviceController;
+ 
   final void Function(int)? onServiceSelected;
   const SearchServiceWidget(
       {super.key,
       required this.controller,
       required this.hintText,
-      required this.serviceController,
+    
       required this.onServiceSelected});
 
   @override
@@ -23,12 +23,12 @@ class SearchServiceWidget extends StatefulWidget {
 class _SearchServiceWidgetState extends State<SearchServiceWidget> {
   int? _serviceId;
   void _navigateToSearchPage() async {
-    String location = widget.serviceController.text.trim();
+  
     final selectedService = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => SerchServiceScreen(
-                location: location,
+             
               )),
     );
 
@@ -118,8 +118,10 @@ class _SearchServiceWidgetState extends State<SearchServiceWidget> {
 }
 
 class SerchServiceScreen extends StatefulWidget {
-  final String location;
-  const SerchServiceScreen({super.key, required this.location});
+ 
+  const SerchServiceScreen({
+    super.key,
+  });
 
   @override
   State<SerchServiceScreen> createState() => _SerchServiceScreenState();
@@ -143,10 +145,10 @@ class _SerchServiceScreenState extends State<SerchServiceScreen> {
       {bool isSearch = false,
       bool isPagination = false,
       bool isFilterByLocation = false}) {
-    debugPrint('location ..bbbbbbb...${widget.location}');
-    context.read<ServiceBloc>().add(GetServiceForCustomerEvent(
+    // debugPrint('location ..bbbbbbb...${widget.location}');
+    context.read<AssignServiceBloc>().add(GetServiceForCustomerEvent(
         isFilterByLocation: isFilterByLocation,
-        location: widget.location,
+        location: '',
         isSearch: isSearch,
         searchText: searchText,
         isPagination: isPagination));
@@ -200,9 +202,9 @@ class _SerchServiceScreenState extends State<SerchServiceScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: BlocBuilder<ServiceBloc, ServiceState>(
+        child: BlocBuilder<AssignServiceBloc, ServiceState>(
           builder: (context, state) {
-            if (state is ServiceLoading) {
+            if (state is GetServiceLoading) {
               return Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.buttonColor,

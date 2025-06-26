@@ -5,7 +5,16 @@ import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final String name;
+  final String profileImg;
+  final String title;
+  final bool isOnline;
+  const ChatScreen(
+      {super.key,
+      required this.name,
+      required this.profileImg,
+      required this.title,
+      required this.isOnline});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -94,18 +103,25 @@ class _ChatScreenState extends State<ChatScreen> {
       visualDensity: VisualDensity(horizontal: -4),
       leading: CircleAvatar(
         radius: 35,
-        backgroundImage:
-            AssetImage(clientImg), // Replace with NetworkImage or other source
+        backgroundImage: widget.profileImg.isEmpty
+            ? AssetImage(clientImg)
+            : Image.network(
+                widget.profileImg,
+                fit: BoxFit.cover,
+              ).image, // Replace with NetworkImage or other source
       ),
-      title: Text("Jennifer Smith", style: AppTextStyle().cardLableText),
+      title: Text(widget.name, style: AppTextStyle().cardLableText),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Certified Public Accountant",
+            widget.title,
             style: AppTextStyle().rating10,
           ),
-          Text("● Online", style: AppTextStyle().onlineText),
+          Text("● ${widget.isOnline == true ? 'Online' : 'Offline'}",
+              style: widget.isOnline == true
+                  ? AppTextStyle().onlineText
+                  : AppTextStyle().offlineText),
         ],
       ),
     );

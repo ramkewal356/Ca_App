@@ -7,8 +7,12 @@ import 'package:image_picker/image_picker.dart';
 class CustomBottomsheetImageModal extends StatefulWidget {
   final Widget icon;
   final bool isProfileChange;
+  final bool isEditable;
   const CustomBottomsheetImageModal(
-      {super.key, required this.icon, this.isProfileChange = false});
+      {super.key,
+      required this.icon,
+      this.isProfileChange = false,
+      this.isEditable = false});
 
   @override
   State<CustomBottomsheetImageModal> createState() =>
@@ -20,7 +24,7 @@ class _CustomBottomsheetImageModalState
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _showImageSourceSelection,
+      onTap: widget.isEditable ? _showImageSourceSelection : () {},
       child: widget.icon,
     );
   }

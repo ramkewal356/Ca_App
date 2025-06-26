@@ -27,6 +27,8 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
   String searchText = '';
   String filterText = '';
   String title = 'All';
+  final _searchFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +91,7 @@ class _YourRequestScreenState extends State<YourRequestScreen> {
               children: [
                 Expanded(
                   child: CustomSearchField(
+                    focusNode: _searchFocus,
                     controller: _controller,
                     serchHintText: 'Search by id & name',
                     onChanged: _onSearchChanged,

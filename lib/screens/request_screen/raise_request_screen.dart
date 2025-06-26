@@ -44,6 +44,8 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
   List<PlatformFile> documentList = [];
   String? selectedCa;
   String searchQuery = '';
+  final _searchFocus = FocusNode();
+
 
   @override
   void initState() {
@@ -193,92 +195,7 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                         controller:
                             TextEditingController(text: widget.selectedUser),
                         hintText: 'select user'),
-                  // BlocBuilder<AuthBloc, AuthState>(
-                  //       builder: (context, state) {
-                  //         if (state is GetUserByIdSuccess) {
-                  //           selectedCa = state.getUserByIdData?.data?.caName;
-                  //           caId = state.getUserByIdData?.data?.caId
-                  //                   .toString() ??
-                  //               '';
-                  //         }
-                  //         return CustomDropdownButton(
-                  //           dropdownItems: ['$selectedCa'],
-                  //           initialValue: selectedCa,
-                  //           hintText: 'Select your ca',
-                  //           validator: (value) {
-                  //             if (value == null || value.isEmpty) {
-                  //               return 'Please select your ca';
-                  //             }
-                  //             return null;
-                  //           },
-                  //         );
-                  //       },
-                  // ),
-                  // : BlocBuilder<CustomerBloc, CustomerState>(
-                  //     builder: (context, state) {
-                  //       List<LoginCustomerData> customers = [];
-                  //       List<Content> customers1 = [];
-                  //       if (state is GetLoginCustomerSuccess) {
-                  //         customers = state.getLoginCustomers;
-                  //         debugPrint(
-                  //             'object ${customers.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
-                  //       } else if (state is GetCustomerBySubCaSuccess) {
-                  //         customers1 = state.getCustomers ?? [];
-                  //         debugPrint(
-                  //             'object???>>>>>>>????>>>> ${customers1.map((toElement) => '${toElement.firstName} ${toElement.lastName}${toElement.userId}').toList()}');
-                  //       }
-                  //       return MultiSelectSearchableDropdown(
-                  //         hintText: 'Select client',
-                  //         items: customers.isEmpty
-                  //             ? customers1
-                  //                 .where((test) =>
-                  //                     test.userResponse == 'ACCEPTED')
-                  //                 .map((toElement) =>
-                  //                     '${toElement.firstName} ${toElement.lastName}')
-                  //                 .toList()
-                  //             : customers
-                  //                 .map((toElement) =>
-                  //                     '${toElement.firstName} ${toElement.lastName}')
-                  //                 .toList(),
-                  //         selectedItems: selectedItems,
-                  //         onChanged: (newSelection) {
-                  //           setState(() {
-                  //             List<int> selectedUsers = customers.isEmpty
-                  //                 ? customers1
-                  //                     .where((customer) =>
-                  //                         newSelection.contains(
-                  //                             '${customer.firstName} ${customer.lastName}'))
-                  //                     .map((customer) => int.parse(customer
-                  //                         .userId
-                  //                         .toString()
-                  //                         .trim()))
-                  //                     .toList()
-                  //                 : customers
-                  //                     .where((customer) =>
-                  //                         newSelection.contains(
-                  //                             '${customer.firstName} ${customer.lastName}'))
-                  //                     .map((customer) => int.parse(customer
-                  //                         .userId
-                  //                         .toString()
-                  //                         .trim()))
-                  //                     .toList();
-
-                  //             debugPrint('selectedItems $selectedUsers');
-                  //             selectedUserIds =
-                  //                 '[${selectedUsers.join(',')}]';
-                  //             debugPrint(
-                  //                 'selectedUserIds: $selectedUserIds');
-                  //           });
-                  //         },
-                  //         validator: (value) {
-                  //           if (value == null || value.isEmpty) {
-                  //             return 'Please select client';
-                  //           }
-                  //           return null;
-                  //         },
-                  //       );
-                  //     },
-                  //   ),
+               
 
                   SizedBox(height: 10),
 
@@ -367,6 +284,7 @@ class _RaiseRequestScreenState extends State<RaiseRequestScreen> {
                                 ? SizedBox.shrink()
                                 : Expanded(
                                     child: CustomSearchField(
+                                      focusNode: _searchFocus,
                                       controller: _searchController,
                                       serchHintText:
                                           'search by userid, user name, email',
