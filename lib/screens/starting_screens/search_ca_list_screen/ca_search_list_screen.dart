@@ -252,7 +252,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                           child: CommonCaContainer(
                             imageUrl: data.profileUrl ?? '',
                             name: '${data.fullName}',
-                            title: 'Certified Public Accountant',
+                            title: data.professionalTitle ?? "",
                             tag: state.subService,
                             address:
                                 data.firmAddress ?? data.address ?? '',

@@ -114,7 +114,10 @@ class Content {
   String? customerMobile;
   String? orderStatus;
   int? createdDate;
-
+  String? rejectionComment;
+  String? message;
+  String? subject;
+  String? urgencyLevel;
   Content({
     this.serviceOrderId,
     this.serviceId,
@@ -133,6 +136,10 @@ class Content {
     this.customerMobile,
     this.orderStatus,
     this.createdDate,
+      this.rejectionComment,
+      this.message,
+      this.subject,
+      this.urgencyLevel
   });
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
@@ -153,6 +160,10 @@ class Content {
         customerMobile: json["customerMobile"],
         orderStatus: json["orderStatus"],
         createdDate: json["createdDate"],
+        rejectionComment: json["rejectionComment"],
+        message: json["message"],
+        subject: json["subject"],
+        urgencyLevel: json["urgencyLevel"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -173,6 +184,10 @@ class Content {
         "customerMobile": customerMobile,
         "orderStatus": orderStatus,
         "createdDate": createdDate,
+        "rejectionComment": rejectionComment,
+        "message": message,
+        "subject": subject,
+        "urgencyLevel": urgencyLevel,
       };
 }
 

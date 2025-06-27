@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/response_model/base_response_model.dart';
 import 'package:ca_app/data/providers/end_points.dart';
 import 'package:ca_app/utils/constanst/string.dart';
@@ -8,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 class HttpService<T> {
   Dio? _http;
   String? baseURL;
@@ -36,8 +37,22 @@ class HttpService<T> {
       // this.baseURL = "http://3.110.83.101:9000/";
     }
     _http = Dio();
-  }
+    _http?.interceptors.add(InterceptorsWrapper(
+      onError: (DioException e, handler) async {
+        if (e.response?.statusCode == 401) {
+          debugPrint("⚠️ Token expired, logging out...");
 
+          await SharedPrefsClass().removeToken();
+
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            '/landing_screen',
+            (route) => false,
+          );
+        }
+        return handler.next(e); // continue error flow
+      },
+    ));
+  }
   authorizeRequest() async {
     if (this.headers == null) {
       this.headers = <String, String>{};
@@ -101,6 +116,8 @@ class HttpService<T> {
           this.baseURL! + this.endURL!,
           queryParameters: this.queryParameters,
           options: Options(
+            sendTimeout: Duration(seconds: 10),
+            receiveTimeout: Duration(seconds: 15),
             headers: this.headers,
             validateStatus: (status) {
               this.responseStatusCode = status!;

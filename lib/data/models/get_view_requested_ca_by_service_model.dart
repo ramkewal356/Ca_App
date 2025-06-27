@@ -53,7 +53,7 @@ class Data {
   String? orderStatus;
   int? createdDate;
   dynamic rejectionComment;
-
+  String? urgencyLevel;
   Data({
     this.serviceOrderId,
     this.serviceId,
@@ -73,6 +73,7 @@ class Data {
     this.orderStatus,
     this.createdDate,
     this.rejectionComment,
+      this.urgencyLevel
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -94,6 +95,7 @@ class Data {
         orderStatus: json["orderStatus"],
         createdDate: json["createdDate"],
         rejectionComment: json["rejectionComment"],
+      urgencyLevel: json["urgencyLevel"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -115,6 +117,7 @@ class Data {
         "orderStatus": orderStatus,
         "createdDate": createdDate,
         "rejectionComment": rejectionComment,
+        "urgencyLevel": urgencyLevel
       };
 }
 

@@ -11,19 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class RequestedCaServiceScreen extends StatefulWidget {
-  const RequestedCaServiceScreen({super.key});
+class EnquiryHistoryScreen extends StatefulWidget {
+  const EnquiryHistoryScreen({super.key});
 
   @override
-  State<RequestedCaServiceScreen> createState() =>
-      _RequestedCaServiceScreenState();
+  State<EnquiryHistoryScreen> createState() => _EnquiryHistoryScreenState();
 }
 
-class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
+class _EnquiryHistoryScreenState extends State<EnquiryHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String title = 'All';
   String filterText = '';
+  String title1 = 'All';
+  String urgencyFilterText = '';
   String searchText = '';
   final _searchFocus = FocusNode();
 
@@ -45,7 +46,8 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
         isSearch: isSearch,
         searchText: searchText,
         isFilter: isFilter,
-        filterTex: filterText));
+        filterTex: filterText,
+        urgencyFilterText: urgencyFilterText));
   }
 
   void _onFilterChanged(String value) {
@@ -63,6 +65,14 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
     _getRequestedCalist(isSearch: true);
   }
 
+  _onFilterChanged1(String value) {
+    setState(() {
+      urgencyFilterText = value;
+      title1 = value == '' ? 'All' : urgencyFilter[value] ?? '';
+    });
+    _getRequestedCalist(isFilter: true);
+  }
+
   _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
@@ -75,6 +85,12 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
     "Pending": 'PENDING',
     "Rejected": 'REJECTED',
     "Accepted": 'ACCEPTED',
+  };
+  Map<String, String> urgencyFilter = {
+    "All": '',
+    "High": 'HIGH',
+    "MEDIUM": 'MEDIUM',
+    "Low": 'LOW'
   };
   @override
   Widget build(BuildContext context) {
@@ -99,6 +115,11 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
                 ),
                 SizedBox(width: 10),
                 CustomFilterPopupWidget(
+                    title: title1,
+                    filterOptions: urgencyFilter,
+                    onFilterChanged: _onFilterChanged1),
+                SizedBox(width: 10),
+                CustomFilterPopupWidget(
                     title: title,
                     filterOptions: filtersList,
                     onFilterChanged: _onFilterChanged),
@@ -117,7 +138,7 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
                   return Center(
                     child: Text(
                       'No Data Found',
-                      style: AppTextStyle().getgreenText,
+                      style: AppTextStyle().getredText,
                     ),
                   );
                 } else if (state is GetAllServiceRequestedCaSuccess) {
@@ -179,6 +200,11 @@ class _RequestedCaServiceScreenState extends State<RequestedCaServiceScreen> {
                                       flex2: 3,
                                       lable: 'Service Name',
                                       value: '${data.serviceName}'),
+                                  CustomTextInfo(
+                                      flex1: 2,
+                                      flex2: 3,
+                                      lable: 'Urgency Level',
+                                      value: data.urgencyLevel ?? ''),
                                   CustomTextInfo(
                                     flex1: 2,
                                     flex2: 3,

@@ -59,10 +59,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                widget.userName,
-                style: AppTextStyle().buttontext,
-              ),
+              widget.isLogin
+                  ? Text(
+                      widget.userName,
+                      style: AppTextStyle().buttontext,
+                    )
+                  : SizedBox.shrink(),
               widget.activeButton
                   ? Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -83,79 +85,85 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           accountEmail: widget.isLogin
               ? Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.emailAddress),
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    widget.isLogin
+                        ? Text(widget.emailAddress)
+                        : SizedBox.shrink(),
                     (widget.lastLogin.isEmpty || widget.lastLogin == '')
                         ? SizedBox.shrink()
                         : Text('Last Login: ${widget.lastLogin}')
-            ],
+                  ],
                 )
               : SizedBox.shrink(),
           currentAccountPicture: CircleAvatar(
             child: ClipOval(
-                child: widget.profileUrl.isNotEmpty
+                child: (widget.profileUrl.isNotEmpty && widget.isLogin)
                     ? Image.network(
                         widget.profileUrl,
                         fit: BoxFit.fill,
                         width: double.infinity,
                         height: double.infinity,
                       )
-                    : Image.asset(appLogo)),
+                    : Image.asset(
+                        appLogo,
+                        height: double.infinity,
+                        width: double.infinity,
+                      )),
           ),
         ),
         widget.isLogin
             ? Expanded(
                 child: ListView.builder(
                     shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemCount: widget.menuItems.length,
-              itemBuilder: (context, index) {
-                final item = widget.menuItems[index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(color: ColorConstants.darkGray),
-                        borderRadius: BorderRadius.circular(10)),
-                    // selected: widget.selectedIndex == index,
-                    selected: selectedIndex == index,
-                    selectedTileColor: ColorConstants.buttonColor,
-                    onTap: () {
-                      // widget.onItemSelected(index);
-                      if (item['onTap'] != null) {
-                        item['onTap']();
-                        context.pop();
-                      }
+                    padding: EdgeInsets.zero,
+                    itemCount: widget.menuItems.length,
+                    itemBuilder: (context, index) {
+                      final item = widget.menuItems[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 15),
+                        child: ListTile(
+                          horizontalTitleGap: 10,
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: ColorConstants.darkGray),
+                              borderRadius: BorderRadius.circular(10)),
+                          // selected: widget.selectedIndex == index,
+                          selected: selectedIndex == index,
+                          selectedTileColor: ColorConstants.buttonColor,
+                          onTap: () {
+                            // widget.onItemSelected(index);
+                            if (item['onTap'] != null) {
+                              item['onTap']();
+                              context.pop();
+                            }
 
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    leading: Icon(
-                      item['imgUrl'],
-                      color: selectedIndex == index
-                          ? ColorConstants.white
-                          : ColorConstants.black,
-                    ),
-                    title: Text(
-                      item['label'],
-                      style: selectedIndex == index
-                          ? AppTextStyle().menuSelectedText
-                          : AppTextStyle().menuUnselectedText,
-                    ),
-                    trailing: Icon(
-                      Icons.keyboard_arrow_right_outlined,
-                      color: selectedIndex == index
-                          ? ColorConstants.white
-                          : ColorConstants.black,
-                    ),
-                  ),
-                );
+                            setState(() {
+                              selectedIndex = index;
+                            });
+                          },
+                          leading: Icon(
+                            item['imgUrl'],
+                            color: selectedIndex == index
+                                ? ColorConstants.white
+                                : ColorConstants.black,
+                          ),
+                          title: Text(
+                            item['label'],
+                            style: selectedIndex == index
+                                ? AppTextStyle().menuSelectedText
+                                : AppTextStyle().menuUnselectedText,
+                          ),
+                          trailing: Icon(
+                            Icons.keyboard_arrow_right_outlined,
+                            color: selectedIndex == index
+                                ? ColorConstants.white
+                                : ColorConstants.black,
+                          ),
+                        ),
+                      );
                     }))
             : Padding(
                 padding:
@@ -172,7 +180,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
           elevation: 4,
           color: ColorConstants.white,
           child: Container(
-            
             decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: ColorConstants.darkGray)),
                 color: ColorConstants.white),
@@ -200,10 +207,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                 ),
                 ListTile(
-                  onTap: () {
-                    context.pop();
-                    showConfimLogout();
-                  },
+                  onTap: showConfimLogout,
+                  // onTap: () {
+                  //   // context.pop();
+                  //   showConfimLogout();
+                  // },
                   leading: Icon(Icons.logout),
                   title: Text(
                     'Logout',
@@ -253,8 +261,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       buttonWidth: 70,
                       buttonTitle: 'Yes',
                       onTap: () {
-                        context.pushReplacement('/login');
+                        context.pop();
                         SharedPrefsClass().removeToken();
+
+                        context.pushReplacement('/landing_screen');
                       },
                     )
                   ],

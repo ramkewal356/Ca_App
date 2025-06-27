@@ -12,19 +12,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class ViewRequestedCaServiceScreen extends StatefulWidget {
+class ViewEnquiryScreen extends StatefulWidget {
   final int serviceOrderId;
   final bool caSide;
-  const ViewRequestedCaServiceScreen(
+  const ViewEnquiryScreen(
       {super.key, required this.serviceOrderId, this.caSide = false});
 
   @override
-  State<ViewRequestedCaServiceScreen> createState() =>
-      _ViewRequestedCaServiceScreenState();
+  State<ViewEnquiryScreen> createState() => _ViewEnquiryScreenState();
 }
 
-class _ViewRequestedCaServiceScreenState
-    extends State<ViewRequestedCaServiceScreen> {
+class _ViewEnquiryScreenState extends State<ViewEnquiryScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _commentController = TextEditingController();
   @override
@@ -164,10 +162,10 @@ class _ViewRequestedCaServiceScreenState
                   widget.caSide
                       ? SizedBox.shrink()
                       : CustomTextInfo(
-                      flex1: 2,
-                      flex2: 4,
-                      lable: 'Company Name',
-                      value: '${data?.caCompanyName}'),
+                          flex1: 2,
+                          flex2: 4,
+                          lable: 'Company Name',
+                          value: '${data?.caCompanyName}'),
                   SizedBox(height: 20),
                   Text(
                     'Service Details',
@@ -187,6 +185,11 @@ class _ViewRequestedCaServiceScreenState
                   CustomTextInfo(
                       flex1: 2,
                       flex2: 4,
+                      lable: 'Urgency Level',
+                      value: '${data?.urgencyLevel}'),
+                  CustomTextInfo(
+                      flex1: 2,
+                      flex2: 4,
                       lable: 'Created date',
                       value: dateFormate(data?.createdDate)),
                   CustomTextInfo(
@@ -202,6 +205,13 @@ class _ViewRequestedCaServiceScreenState
                                 ? AppTextStyle().getredText
                                 : AppTextStyle().getredText,
                   ),
+                  data?.orderStatus == 'REJECTED'
+                      ? CustomTextInfo(
+                          flex1: 2,
+                          flex2: 4,
+                          lable: 'Comment',
+                          value: '${data?.rejectionComment}')
+                      : SizedBox.shrink(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

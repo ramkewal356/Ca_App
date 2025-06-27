@@ -11,13 +11,15 @@ class GetRequestedServiceByCaIdEvent extends IndivisualCustomerEvent {
   final bool isFilter;
   final String filterText;
   final bool isPagination;
-
+  final String urgencyFilterText;
   const GetRequestedServiceByCaIdEvent(
       {required this.isFilter,
       required this.filterText,
-      required this.isPagination});
+      required this.isPagination,
+      required this.urgencyFilterText});
   @override
-  List<Object> get props => [isFilter, filterText, isPagination];
+  List<Object> get props =>
+      [isFilter, filterText, isPagination, urgencyFilterText];
 }
 
 class AcceptOrRejectServiceEvent extends IndivisualCustomerEvent {

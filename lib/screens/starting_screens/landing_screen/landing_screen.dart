@@ -62,7 +62,8 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {},
       builder: (context, state) {
         UserModel? userdata =
             state is GetUserByIdSuccess ? state.getUserByIdData : null;
@@ -106,16 +107,16 @@ class _LandingScreenState extends State<LandingScreen> {
               IconButton(
                   visualDensity: VisualDensity(horizontal: -4),
                   onPressed: () {},
-                  icon: (userdata?.data?.profileUrl.toString() ?? '').isEmpty
+                  icon: (!isLogin || (userdata?.data?.profileUrl ?? '').isEmpty)
                       ? Icon(
                     Icons.account_circle_outlined,
                     // color: ColorConstants.white,
                         )
                       : CircleAvatar(
-                          radius: 18,
+                          radius: 16,
                           child: ClipOval(
                               child: Image.network(
-                            userdata?.data?.profileUrl,
+                            userdata?.data?.profileUrl ?? "",
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: double.infinity,
@@ -129,7 +130,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 '${userdata?.data?.firstName ?? ""} ${userdata?.data?.lastName ?? ''}',
             lastLogin: userdata?.data?.lastLogin ?? '',
             emailAddress: userdata?.data?.email ?? 'xyz@gmail.com',
-            profileUrl: '${userdata?.data?.profileUrl ?? ""}',
+            profileUrl: userdata?.data?.profileUrl ?? "",
             menuItems: [
               {
                 "imgUrl": Icons.dashboard,
@@ -270,7 +271,9 @@ class _LandingScreenState extends State<LandingScreen> {
                               "serviceName": _controller.text,
                               "searchText": _searchController.text
                             }).then((onValue) {
-                              _getUser();
+                              if (isLogin) {
+                                _getUser();
+                              }
                               _getActiveCaList();
                             });
                           }
@@ -313,7 +316,9 @@ class _LandingScreenState extends State<LandingScreen> {
                                     // "serviceId": widget.serviceId,
                                     // "serviceName": widget.serviceName
                                   }).then((onValue) {
-                                    _getUser();
+                                    if (isLogin) {
+                                      _getUser();
+                                    }
                                     _getActiveCaList();
                                   });
                                 },

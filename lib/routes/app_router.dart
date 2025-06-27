@@ -30,9 +30,9 @@ import 'package:ca_app/screens/customer_client_screens/hisoty_screen/history_scr
 import 'package:ca_app/screens/customer_client_screens/my_ca_screen/my_ca_screen.dart';
 import 'package:ca_app/screens/indivisual_customer/indivisual_customer_dashboard.dart';
 import 'package:ca_app/screens/indivisual_customer/service_screen/customer_services_screen.dart';
-import 'package:ca_app/screens/indivisual_customer/service_screen/requested_ca_service_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/enquiry_history_screen.dart';
 import 'package:ca_app/screens/indivisual_customer/service_screen/view_ca_by_service_screen.dart';
-import 'package:ca_app/screens/indivisual_customer/service_screen/view_requested_ca_service_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/view_enquiry_screen.dart';
 import 'package:ca_app/screens/my_profile_screen/ca_profile_screen.dart';
 import 'package:ca_app/screens/my_profile_screen/individual_customer_profile.dart';
 import 'package:ca_app/screens/my_profile_screen/profile_screen.dart';
@@ -519,15 +519,15 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'requested_ca',
               builder: (context, state) {
-                return RequestedCaServiceScreen();
+                return EnquiryHistoryScreen();
               },
             ),
             GoRoute(
               path: 'view_requested_ca',
               builder: (context, state) {
                 var extra = state.extra as Map<String, dynamic>;
-
-                return ViewRequestedCaServiceScreen(
+                 
+                return ViewEnquiryScreen(
                   serviceOrderId: extra["serviceOrderId"],
                   caSide: extra['caSide'] ?? false,
                 );

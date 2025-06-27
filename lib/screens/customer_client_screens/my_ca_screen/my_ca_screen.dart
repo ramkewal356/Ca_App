@@ -71,7 +71,7 @@ class _MyCaScreenState extends State<MyCaScreen> {
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
-                                  caData?.data?.profileUrl,
+                                  caData?.data?.profileUrl ?? '',
                                   fit: BoxFit.cover,
                                 ),
                               ),

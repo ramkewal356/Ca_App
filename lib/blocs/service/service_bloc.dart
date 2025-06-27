@@ -390,7 +390,8 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
       "pageNumber": pageNumber,
       "pageSize": pageSize,
       "orderStatus": event.filterTex,
-      "search": event.searchText
+      "search": event.searchText,
+      "urgencyLevel": event.urgencyFilterText
     };
     try {
       var resp = await _myRepo.getServiceRequestByCustomerIdApi(query: query);

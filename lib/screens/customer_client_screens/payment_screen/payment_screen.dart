@@ -73,7 +73,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   )
                                 : ClipOval(
                                     child: Image.network(
-                                      caData?.data?.profileUrl,
+                                      caData?.data?.profileUrl ?? '',
                                       fit: BoxFit.fill,
                                     ),
                                   ),

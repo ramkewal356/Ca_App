@@ -96,38 +96,39 @@ class CaList {
   bool? isOnline;
   String? address;
   String? firmAddress;
-  CaList({
-    this.caId,
-    this.fullName,
-    this.email,
-    this.mobile,
-    this.companyName,
-    this.countryCode,
-    this.profileUrl,
-    this.lastLogin,
-    this.lastLogout,
-    this.isOnline,
+  String? professionalTitle;
+  CaList(
+      {this.caId,
+      this.fullName,
+      this.email,
+      this.mobile,
+      this.companyName,
+      this.countryCode,
+      this.profileUrl,
+      this.lastLogin,
+      this.lastLogout,
+      this.isOnline,
       this.address,
-      this.firmAddress
-  });
+      this.firmAddress,
+      this.professionalTitle});
 
   factory CaList.fromJson(Map<String, dynamic> json) => CaList(
-        caId: json["caId"],
-        fullName: json["fullName"],
-        email: json["email"],
-        mobile: json["mobile"],
-        companyName: json["companyName"],
-        countryCode: json["countryCode"],
-        profileUrl: json["profileUrl"],
-        lastLogin: json["lastLogin"] == null
-            ? null
-            : DateTime.parse(json["lastLogin"]),
-        lastLogout: json["lastLogout"] == null
-            ? null
-            : DateTime.parse(json["lastLogout"]),
-        isOnline: json["isOnline"],
+      caId: json["caId"],
+      fullName: json["fullName"],
+      email: json["email"],
+      mobile: json["mobile"],
+      companyName: json["companyName"],
+      countryCode: json["countryCode"],
+      profileUrl: json["profileUrl"],
+      lastLogin:
+          json["lastLogin"] == null ? null : DateTime.parse(json["lastLogin"]),
+      lastLogout: json["lastLogout"] == null
+          ? null
+          : DateTime.parse(json["lastLogout"]),
+      isOnline: json["isOnline"],
       address: json["address"],
-      firmAddress: json["firmAddress"]
+      firmAddress: json["firmAddress"],
+      professionalTitle: json["professionalTitle"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -143,6 +144,7 @@ class CaList {
         "isOnline": isOnline,
         "address": address,
         "firmAddress": firmAddress,
+        "professionalTitle": professionalTitle
       };
 }
 

@@ -3,6 +3,8 @@ import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
 
 class ChatScreen extends StatefulWidget {
   final String name;
@@ -23,6 +25,26 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  late WebSocketChannel channel;
+  @override
+  void initState() {
+    super.initState();
+    // channel = WebSocketChannel.connect(
+    //   Uri.parse(
+    //       'ws://cabaonline.xyz/api/chat-websocket'), // e.g., ws://echo.websocket.org
+    // );
+    wsconnect();
+  }
+
+  void wsconnect() async {
+    try {
+      final wsUrl = Uri.parse('wss://cabaonline.xyz/api/chat-websocket');
+      channel = WebSocketChannel.connect(wsUrl);
+      print("WebSocket connected!");
+    } catch (e) {
+      print("WebSocket connection failed: $e");
+    }
+  }
 
   final List<Message> _messages = [
     Message(
@@ -37,10 +59,11 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_controller.text.trim().isEmpty) return;
     final now = TimeOfDay.now();
     final formattedTime = now.format(context);
+    final userMsg = _controller.text.trim();
+    channel.sink.add(userMsg); // Send plain string
 
     setState(() {
-      _messages.add(Message(
-          text: _controller.text.trim(), time: formattedTime, isUser: true));
+      _messages.add(Message(text: userMsg, time: formattedTime, isUser: true));
       _controller.clear();
     });
     // Scroll to bottom after short delay
@@ -55,6 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    channel.sink.close();
     _scrollController.dispose();
     _controller.dispose();
     super.dispose();
@@ -81,15 +105,39 @@ class _ChatScreenState extends State<ChatScreen> {
           // _buildHeader(),
           SizedBox(height: 8),
           Expanded(
-            child: ListView.builder(
-              reverse: false,
-              controller: _scrollController,
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildMessageBubble(_messages[index]);
-              },
-            ),
+            child: StreamBuilder(
+                stream: channel.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final now = TimeOfDay.now();
+                    final formattedTime = now.format(context);
+
+                    _messages.add(
+                      Message(
+                          text: snapshot.data.toString(),
+                          time: formattedTime,
+                          isUser: false),
+                    );
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (_scrollController.hasClients) {
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
+                      }
+                    });
+                  }
+
+                  return ListView.builder(
+                    reverse: false,
+                    controller: _scrollController,
+                    itemCount: _messages.length,
+                    itemBuilder: (context, index) {
+                      return _buildMessageBubble(_messages[index]);
+                    },
+                  );
+                }),
           ),
+
           _buildInputBar(),
         ],
       ),

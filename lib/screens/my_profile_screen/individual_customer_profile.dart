@@ -190,7 +190,7 @@ class _IndividualCustomerProfileState extends State<IndividualCustomerProfile> {
                                           width: 4,
                                           color: ColorConstants.white)),
                                   child: ImagePickerWidget(
-                                    userImg: data?.profileUrl,
+                                    userImg: data?.profileUrl ?? '',
                                     initialImage: null,
                                     isEditable: isEditable,
                                   ),

@@ -185,16 +185,24 @@ class GetServiceRequestedCaEvent extends ServiceEvent {
   final String searchText;
   final bool isFilter;
   final String filterTex;
-
+  final String urgencyFilterText;
   const GetServiceRequestedCaEvent(
       {required this.isPagination,
       required this.isSearch,
       required this.searchText,
       required this.isFilter,
-      required this.filterTex});
+      required this.filterTex,
+      required this.urgencyFilterText});
   @override
   List<Object> get props =>
-      [isPagination, isSearch, searchText, isFilter, filterTex];
+      [
+        isPagination,
+        isSearch,
+        searchText,
+        isFilter,
+        filterTex,
+        urgencyFilterText
+      ];
 }
 
 class ViewRequestedCaByServiceIdEvent extends ServiceEvent {

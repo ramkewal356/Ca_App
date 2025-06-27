@@ -42,7 +42,7 @@ class Data {
   bool? status;
   int? createdDate;
   int? modifiedDate;
-  dynamic profileUrl;
+  String? profileUrl;
   dynamic profileName;
   dynamic gender;
   String? panCardNumber;

@@ -38,7 +38,8 @@ class IndivisualCustomerBloc
       "caId": userId,
       "pageNumber": pageNumber,
       "pageSize": pageSize,
-      "orderStatus": event.filterText
+      "orderStatus": event.filterText,
+      "urgencyLevel": event.urgencyFilterText
     };
     try {
       var resp = await _myRepo.getRequestServiceByCaIdApi(query: query);

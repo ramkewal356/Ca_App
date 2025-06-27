@@ -110,7 +110,10 @@ class RequestCaContent {
   String? caCompanyName;
   String? orderStatus;
   int? createdDate;
-
+  String? rejectionComment;
+  String? message;
+  String? subject;
+  String? urgencyLevel;
   RequestCaContent({
     this.serviceOrderId,
     this.serviceId,
@@ -124,6 +127,11 @@ class RequestCaContent {
     this.caCompanyName,
     this.orderStatus,
     this.createdDate,
+      this.rejectionComment,
+      this.message,
+      this.subject,
+      this.urgencyLevel
+
   });
 
   factory RequestCaContent.fromJson(Map<String, dynamic> json) =>
@@ -140,6 +148,10 @@ class RequestCaContent {
         caCompanyName: json["caCompanyName"],
         orderStatus: json["orderStatus"],
         createdDate: json["createdDate"],
+        rejectionComment: json["rejectionComment"],
+        message: json["message"],
+        subject: json["subject"],
+        urgencyLevel: json["urgencyLevel"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -155,6 +167,10 @@ class RequestCaContent {
         "caCompanyName": caCompanyName,
         "orderStatus": orderStatus,
         "createdDate": createdDate,
+        "rejectionComment": rejectionComment,
+        "message": message,
+        "subject": subject,
+        "urgencyLevel": urgencyLevel,
       };
 }
 

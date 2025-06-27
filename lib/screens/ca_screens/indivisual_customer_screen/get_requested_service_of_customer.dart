@@ -24,8 +24,12 @@ class _GetRequestedServiceOfCustomerState
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String filterText = '';
+  String urgencyFilterText = '';
+
   String searchText = '';
   String title = 'All';
+  String title1 = 'All';
+
   final _searchFocus = FocusNode();
 
   @override
@@ -42,13 +46,21 @@ class _GetRequestedServiceOfCustomerState
     context.read<IndivisualCustomerBloc>().add(GetRequestedServiceByCaIdEvent(
         isFilter: isFilter,
         filterText: filterText,
-        isPagination: isPagination));
+        isPagination: isPagination,
+        urgencyFilterText: urgencyFilterText));
   }
 
   onFilterChanged(String value) {
     setState(() {
       filterText = value;
       title = value == '' ? 'All' : filtersList[value] ?? '';
+    });
+    _getRequestedService(isFilter: true);
+  }
+  onFilterChanged1(String value) {
+    setState(() {
+      urgencyFilterText = value;
+      title1 = value == '' ? 'All' : urgencyFilter[value] ?? '';
     });
     _getRequestedService(isFilter: true);
   }
@@ -73,6 +85,12 @@ class _GetRequestedServiceOfCustomerState
     "Rejected": 'REJECTED',
     "Accepted": 'ACCEPTED'
   };
+  Map<String, String> urgencyFilter = {
+    "All": '',
+    "High": 'HIGH',
+    "MEDIUM": 'MEDIUM',
+    "Low": 'LOW'
+  };
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -94,6 +112,12 @@ class _GetRequestedServiceOfCustomerState
                   onChanged: _onSearchChanged,
                 )),
                 SizedBox(width: 10),
+                CustomFilterPopupWidget(
+                    title: title1,
+                    filterOptions: urgencyFilter,
+                    onFilterChanged: onFilterChanged1),
+                SizedBox(width: 10),
+
                 CustomFilterPopupWidget(
                     title: title,
                     filterOptions: filtersList,
@@ -174,8 +198,8 @@ class _GetRequestedServiceOfCustomerState
                                     CustomTextInfo(
                                         flex1: 2,
                                         flex2: 3,
-                                        lable: 'Ca Name',
-                                        value: data.caName ?? ''),
+                                        lable: 'Urgency Level',
+                                        value: data.urgencyLevel ?? ''),
                                     CustomTextInfo(
                                       flex1: 2,
                                       flex2: 3,
