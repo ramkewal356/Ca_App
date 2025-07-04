@@ -19,10 +19,15 @@ import 'package:go_router/go_router.dart';
 
 class CaDetailsScreen extends StatefulWidget {
   final String userId;
+  final String caId;
   final int? serviceId;
   final String? serviceName;
   const CaDetailsScreen(
-      {super.key, required this.userId, this.serviceId, this.serviceName});
+      {super.key,
+      required this.userId,
+      this.serviceId,
+      this.serviceName,
+      required this.caId});
 
   @override
   State<CaDetailsScreen> createState() => _CaDetailsScreenState();
@@ -43,7 +48,7 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
 
   void _getUser() {
     BlocProvider.of<AuthBloc>(context)
-        .add(GetUserByIdEvent(userId: widget.userId));
+        .add(GetUserByIdEvent(userId: widget.caId));
   }
 
   void _fetchService() {
@@ -52,7 +57,7 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
       serviceName = widget.serviceName ?? '';
     });
     context.read<ServiceBloc>().add(GetCaServiceListEvent(
-        caId: widget.userId,
+        caId: widget.caId,
         isSearch: true,
         searchText: '',
         isPagination: false,
@@ -111,7 +116,7 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                   children: [
                     SizedBox(height: 5),
                     CommonCaContainer(
-                      imageUrl: '${userData?.profileUrl ?? ''}',
+                      imageUrl: userData?.profileUrl ?? '',
                       name: '${userData?.firstName} ${userData?.lastName}',
                       title: userData?.professionalTitle ?? '',
                       tag: widget.serviceName ?? '',
@@ -132,7 +137,10 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                                 '${userData?.firstName} ${userData?.lastName}',
                             "title": userData?.professionalTitle ?? '',
                             "profileImg": userData?.profileUrl ?? '',
-                            "isOnline": userData?.isOnline
+                            "isOnline": userData?.isOnline,
+                            "senderId": widget.userId,
+                            "receiverId": widget.caId,
+                           
                           });
                         } else {
                           context.push('/login');

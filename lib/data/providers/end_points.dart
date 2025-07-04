@@ -107,8 +107,11 @@ class EndPoints {
   //Permission url
   static var getPermissionHistory =
       '/permission/get_account_permission_history_updatedBy';
-  //websocket url
+  //chat url
   static var websocketUrl = 'wss://cabaonline.xyz/chat-websocket';
+  static var chatHistoryUrl = '/api/chat/history';
+  static var allChatHistoryUrl = '/api/chat/customers';
+
   //sate url
   static var stateBaseUrl = 'https://countriesnow.space';
   static var getStateNameUrl = '/api/v0.1/countries/states';

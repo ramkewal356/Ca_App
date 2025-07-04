@@ -19,11 +19,13 @@ class CaSearchListScreen extends StatefulWidget {
   final int serviceId;
   final String serviceName;
   final String searchText;
+  final String userId;
   const CaSearchListScreen(
       {super.key,
       required this.serviceId,
       required this.serviceName,
-      required this.searchText});
+      required this.searchText,
+      required this.userId});
 
   @override
   State<CaSearchListScreen> createState() => _CaSearchListScreenState();
@@ -240,7 +242,8 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                         child: GestureDetector(
                           onTap: () {
                             context.push('/ca_details', extra: {
-                              "userId": data.caId.toString(),
+                              "userId": widget.userId,
+                              "caId": data.caId.toString(),
                               "serviceId": selectedServiceId,
                               "serviceName": selectedServiceName
                             }).then((onValue) {
@@ -254,8 +257,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                             name: '${data.fullName}',
                             title: data.professionalTitle ?? "",
                             tag: state.subService,
-                            address:
-                                data.firmAddress ?? data.address ?? '',
+                            address: data.firmAddress ?? data.address ?? '',
                             isOnline: data.isOnline ?? false,
                             rating: 4.9,
                             reviews: 174,

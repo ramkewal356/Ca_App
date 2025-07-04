@@ -197,6 +197,18 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 }
               },
               {
+                "imgUrl": Icons.chat,
+                "label": "Chat History",
+                "onTap": () {
+                  context.push('/chat_history').then((onValue) async {
+                   
+                    await _fetchCustomersData(isFilter: true);
+                    // await _getRecentDocument();
+                    // _getDashboardData();
+                  });
+                }
+              },
+              {
                 "imgUrl": Icons.groups_3,
                 "label": "Team Members",
                 "onTap": () {

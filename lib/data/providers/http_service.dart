@@ -37,21 +37,21 @@ class HttpService<T> {
       // this.baseURL = "http://3.110.83.101:9000/";
     }
     _http = Dio();
-    _http?.interceptors.add(InterceptorsWrapper(
-      onError: (DioException e, handler) async {
-        if (e.response?.statusCode == 401) {
-          debugPrint("⚠️ Token expired, logging out...");
+    // _http?.interceptors.add(InterceptorsWrapper(
+    //   onError: (DioException e, handler) async {
+    //     if (e.response?.statusCode == 401) {
+    //       debugPrint("⚠️ Token expired, logging out...");
 
-          await SharedPrefsClass().removeToken();
+    //       await SharedPrefsClass().removeToken();
 
-          navigatorKey.currentState?.pushNamedAndRemoveUntil(
-            '/landing_screen',
-            (route) => false,
-          );
-        }
-        return handler.next(e); // continue error flow
-      },
-    ));
+    //       navigatorKey.currentState?.pushNamedAndRemoveUntil(
+    //         '/landing_screen',
+    //         (route) => false,
+    //       );
+    //     }
+    //     return handler.next(e); // continue error flow
+    //   },
+    // ));
   }
   authorizeRequest() async {
     if (this.headers == null) {

@@ -19,6 +19,7 @@ import 'package:ca_app/screens/ca_screens/task_allocation/view_task_screen.dart'
 import 'package:ca_app/screens/ca_screens/team_member/get_permission_screen.dart';
 import 'package:ca_app/screens/ca_screens/team_member/team_member_screen.dart';
 import 'package:ca_app/screens/ca_screens/team_member/view_team_member_screen.dart';
+import 'package:ca_app/screens/chat_screen/all_chat_history_creen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support.dart';
 import 'package:ca_app/screens/auth_screens/login_screen.dart';
 import 'package:ca_app/screens/auth_screens/otp_verification_screen.dart';
@@ -83,6 +84,7 @@ final GoRouter goRouter = GoRouter(
               serviceId: data["serviceId"],
               serviceName: data["serviceName"],
               searchText: data["searchText"],
+              userId: data["userId"],
             );
           }),
       GoRoute(
@@ -97,6 +99,7 @@ final GoRouter goRouter = GoRouter(
             userId: userId,
             serviceId: serviceId,
             serviceName: serviceName,
+            caId: data["caId"],
           );
         },
       ),
@@ -109,8 +112,14 @@ final GoRouter goRouter = GoRouter(
               title: data["title"],
               profileImg: data["profileImg"],
               isOnline: data["isOnline"],
+              senderId: data["senderId"],
+              receiverId: data["receiverId"],
             );
           }),
+      GoRoute(
+        path: '/chat_history',
+        builder: (context, state) => AllChatHistoryScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(),

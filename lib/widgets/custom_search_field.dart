@@ -10,6 +10,8 @@ class CustomSearchField extends StatelessWidget {
   final double? borderRadius;
   final Widget? prefixIcon;
   final Color? borderColor;
+  final Color? fillColor;
+  final bool filled;
   const CustomSearchField(
       {super.key,
       required this.controller,
@@ -18,7 +20,9 @@ class CustomSearchField extends StatelessWidget {
       this.onChanged,
       this.borderRadius,
       this.prefixIcon,
-      this.borderColor});
+      this.borderColor,
+      this.fillColor,
+      this.filled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +35,10 @@ class CustomSearchField extends StatelessWidget {
       },
       decoration: InputDecoration(
           prefixIcon: prefixIcon,
-          prefixIconConstraints: BoxConstraints(maxWidth: 35, minWidth: 30),
+          prefixIconConstraints: BoxConstraints(maxWidth: 50, minWidth: 30),
           contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          fillColor: fillColor,
+          filled: filled,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
             borderSide: BorderSide(

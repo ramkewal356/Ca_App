@@ -1,5 +1,6 @@
 
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/chat/chat_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
 import 'package:ca_app/blocs/customer/customer_bloc.dart';
 import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
@@ -79,7 +80,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => IndivisualCustomerBloc()),
         BlocProvider(create: (_) => ProfileBloc()),
         BlocProvider(create: (_) => GetDegreeBloc()),
-
+        BlocProvider(create: (_) => ChatBloc()),
+        BlocProvider(create: (_) => ChatHistoryBloc()),
+        
 
 
       

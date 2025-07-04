@@ -109,8 +109,8 @@ class _LandingScreenState extends State<LandingScreen> {
                   onPressed: () {},
                   icon: (!isLogin || (userdata?.data?.profileUrl ?? '').isEmpty)
                       ? Icon(
-                    Icons.account_circle_outlined,
-                    // color: ColorConstants.white,
+                          Icons.account_circle_outlined,
+                          // color: ColorConstants.white,
                         )
                       : CircleAvatar(
                           radius: 16,
@@ -151,6 +151,13 @@ class _LandingScreenState extends State<LandingScreen> {
                 "label": "Enquiry History",
                 "onTap": () {
                   context.push('/indivisual_customer/requested_ca');
+                }
+              },
+              {
+                "imgUrl": Icons.chat,
+                "label": "Chat History",
+                "onTap": () {
+                  context.push('/chat_history');
                 }
               },
               {
@@ -221,12 +228,11 @@ class _LandingScreenState extends State<LandingScreen> {
                     children: [
                       Expanded(
                         child: SizedBox(
-                          height: 40,
+                            height: 40,
                             child: CustomSearchField(
                                 focusNode: _searchFocus,
                                 controller: _searchController,
-                                serchHintText: 'Search ca..')
-                        ),
+                                serchHintText: 'Search ca..')),
                       ),
                       SizedBox(width: 8),
                       Expanded(
@@ -235,7 +241,6 @@ class _LandingScreenState extends State<LandingScreen> {
                         child: SearchServiceWidget(
                           controller: _controller,
                           hintText: 'Service',
-                      
                           onServiceSelected: (id) {
                             serviceId = id;
                           },
@@ -269,7 +274,8 @@ class _LandingScreenState extends State<LandingScreen> {
                             context.push('/ca_search', extra: {
                               "serviceId": serviceId,
                               "serviceName": _controller.text,
-                              "searchText": _searchController.text
+                              "searchText": _searchController.text,
+                              "userId": userdata?.data?.id.toString()
                             }).then((onValue) {
                               if (isLogin) {
                                 _getUser();
@@ -312,7 +318,8 @@ class _LandingScreenState extends State<LandingScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   context.push('/ca_details', extra: {
-                                    "userId": data.userId.toString(),
+                                    "userId": userdata?.data?.id.toString(),
+                                    "caId": data.userId.toString()
                                     // "serviceId": widget.serviceId,
                                     // "serviceName": widget.serviceName
                                   }).then((onValue) {
@@ -326,8 +333,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                     image: data.profileUrl ?? '',
                                     title: '${data.firstName} ${data.lastName}',
                                     subtilte: 'Tax Planning & Compliance',
-                                    subtitle2:
-                                        '',
+                                    subtitle2: '',
                                     totalCa: '45',
                                     viewAllOnTap: () {},
                                     allCaOnTap: () {},
@@ -873,9 +879,9 @@ class _LandingScreenState extends State<LandingScreen> {
                   child: image.isEmpty
                       ? Image.asset(
                           clientImg,
-                    width: 212,
-                    height: 176,
-                    fit: BoxFit.cover,
+                          width: 212,
+                          height: 176,
+                          fit: BoxFit.cover,
                         )
                       : Image.network(
                           image,
@@ -887,38 +893,39 @@ class _LandingScreenState extends State<LandingScreen> {
                 title.isEmpty
                     ? SizedBox.shrink()
                     : Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                  child: Text(
-                    title,
-                    style: AppTextStyle().landingCardTitle,
-                  ),
-                ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 5),
+                        child: Text(
+                          title,
+                          style: AppTextStyle().landingCardTitle,
+                        ),
+                      ),
                 subtilte.isEmpty
                     ? SizedBox.shrink()
                     : Container(
-                  margin: EdgeInsets.symmetric(horizontal: 8),
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                      color: ColorConstants.buttonColor
-                          // ignore: deprecated_member_use
-                          .withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Text(
-                    subtilte,
-                    style: AppTextStyle().landingCardSubTitle,
-                  ),
-                ),
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                            color: ColorConstants.buttonColor
+                                // ignore: deprecated_member_use
+                                .withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Text(
+                          subtilte,
+                          style: AppTextStyle().landingCardSubTitle,
+                        ),
+                      ),
                 subtitle2.isEmpty ? SizedBox.shrink() : SizedBox(height: 5),
                 subtitle2.isEmpty
                     ? SizedBox.shrink()
                     : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    subtitle2,
-                    style: AppTextStyle().landingCardsubtitle2,
-                  ),
-                ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          subtitle2,
+                          style: AppTextStyle().landingCardsubtitle2,
+                        ),
+                      ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(

@@ -207,11 +207,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                 ),
                 ListTile(
-                  onTap: showConfimLogout,
-                  // onTap: () {
-                  //   // context.pop();
-                  //   showConfimLogout();
-                  // },
+                  // onTap: showConfimLogout,
+                  onTap: () {
+                    context.pop();
+                    showConfimLogout();
+                  },
                   leading: Icon(Icons.logout),
                   title: Text(
                     'Logout',
@@ -260,6 +260,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     CommonButtonWidget(
                       buttonWidth: 70,
                       buttonTitle: 'Yes',
+                      // onTap: onTap,
                       onTap: () {
                         context.pop();
                         SharedPrefsClass().removeToken();
