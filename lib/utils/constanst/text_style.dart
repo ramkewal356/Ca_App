@@ -67,6 +67,8 @@ class AppTextStyle {
       color: ColorConstants.white, fontSize: 12, fontWeight: FontWeight.w600);
   TextStyle landingSubtitletext22 = GoogleFonts.poppins(
       color: ColorConstants.white, fontSize: 12, fontWeight: FontWeight.w400);
+  TextStyle chat12 = GoogleFonts.poppins(
+      color: ColorConstants.white, fontSize: 10, fontWeight: FontWeight.w400);
   TextStyle headingText24 = GoogleFonts.poppins(
       color: ColorConstants.white, fontSize: 24, fontWeight: FontWeight.w700);
   TextStyle landinghinttext = GoogleFonts.poppins(
@@ -151,11 +153,11 @@ class AppTextStyle {
       color: ColorConstants.black, fontSize: 17, fontWeight: FontWeight.w600);
   TextStyle lableText = GoogleFonts.roboto(
       color: ColorConstants.black,
-      fontSize: 13.sp,
+      fontSize: 14,
       fontWeight: FontWeight.w600);
   TextStyle cardValueText = GoogleFonts.roboto(
       color: ColorConstants.black.withOpacity(0.7),
-      fontSize: 13.sp,
+      fontSize: 13,
       fontWeight: FontWeight.w400);
   TextStyle getgreenText = GoogleFonts.roboto(
       color: ColorConstants.greenColor,

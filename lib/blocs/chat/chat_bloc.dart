@@ -16,6 +16,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   ChatBloc() : super(ChatInitial()) {
     on<GetChatHistoryEvent>(_getChatHistory);
+    on<UpdateChatHistoryEvent>((event, emit) {
+      ChatSuccess(chatData: event.updatedMessage);
+    });
   }
 
   Future<void> _getChatHistory(
@@ -28,7 +31,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       emit(Chatloading());
       var resp = await _myRepo.getChatHistoryApi(query: query);
-      emit(ChatSuccess(chatData: resp));
+      emit(ChatSuccess(chatData: resp.data?.messages ?? []));
     } catch (e) {
       emit(ChatError());
     }

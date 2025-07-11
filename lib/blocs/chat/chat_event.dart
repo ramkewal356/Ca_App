@@ -40,3 +40,11 @@ class UpdateChatListEvent extends ChatEvent {
   @override
   List<Object> get props => [updatedChatList];
 }
+
+class UpdateChatHistoryEvent extends ChatEvent {
+  final List<Messages> updatedMessage;
+
+  const UpdateChatHistoryEvent({required this.updatedMessage});
+  @override
+  List<Object> get props => [updatedMessage];
+}

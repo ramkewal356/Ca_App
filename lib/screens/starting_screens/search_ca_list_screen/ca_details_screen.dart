@@ -140,7 +140,7 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                             "isOnline": userData?.isOnline,
                             "senderId": widget.userId,
                             "receiverId": widget.caId,
-                           
+                            "role": 'Customer'
                           });
                         } else {
                           context.push('/login');

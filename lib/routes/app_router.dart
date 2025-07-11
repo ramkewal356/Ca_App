@@ -114,12 +114,19 @@ final GoRouter goRouter = GoRouter(
               isOnline: data["isOnline"],
               senderId: data["senderId"],
               receiverId: data["receiverId"],
+              role: data["role"],
             );
           }),
       GoRoute(
-        path: '/chat_history',
-        builder: (context, state) => AllChatHistoryScreen(),
-      ),
+          path: '/chat_history',
+          builder: (context, state) {
+            var data = state.extra as Map<String, dynamic>;
+
+            return AllChatHistoryScreen(
+              role: data["role"],
+              message: data['message'] as Messages?,
+            );
+          }),
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(),
@@ -535,7 +542,7 @@ final GoRouter goRouter = GoRouter(
               path: 'view_requested_ca',
               builder: (context, state) {
                 var extra = state.extra as Map<String, dynamic>;
-                 
+
                 return ViewEnquiryScreen(
                   serviceOrderId: extra["serviceOrderId"],
                   caSide: extra['caSide'] ?? false,

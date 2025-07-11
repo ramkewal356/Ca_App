@@ -200,11 +200,11 @@ class _CaDashboardScreenState extends State<CaDashboardScreen> {
                 "imgUrl": Icons.chat,
                 "label": "Chat History",
                 "onTap": () {
-                  context.push('/chat_history').then((onValue) async {
+                  context.push('/chat_history', extra: {"role": "CA"}).then(
+                      (onValue) async {
                    
                     await _fetchCustomersData(isFilter: true);
-                    // await _getRecentDocument();
-                    // _getDashboardData();
+                    
                   });
                 }
               },

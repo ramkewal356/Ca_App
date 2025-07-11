@@ -33,7 +33,7 @@ class ChatHistoryModel {
 
 class Data {
   bool? receiverOnline;
-  List<Message>? messages;
+  List<Messages>? messages;
 
   Data({
     this.receiverOnline,
@@ -44,8 +44,8 @@ class Data {
         receiverOnline: json["receiverOnline"],
         messages: json["messages"] == null
             ? []
-            : List<Message>.from(
-                json["messages"]!.map((x) => Message.fromJson(x))),
+            : List<Messages>.from(
+                json["messages"]!.map((x) => Messages.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,21 +56,21 @@ class Data {
       };
 }
 
-class Message {
+class Messages {
   String? message;
   int? timestamp;
   int? messageId;
-  dynamic isForwarded;
+  bool? isForwarded;
   dynamic forwardedFromUserName;
   dynamic replyToMessageId;
   int? receiverId;
   int? senderId;
   dynamic editedAt;
   bool? isRead;
-  dynamic isEdited;
+  bool? isEdited;
   dynamic replyToMessageText;
 
-  Message({
+  Messages({
     this.message,
     this.timestamp,
     this.messageId,
@@ -85,7 +85,7 @@ class Message {
     this.replyToMessageText,
   });
 
-  factory Message.fromJson(Map<String, dynamic> json) => Message(
+  factory Messages.fromJson(Map<String, dynamic> json) => Messages(
         message: json["message"],
         timestamp: json["timestamp"],
         messageId: json["messageId"],

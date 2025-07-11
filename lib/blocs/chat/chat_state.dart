@@ -14,7 +14,7 @@ class Chatloading extends ChatState {}
 class ChatHistoryloading extends ChatState {}
 
 class ChatSuccess extends ChatState {
-  final ChatHistoryModel chatData;
+  final List<Messages> chatData;
 
   const ChatSuccess({required this.chatData});
   @override

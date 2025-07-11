@@ -11,6 +11,13 @@ const String landingTopImg = 'assets/images/landing_top_img.png';
 const String clientImg = 'assets/images/client_img.png';
 const String searchCaTopImg = 'assets/images/search_ca_top_img.png';
 const String chatbgImg = 'assets/images/bg_image.webp';
+const String replyImg = 'assets/images/reply.png';
+const String forwardImg = 'assets/images/forward.png';
+const String forwardAllImg = 'assets/images/forward-all.png';
+const String replyArrowImg = 'assets/images/reply-arrow.png';
+
+
+
 
 
 

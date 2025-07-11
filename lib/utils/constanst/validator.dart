@@ -112,3 +112,25 @@ Future<String?> selectDateOfBirth(BuildContext context) async {
   }
   return null;
 }
+bool isWithin15Minutes(String timeString) {
+  try {
+    final now = DateTime.now();
+
+    // Parse '4:54 PM' as today's time
+    final parsedTime = DateFormat('h:mm a').parse(timeString);
+
+    // Combine with today's date
+    final todayTime = DateTime(
+        now.year, now.month, now.day, parsedTime.hour, parsedTime.minute);
+
+    final diff = now.difference(todayTime).inMinutes;
+
+    // Debug output
+    debugPrint("⏱️ Parsed time: $todayTime, Now: $now, Difference: $diff min");
+
+    return diff.abs() <= 15;
+  } catch (e) {
+    debugPrint("Failed to parse time: $e");
+    return false;
+  }
+}

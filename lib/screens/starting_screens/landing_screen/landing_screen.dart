@@ -157,7 +157,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 "imgUrl": Icons.chat,
                 "label": "Chat History",
                 "onTap": () {
-                  context.push('/chat_history');
+                  context.push('/chat_history', extra: {"role": "Customer"});
                 }
               },
               {
