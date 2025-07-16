@@ -3,6 +3,8 @@ class EndPoints {
   static const baseUrl = 'https://cabaonline.xyz/api';
   //Auth url
   static const loginUrl = '/login';
+  static const logoutUrl = '/users/logout';
+
   static const addNewUserUrl = '/users/add_user';
   static const updateProfileImageUrl = '/users/upload_profile_by_userId';
   static const getUserByIdUrl = '/users/get_user_by_userId';

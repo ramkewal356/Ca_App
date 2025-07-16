@@ -3,6 +3,7 @@ import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/repositories/auth_repository.dart';
+import 'package:ca_app/utils/constanst/validator.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<UpdateProfileImageEvent>(_uploadProfileImageApi);
 
     on<GetUserByIdEvent>(_getUserById);
+    on<LogoutEvent>(_logoutApi);
     on<DeactiveUserEvent>(_activeDeactiveUser);
   }
   //**** Call AuthUser API ****//
@@ -37,9 +39,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String? role = await SharedPrefsClass().getRole();
       bool? selfRegistered = await SharedPrefsClass().getSelfRegistered();
       debugPrint('token:---$token');
+      // bool isTokenExpire = isTokenExpired(token ?? '');
+
       if (token != null) {
-        emit(AuthSuccessState(
-            role: role ?? '', selfRegistered: selfRegistered ?? false));
+        if (isTokenExpired(token)) {
+          add(LogoutEvent());
+          // await SharedPrefsClass().removeToken();
+          emit(AuthFail());
+        } else {
+          emit(AuthSuccessState(
+              role: role ?? '', selfRegistered: selfRegistered ?? false));
+        }
       } else {
         emit(AuthFail());
       }
@@ -295,6 +305,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (resp?.status?.httpCode == '200') {
         emit(DeactiveUserSucess());
       }
+    } catch (e) {
+      emit(AuthErrorState(erroMessage: e.toString()));
+    }
+  }
+
+  //**** Call logout API ****//
+  Future<void> _logoutApi(LogoutEvent event, Emitter<AuthState> emit) async {
+    try {
+      int? userId = await SharedPrefsClass().getUserId();
+      Map<String, dynamic> query = {"userId": userId};
+      var logoutResp = await _myRepo.logoutApi(query: query);
+      await SharedPrefsClass().removeToken();
+      emit(LogoutSuccess(logout: logoutResp ?? false));
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));
     }

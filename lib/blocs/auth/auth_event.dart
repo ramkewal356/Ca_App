@@ -175,7 +175,7 @@ class GetUserByIdEvent extends AuthEvent {
   @override
   List<Object> get props => [userId ?? ''];
 }
-
+class LogoutEvent extends AuthEvent {}
 //**** Deactive User Event ****//
 class DeactiveUserEvent extends AuthEvent {
   // final String actionPerformerId;
@@ -196,4 +196,5 @@ class DeactiveUserEvent extends AuthEvent {
         reason,
         action
       ];
+
 }

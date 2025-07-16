@@ -429,7 +429,7 @@ class _IndividualCustomerProfileState extends State<IndividualCustomerProfile> {
                             SizedBox(height: 10),
                             lableText('Gst Number (Optional)'),
                             TextformfieldWidget(
-                              // readOnly: true,
+                              readOnly: isEditable ? false : true,
                               fillColor: ColorConstants.white,
                               controller: _gstController,
                               hintText: 'Enter gst number',

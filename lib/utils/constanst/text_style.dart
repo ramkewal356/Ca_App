@@ -151,6 +151,10 @@ class AppTextStyle {
       color: ColorConstants.black, fontSize: 15, fontWeight: FontWeight.w400);
   TextStyle cardLableText = GoogleFonts.roboto(
       color: ColorConstants.black, fontSize: 17, fontWeight: FontWeight.w600);
+  TextStyle logOutText = GoogleFonts.roboto(
+      color: ColorConstants.black,
+      fontSize: 15.sp,
+      fontWeight: FontWeight.w600);
   TextStyle lableText = GoogleFonts.roboto(
       color: ColorConstants.black,
       fontSize: 14,
@@ -174,5 +178,9 @@ class AppTextStyle {
   TextStyle redText = GoogleFonts.roboto(
       color: ColorConstants.redColor,
       fontSize: 16,
+      fontWeight: FontWeight.w600);
+  TextStyle logoutRedText = GoogleFonts.roboto(
+      color: ColorConstants.redColor,
+      fontSize: 15.sp,
       fontWeight: FontWeight.w600);
 }

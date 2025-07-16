@@ -20,7 +20,7 @@ class ChatRepository {
         methodType: HttpMethodType.GET);
     try {
       Response<dynamic>? response = await http.request<dynamic>();
-      // debugPrint('Get Chat history response ${response?.data}');
+      debugPrint('Get Chat history response ${response?.data}');
       // return ChatHistoryModel.fromJson(response?.data);
       if (response?.data is Map<String, dynamic>) {
         return ChatHistoryModel.fromJson(response!.data);

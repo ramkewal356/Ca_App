@@ -104,6 +104,15 @@ class GetUserByIdSuccess extends AuthState {
   List<Object> get props => [getUserByIdData ?? []];
 }
 
+/// logout/////
+class LogoutSuccess extends AuthState {
+  final bool logout;
+
+  const LogoutSuccess({required this.logout});
+  @override
+  List<Object> get props => [logout];
+}
+
 /// Deactive Loading  State///
 class DeactiveLoading extends AuthState {}
 

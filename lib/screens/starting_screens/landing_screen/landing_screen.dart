@@ -19,6 +19,7 @@ import 'package:ca_app/widgets/custom_drawer.dart';
 import 'package:ca_app/widgets/custom_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:go_router/go_router.dart';
 
@@ -174,7 +175,7 @@ class _LandingScreenState extends State<LandingScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 250,
+                  height: 255,
                   padding: EdgeInsets.only(left: 10, right: 60),
                   decoration: BoxDecoration(
                       image: DecorationImage(
@@ -216,7 +217,9 @@ class _LandingScreenState extends State<LandingScreen> {
                             )
                           ],
                         ),
-                      )
+                      ),
+                    
+
                     ],
                   ),
                 ),
@@ -290,7 +293,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 ),
                 Text(
                   'Expert Chartered Accountants',
-                  style: AppTextStyle().landingAccountTitle,
+                  style: AppTextStyle().landingAccountTitle20,
                 ),
                 Text(
                   'Connect with our specialized teams of certified professionals across different expertise areas',
@@ -600,39 +603,36 @@ class _LandingScreenState extends State<LandingScreen> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Wrap(
-                        spacing: 5,
-                        runSpacing: 5,
-                        children: [
-                          buildInfoCard(
-                            icon: Icons
-                                .verified, // Use relevant icons or custom assets
-                            title: "Certified Expertise",
-                            description:
-                                "Our team consists of certified chartered accountants with extensive industry experience",
-                          ),
-                          buildInfoCard(
-                            icon: Icons.support_agent,
-                            title: "Dedicated Support",
-                            description:
-                                "Personal attention and tailored solutions for every client's unique needs",
-                          ),
-                          buildInfoCard(
-                            icon: Icons.access_time,
-                            title: "Timely Service",
-                            description:
-                                "Quick response times and adherence to all regulatory deadlines",
-                          ),
-                          buildInfoCard(
-                            icon: Icons.work_outline,
-                            title: "Industry Experience",
-                            description:
-                                "15+ years of experience serving diverse business sectors",
-                          ),
-                        ],
-                      ),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        buildInfoCard(
+                          icon: Icons
+                              .verified, // Use relevant icons or custom assets
+                          title: "Certified Expertise",
+                          description:
+                              "Our team consists of certified chartered accountants with extensive industry experience",
+                        ),
+                        buildInfoCard(
+                          icon: Icons.support_agent,
+                          title: "Dedicated Support",
+                          description:
+                              "Personal attention and tailored solutions for every client's unique needs",
+                        ),
+                        buildInfoCard(
+                          icon: Icons.access_time,
+                          title: "Timely Service",
+                          description:
+                              "Quick response times and adherence to all regulatory deadlines",
+                        ),
+                        buildInfoCard(
+                          icon: Icons.work_outline,
+                          title: "Industry Experience",
+                          description:
+                              "15+ years of experience serving diverse business sectors",
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -841,7 +841,8 @@ class _LandingScreenState extends State<LandingScreen> {
                             onTap: () {},
                           )
                         ],
-                      ))
+                      )),
+                      SizedBox(height: 15)
                     ],
                   ),
                 ),
@@ -1024,8 +1025,8 @@ class _LandingScreenState extends State<LandingScreen> {
     required String description,
   }) {
     return Container(
-      width: 182,
-      height: 165,
+      width: 165.w,
+      height: 155.h,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -1049,9 +1050,9 @@ class _LandingScreenState extends State<LandingScreen> {
                   color: ColorConstants.buttonColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(2)),
               child: Icon(icon, size: 30, color: ColorConstants.darkGray)),
-          SizedBox(height: 12),
+          SizedBox(height: 5.h),
           Text(title, style: AppTextStyle().textCardStyle),
-          SizedBox(height: 10),
+          SizedBox(height: 5.h),
           Text(description, style: AppTextStyle().landingSubTitletext11),
         ],
       ),

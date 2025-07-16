@@ -1,4 +1,3 @@
-
 import 'package:ca_app/data/models/deactive_user_model.dart';
 import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/data/models/login_model.dart';
@@ -33,6 +32,7 @@ class AuthRepository {
     }
     return null;
   }
+
   //**** Add New User API ****//
   Future<UserModel?> addNewUser(
       {required Map<String, dynamic> body, required bool selfRegister}) async {
@@ -74,6 +74,7 @@ class AuthRepository {
       rethrow;
     }
   }
+
   //**** Send Otp API ****//
   Future<OtpSendAndVerifyModel?> sendOtpForReset(
       {required Map<String, dynamic> query}) async {
@@ -178,7 +179,6 @@ class AuthRepository {
     }
   }
 
-
   //**** GetUserById API ****//
   Future<UserModel?> getUserByIdApi(
       {required Map<String, dynamic> query}) async {
@@ -199,6 +199,7 @@ class AuthRepository {
       rethrow;
     }
   }
+
   //**** Deactive User API ****//
   Future<ActiveDeactiveUserModel?> activeDeactiveUserApi(
       {required Map<String, dynamic> body}) async {
@@ -213,6 +214,26 @@ class AuthRepository {
       Response<dynamic>? response = await http.request<dynamic>();
       debugPrint('getDeactiveResponse ${response?.data}');
       return ActiveDeactiveUserModel.fromJson(response?.data);
+    } catch (e) {
+      debugPrint('error $e');
+      http.handleErrorResponse(error: e);
+      rethrow;
+    }
+  }
+
+  //**** Logout API ****//
+  Future<bool?> logoutApi({required Map<String, dynamic> query}) async {
+    var http = HttpService(
+        isAuthorizeRequest: true,
+        baseURL: EndPoints.baseUrl,
+        endURL: EndPoints.logoutUrl,
+        queryParameters: query,
+        bodyType: HttpBodyType.JSON,
+        methodType: HttpMethodType.PUT);
+    try {
+      Response<dynamic>? response = await http.request<dynamic>();
+      debugPrint('response ${response?.data}');
+      return true;
     } catch (e) {
       debugPrint('error $e');
       http.handleErrorResponse(error: e);

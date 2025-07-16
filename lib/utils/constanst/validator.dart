@@ -1,5 +1,7 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ValidatorClass {
   static String? validatePassword(String password) {
@@ -133,4 +135,31 @@ bool isWithin15Minutes(String timeString) {
     debugPrint("Failed to parse time: $e");
     return false;
   }
+}
+bool isTokenExpired(String token) {
+  return JwtDecoder.isExpired(token);
+}
+
+String formatLastSeen(int? dateMillis) {
+  if (dateMillis == null) return '';
+
+  final now = DateTime.now();
+  final dateTime = DateTime.fromMillisecondsSinceEpoch(dateMillis);
+  final isToday = now.year == dateTime.year &&
+      now.month == dateTime.month &&
+      now.day == dateTime.day;
+
+  if (isToday) {
+    final timeFormat = DateFormat('h:mm a').format(dateTime); // 3:07PM
+    return 'last seen today at $timeFormat';
+  } else {
+    final fullFormat = DateFormat('E h:mm a').format(dateTime); // Mon 2:10PM
+    return 'last seen $fullFormat';
+  }
+}
+
+Future<bool> hasInternet() async {
+  var connectivityResult = await Connectivity().checkConnectivity();
+  // ignore: unrelated_type_equality_checks
+  return connectivityResult != ConnectivityResult.none;
 }

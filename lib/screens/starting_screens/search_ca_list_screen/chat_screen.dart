@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
   String searchText = '';
   String selectMessage = '';
   // int? selectMessageId;
-
+  int? lastSeen;
   @override
   void initState() {
     super.initState();
@@ -95,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> {
     stompClient = StompClient(
       config: StompConfig.sockJS(
         url:
-            'https://cabaonline.xyz/api/chat-websocket', // Replace with your actual backend URL
+            'https://cabaonline.xyz/api/chat-websocket?user-id=${widget.senderId}', // Replace with your actual backend URL
         onConnect: onConnectCallback,
         onWebSocketError: (dynamic error) =>
             debugPrint('WebSocket error: $error'),
@@ -114,7 +114,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void onConnectCallback(StompFrame frame) {
     debugPrint("Connected to STOMP WebSocket!");
     isWebSocketConnected = true;
-    sendPresence();
 
     stompClient.subscribe(
       destination: '/user/${widget.senderId}/queue/messages',
@@ -152,10 +151,7 @@ class _ChatScreenState extends State<ChatScreen> {
         final forwardedUserName = jsonBody["forwardedFromUserName"];
 
         debugPrint("🟡 websocket id $messageId");
-        // if (senderId.toString() == widget.senderId) {
-        //   debugPrint("🟡 Skipped duplicate self message from WebSocket");
-        //   return;
-        // }
+
         bool isSelf = senderId.toString() == widget.senderId;
         if (!mounted) return;
 
@@ -200,8 +196,23 @@ class _ChatScreenState extends State<ChatScreen> {
           debugPrint('Presence update received: $isOnline');
           setState(() {
             isReceiverOnline = isOnline;
+            lastSeen = data['lastSeen'] ?? 0;
           });
         }
+      },
+    );
+    stompClient.subscribe(
+      destination: '/user/${widget.senderId}/queue/presence',
+      callback: (frame) {
+        debugPrint('Presence update .....,: ${frame.body}');
+        final data = jsonDecode(frame.body!);
+
+        final bool isOnline = data['online'];
+
+        setState(() {
+          isReceiverOnline = isOnline;
+          lastSeen = data['lastSeen'] ?? 0;
+        });
       },
     );
     stompClient.subscribe(
@@ -283,6 +294,9 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       },
     );
+    Future.delayed(Duration(milliseconds: 300), () {
+      sendPresence();
+    });
 
     if (mounted && isWebSocketConnected) {
       _sendReadReceipt();
@@ -290,6 +304,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void sendMessage() {
+    if (_controller.text.trim().isEmpty) return;
+
     final message = {
       "senderId": int.parse(widget.senderId),
       "receiverId": int.parse(widget.receiverId),
@@ -407,12 +423,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void sendPresence() {
     if (!stompClient.connected) return;
+    final payload = {
+      "requesterId": int.parse(widget.senderId),
+      "targetUserId": int.parse(widget.receiverId),
+    };
+
+    debugPrint("📤 Sending presence check: $payload");
+
     stompClient.send(
       destination: '/app/check-online',
-      body: jsonEncode({
-        "requesterId": int.parse(widget.senderId),
-        "targetUserId": int.parse(widget.receiverId),
-      }),
+      body: jsonEncode(payload),
     );
   }
 
@@ -469,6 +489,13 @@ class _ChatScreenState extends State<ChatScreen> {
         shadowColor: ColorConstants.white,
         elevation: 2,
         actions: [
+          // (onClickSearch || isForwardMessage)
+          //     ? SizedBox.shrink()
+          //     : IconButton(
+          //         onPressed: () {
+          //           // _showDownloadModal();
+          //         },
+          //         icon: Icon(Icons.download)),
           (onClickSearch || isForwardMessage)
               ? SizedBox.shrink()
               : IconButton(
@@ -477,7 +504,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onClickSearch = true;
                     });
                   },
-                  icon: Icon(Icons.search))
+                  icon: Icon(Icons.search)),
         ],
       ),
       child: SafeArea(
@@ -505,23 +532,22 @@ class _ChatScreenState extends State<ChatScreen> {
                         return Center(child: Text('No data found'));
                       } else if (state is ChatSuccess) {
                         final history = state.chatData
-                                .map((chat) => Messages(
-                                    text: chat.message ?? '',
-                                    time: timeFormate(chat
-                                        .timestamp), // Or use formatted chat.createdAt
-                                    isUser: chat.senderId.toString() ==
-                                        widget.senderId,
-                                    messageId: chat.messageId,
-                                    replyToMessageId: chat.replyToMessageId,
-                                    isEdited: chat.isEdited,
-                                    isForwarded: chat.isForwarded,
-                                    editedAt: chat.editedAt,
-                                    forwardedFromUserName:
-                                        chat.forwardedFromUserName,
-                                    replyToMessageText: chat.replyToMessageText,
-                                    isRead: chat.isRead ?? false))
-                                .toList() ??
-                            [];
+                            .map((chat) => Messages(
+                                text: chat.message ?? '',
+                                time: timeFormate(chat
+                                    .timestamp), // Or use formatted chat.createdAt
+                                isUser:
+                                    chat.senderId.toString() == widget.senderId,
+                                messageId: chat.messageId,
+                                replyToMessageId: chat.replyToMessageId,
+                                isEdited: chat.isEdited,
+                                isForwarded: chat.isForwarded,
+                                editedAt: chat.editedAt,
+                                forwardedFromUserName:
+                                    chat.forwardedFromUserName,
+                                replyToMessageText: chat.replyToMessageText,
+                                isRead: chat.isRead ?? false))
+                            .toList();
                         allMessages = [...history, ..._newMessages];
                         if (_isOtherUserTyping) {
                           allMessages.add(Messages(
@@ -537,7 +563,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         return allMessages.isEmpty
                             ? Center(
                                 child: Text(
-                                  'No data found',
+                                  '',
                                   style: AppTextStyle().getredText,
                                 ),
                               )
@@ -610,10 +636,9 @@ class _ChatScreenState extends State<ChatScreen> {
               ).image, // Replace with NetworkImage or other source
       ),
       title: Text(widget.name, style: AppTextStyle().cardLableText),
-      subtitle: Text("● ${isOnline ? 'Online' : 'Offline'}",
-          style: isOnline
-              ? AppTextStyle().onlineText
-              : AppTextStyle().offlineText),
+      subtitle: Text(isOnline ? '● Online' : formatLastSeen(lastSeen),
+          style:
+              isOnline ? AppTextStyle().onlineText : AppTextStyle().rating10),
     );
   }
 
@@ -631,7 +656,10 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             icon: Icon(Icons.arrow_back)),
         SizedBox(width: 10),
-        Text('1'),
+        Text(
+          '1',
+          style: AppTextStyle().cardLableText,
+        ),
         Spacer(),
         _iconButton(
             onTap: () {
@@ -642,8 +670,9 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             icon: Image.asset(
               replyArrowImg,
-              width: 25,
-              height: 25,
+              width: 20,
+              height: 20,
+              fit: BoxFit.cover,
             )),
         (canEdit)
             ? _iconButton(
@@ -659,15 +688,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     _showEditModal();
                   });
                 },
-                icon: Text('Edit'))
+                icon: Text(
+                  'Edit',
+                  style: AppTextStyle().lableText,
+                ))
             : SizedBox(width: 20),
         widget.role == 'CA'
             ? _iconButton(
                 onTap: _forwardMessages,
                 icon: Image.asset(
                   forwardAllImg,
-                  height: 25,
-                  width: 25,
+                  height: 24,
+                  width: 24,
+                  fit: BoxFit.cover,
                 ))
             : SizedBox.shrink(),
         SizedBox(width: 10)
@@ -902,7 +935,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child: Text(
                                     'Edited',
-                                    style: AppTextStyle().landingSubtitletext22,
+                                    style: message.isUser
+                                        ? AppTextStyle().landingSubtitletext22
+                                        : AppTextStyle().landinghinttextblack,
                                   ),
                                 ),
                               Text(
@@ -1055,6 +1090,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _iconButton({required VoidCallback onTap, required Widget icon}) {
     return IconButton(onPressed: onTap, icon: icon);
   }
+
 }
 
 class Messages {

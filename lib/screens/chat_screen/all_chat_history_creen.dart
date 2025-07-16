@@ -98,7 +98,7 @@ class _AllChatHistoryScreenState extends State<AllChatHistoryScreen> {
       "receiverIds": selectedIds,
       "originalMessageId": widget.message?.messageId
     };
-    debugPrint('forword message body ${forwardmsg}');
+    debugPrint('forword message body $forwardmsg');
     stompClient.send(
         destination: "/app/chat/forward", body: jsonEncode(forwardmsg));
     context.pop('forward');
@@ -163,7 +163,7 @@ class _AllChatHistoryScreenState extends State<AllChatHistoryScreen> {
                 return state.allChatData.isEmpty
                     ? Center(
                         child: Text(
-                          'No data found',
+                          '',
                           style: AppTextStyle().getredText,
                         ),
                       )
@@ -338,60 +338,6 @@ class _AllChatHistoryScreenState extends State<AllChatHistoryScreen> {
                 ],
               ),
             )
-        ],
-      ),
-    );
-  }
-
-  _showBottomModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container();
-      },
-    );
-  }
-
-  Widget _buildInputBar() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-      margin: EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-          color: Colors.grey[100], borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              IconButton(
-                  icon: Icon(
-                    Icons.emoji_emotions,
-                    color: Colors.orangeAccent,
-                  ),
-                  onPressed: () {}),
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  // onChanged: (_) => sendTyping(),
-                  decoration: InputDecoration.collapsed(
-                      hintText: "Type your message....."),
-                ),
-              ),
-              IconButton(
-                  icon: Icon(
-                    Icons.attach_file_sharp,
-                    color: ColorConstants.buttonColor,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                icon: Icon(
-                  Icons.send,
-                  color: ColorConstants.buttonColor,
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
         ],
       ),
     );
