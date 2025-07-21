@@ -224,7 +224,7 @@ class AuthRepository {
   //**** Logout API ****//
   Future<bool?> logoutApi({required Map<String, dynamic> query}) async {
     var http = HttpService(
-        isAuthorizeRequest: true,
+        isAuthorizeRequest: false,
         baseURL: EndPoints.baseUrl,
         endURL: EndPoints.logoutUrl,
         queryParameters: query,

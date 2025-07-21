@@ -92,7 +92,7 @@ class CaList {
   String? countryCode;
   String? profileUrl;
   DateTime? lastLogin;
-  DateTime? lastLogout;
+  dynamic lastLogout;
   bool? isOnline;
   String? address;
   String? firmAddress;
@@ -122,9 +122,7 @@ class CaList {
       profileUrl: json["profileUrl"],
       lastLogin:
           json["lastLogin"] == null ? null : DateTime.parse(json["lastLogin"]),
-      lastLogout: json["lastLogout"] == null
-          ? null
-          : DateTime.parse(json["lastLogout"]),
+      lastLogout: json["lastLogout"],
       isOnline: json["isOnline"],
       address: json["address"],
       firmAddress: json["firmAddress"],
@@ -140,7 +138,7 @@ class CaList {
         "countryCode": countryCode,
         "profileUrl": profileUrl,
         "lastLogin": lastLogin?.toIso8601String(),
-        "lastLogout": lastLogout?.toIso8601String(),
+        "lastLogout": lastLogout,
         "isOnline": isOnline,
         "address": address,
         "firmAddress": firmAddress,

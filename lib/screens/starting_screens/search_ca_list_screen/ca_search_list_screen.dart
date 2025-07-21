@@ -1,6 +1,7 @@
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
 import 'package:ca_app/blocs/auth/auth_event.dart';
 import 'package:ca_app/blocs/service/service_bloc.dart';
+import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
 import 'package:ca_app/screens/starting_screens/landing_screen/search_service_widget.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
@@ -44,6 +45,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
   String? selectedServiceName;
   int totalca = 0;
   final _searchFocus = FocusNode();
+  bool isLogin = false;
 
   @override
   void initState() {
@@ -87,6 +89,15 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
       filterTitle = (value == '' ? 'All' : filterOptions[value] ?? '');
     });
     _getViewCaByService(isFilter: true);
+  }
+
+  void _isLoggin() async {
+    String? token = await SharedPrefsClass().getToken();
+
+    if (token != null) {
+      isLogin = true;
+      _getUser();
+    }
   }
 
   void _getUser() {
@@ -247,7 +258,10 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                               "serviceId": selectedServiceId,
                               "serviceName": selectedServiceName
                             }).then((onValue) {
-                              _getUser();
+                              if (isLogin) {
+                                _getUser();
+                              }
+                             
 
                               _getViewCaByService(isFilter: true);
                             });
@@ -259,6 +273,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                             tag: state.subService,
                             address: data.firmAddress ?? data.address ?? '',
                             isOnline: data.isOnline ?? false,
+                            lastLogout: data.lastLogout.toString(),
                             rating: 4.9,
                             reviews: 174,
                           ),

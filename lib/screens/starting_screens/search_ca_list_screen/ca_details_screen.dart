@@ -121,13 +121,14 @@ class _CaDetailsScreenState extends State<CaDetailsScreen> {
                       title: userData?.professionalTitle ?? '',
                       tag: widget.serviceName ?? '',
                       address: userData?.firmAddress ?? userData?.address ?? '',
-                      isOnline: userData?.isOnline ?? false,
+                      isOnline: userData?.receiverOnline ?? false,
                       rating: 4.9,
                       reviews: 174,
                       exprience:
                           '${userData?.years ?? '0'}.${userData?.months ?? '0'}',
                       totalClient: '500',
                       isVisibleButton: true,
+                      lastLogout: userData?.lastLogout ?? '',
                       onChatTap: () async {
                         String? token = await SharedPrefsClass().getToken();
 

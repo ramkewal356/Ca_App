@@ -117,7 +117,7 @@ class Content {
   String? countryCode;
   dynamic reason;
   dynamic lastDeactivatedAt;
-
+  bool? isOnline;
   Content({
     this.userId,
     this.firstName,
@@ -141,6 +141,7 @@ class Content {
     this.countryCode,
     this.reason,
     this.lastDeactivatedAt,
+      this.isOnline
   });
 
   factory Content.fromJson(Map<String, dynamic> json) => Content(
@@ -166,6 +167,7 @@ class Content {
         countryCode: json["countryCode"],
         reason: json["reason"],
         lastDeactivatedAt: json["lastDeactivatedAt"],
+      isOnline: json["isOnline"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -191,6 +193,7 @@ class Content {
         "countryCode": countryCode,
         "reason": reason,
         "lastDeactivatedAt": lastDeactivatedAt,
+        "isOnline": isOnline
       };
 }
 

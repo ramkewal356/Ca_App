@@ -278,7 +278,7 @@ class _LandingScreenState extends State<LandingScreen> {
                               "serviceId": serviceId,
                               "serviceName": _controller.text,
                               "searchText": _searchController.text,
-                              "userId": userdata?.data?.id.toString()
+                              "userId": userdata?.data?.id.toString() ?? ''
                             }).then((onValue) {
                               if (isLogin) {
                                 _getUser();
@@ -308,7 +308,7 @@ class _LandingScreenState extends State<LandingScreen> {
                           state.getActiveCaWithServicesModel.data?.content ??
                               [];
                       return SizedBox(
-                        height: 280,
+                        height: 300,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
@@ -321,8 +321,9 @@ class _LandingScreenState extends State<LandingScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   context.push('/ca_details', extra: {
-                                    "userId": userdata?.data?.id.toString(),
-                                    "caId": data.userId.toString()
+                                    "userId":
+                                        userdata?.data?.id.toString() ?? '',
+                                    "caId": data.userId?.toString() ?? '',
                                     // "serviceId": widget.serviceId,
                                     // "serviceName": widget.serviceName
                                   }).then((onValue) {
@@ -340,6 +341,8 @@ class _LandingScreenState extends State<LandingScreen> {
                                     totalCa: '45',
                                     viewAllOnTap: () {},
                                     allCaOnTap: () {},
+                                    isOnline: data.isOnline ?? false,
+                                    lastLogout: data.lastDeactivatedAt ?? '',
                                     rating: '4.7'),
                               ),
                             );
@@ -862,7 +865,9 @@ class _LandingScreenState extends State<LandingScreen> {
       required String totalCa,
       required VoidCallback viewAllOnTap,
       required VoidCallback allCaOnTap,
-      required String rating}) {
+      required String rating,
+      required bool isOnline,
+      required String lastLogout}) {
     return Stack(
       children: [
         Card(
@@ -891,14 +896,44 @@ class _LandingScreenState extends State<LandingScreen> {
                           fit: BoxFit.fill,
                         ),
                 ),
-                title.isEmpty
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    title.isEmpty
                     ? SizedBox.shrink()
                     : Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 5),
+                                horizontal: 8, vertical: 0),
                         child: Text(
                           title,
                           style: AppTextStyle().landingCardTitle,
+                        ),
+                          ),
+                    isOnline
+                        ? Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            margin:
+                                EdgeInsets.only(right: 5, top: 8, bottom: 8),
+                            decoration: BoxDecoration(
+                                color: ColorConstants.greenColor,
+                                borderRadius: BorderRadius.circular(25)),
+                            child: Text(
+                              'Online',
+                              style: AppTextStyle().checkboxTitle,
+                            ),
+                          )
+                        : SizedBox.shrink()
+                  ],
+                ),
+                isOnline
+                    ? SizedBox.shrink()
+                    : Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: lastLogout.isNotEmpty ? 5 : 0),
+                        child: Text(
+                          lastLogout.isNotEmpty ? 'Last seen $lastLogout' : '',
+                          style: AppTextStyle().rating8,
                         ),
                       ),
                 subtilte.isEmpty

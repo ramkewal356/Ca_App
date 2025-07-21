@@ -78,40 +78,42 @@ class Data {
   String? dateOfBirth;
   String? typeOfBusiness;
   int? profileCompletion;
-  Data({
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.address,
-    this.mobile,
-    this.phone,
-    this.role,
-    this.otp,
-    this.otpVerify,
-    this.status,
-    this.createdDate,
-    this.modifiedDate,
-    this.profileUrl,
-    this.profileName,
-    this.gender,
-    this.panCardNumber,
-    this.aadhaarCardNumber,
-    this.userResponse,
-    this.countryCode,
-    this.token,
-    this.caEmail,
-    this.caId,
-    this.caName,
-    this.caMobile,
-    this.designation,
-    this.lastLogin,
-    this.permissions,
-    this.companyName,
-    this.gst,
-    this.companyLogo,
-    this.services,
-    this.selfRegistered,
+  String? lastLogout;
+  bool? receiverOnline;
+  Data(
+      {this.id,
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.address,
+      this.mobile,
+      this.phone,
+      this.role,
+      this.otp,
+      this.otpVerify,
+      this.status,
+      this.createdDate,
+      this.modifiedDate,
+      this.profileUrl,
+      this.profileName,
+      this.gender,
+      this.panCardNumber,
+      this.aadhaarCardNumber,
+      this.userResponse,
+      this.countryCode,
+      this.token,
+      this.caEmail,
+      this.caId,
+      this.caName,
+      this.caMobile,
+      this.designation,
+      this.lastLogin,
+      this.permissions,
+      this.companyName,
+      this.gst,
+      this.companyLogo,
+      this.services,
+      this.selfRegistered,
       this.caEducations,
       this.userCertifications,
       this.about,
@@ -126,47 +128,48 @@ class Data {
       this.occupation,
       this.dateOfBirth,
       this.typeOfBusiness,
-      this.profileCompletion
-  });
+      this.profileCompletion,
+      this.lastLogout,
+      this.receiverOnline});
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        email: json["email"],
-        address: json["address"],
-        mobile: json["mobile"],
-        phone: json["phone"],
-        role: json["role"],
-        otp: json["otp"],
-        otpVerify: json["otpVerify"],
-        status: json["status"],
-        createdDate: json["createdDate"],
-        modifiedDate: json["modifiedDate"],
-        profileUrl: json["profileUrl"],
-        profileName: json["profileName"],
-        gender: json["gender"],
-        panCardNumber: json["panCardNumber"],
-        aadhaarCardNumber: json["aadhaarCardNumber"],
-        userResponse: json["userResponse"],
-        countryCode: json["countryCode"],
-        token: json["token"],
-        caEmail: json["caEmail"],
-        caId: json["caId"],
-        caName: json["caName"],
-        caMobile: json["caMobile"],
-        designation: json["designation"],
-        lastLogin: json["lastLogin"],
-        permissions: json["permissions"] == null
-            ? null
-            : Permissions.fromJson(json["permissions"]),
-        companyName: json["companyName"],
-        gst: json["gst"],
-        companyLogo: json["companyLogo"],
-        services: json["services"] == null
-            ? []
-            : List<Service>.from(
-                json["services"]!.map((x) => Service.fromJson(x))),
+      id: json["id"],
+      firstName: json["firstName"],
+      lastName: json["lastName"],
+      email: json["email"],
+      address: json["address"],
+      mobile: json["mobile"],
+      phone: json["phone"],
+      role: json["role"],
+      otp: json["otp"],
+      otpVerify: json["otpVerify"],
+      status: json["status"],
+      createdDate: json["createdDate"],
+      modifiedDate: json["modifiedDate"],
+      profileUrl: json["profileUrl"],
+      profileName: json["profileName"],
+      gender: json["gender"],
+      panCardNumber: json["panCardNumber"],
+      aadhaarCardNumber: json["aadhaarCardNumber"],
+      userResponse: json["userResponse"],
+      countryCode: json["countryCode"],
+      token: json["token"],
+      caEmail: json["caEmail"],
+      caId: json["caId"],
+      caName: json["caName"],
+      caMobile: json["caMobile"],
+      designation: json["designation"],
+      lastLogin: json["lastLogin"],
+      permissions: json["permissions"] == null
+          ? null
+          : Permissions.fromJson(json["permissions"]),
+      companyName: json["companyName"],
+      gst: json["gst"],
+      companyLogo: json["companyLogo"],
+      services: json["services"] == null
+          ? []
+          : List<Service>.from(
+              json["services"]!.map((x) => Service.fromJson(x))),
       selfRegistered: json["selfRegistered"],
       caEducations: json["caEducations"] == null
           ? []
@@ -189,7 +192,9 @@ class Data {
       occupation: json["occupation"],
       dateOfBirth: json["dateOfBirth"],
       typeOfBusiness: json["typeOfBusiness"],
-      profileCompletion: json["profileCompletion"]
+      profileCompletion: json["profileCompletion"],
+      lastLogout: json["lastLogout"],
+      receiverOnline: json["receiverOnline"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -248,7 +253,9 @@ class Data {
         "occupation": occupation,
         "dateOfBirth": dateOfBirth,
         "typeOfBusiness": typeOfBusiness,
-        "profileCompletion": profileCompletion
+        "profileCompletion": profileCompletion,
+        "lastLogout": lastLogout,
+        "receiverOnline": receiverOnline
       };
 }
 
@@ -320,6 +327,7 @@ class ClientActivity {
         "type": type,
       };
 }
+
 class CaEducation {
   String? degree;
   String? university;
@@ -339,6 +347,7 @@ class CaEducation {
         "university": university,
       };
 }
+
 class Service {
   int? serviceId;
   String? serviceName;

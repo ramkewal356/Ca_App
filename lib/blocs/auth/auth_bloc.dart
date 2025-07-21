@@ -316,7 +316,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       int? userId = await SharedPrefsClass().getUserId();
       Map<String, dynamic> query = {"userId": userId};
       var logoutResp = await _myRepo.logoutApi(query: query);
-      await SharedPrefsClass().removeToken();
+      SharedPrefsClass().removeToken();
       emit(LogoutSuccess(logout: logoutResp ?? false));
     } catch (e) {
       emit(AuthErrorState(erroMessage: e.toString()));

@@ -17,7 +17,7 @@ class CommonCaContainer extends StatelessWidget {
   final bool isVisibleButton;
   final VoidCallback? onChatTap;
   final VoidCallback? onSendEnquiry;
-
+  final String lastLogout;
   const CommonCaContainer(
       {super.key,
       required this.imageUrl,
@@ -32,7 +32,8 @@ class CommonCaContainer extends StatelessWidget {
       this.totalClient = '',
       this.isVisibleButton = false,
       this.onChatTap,
-      this.onSendEnquiry});
+      this.onSendEnquiry,
+      this.lastLogout = ''});
 
   @override
   Widget build(BuildContext context) {
@@ -77,30 +78,27 @@ class CommonCaContainer extends StatelessWidget {
                         children: [
                           Text(name, style: AppTextStyle().textCardStyle),
                           SizedBox(width: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.circle,
-                                  size: 10,
-                                  color: isOnline ? Colors.green : Colors.red),
-                              SizedBox(width: 4),
-                              Text(
-                                isOnline ? 'Online' : 'Offline',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color:
-                                        isOnline ? Colors.green : Colors.red),
-                              ),
-                            ],
+                         
+                          Text(
+                            isOnline ? '● Online' : '',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color:
+                                     Colors.green),
                           )
                         ],
                       ),
-        
+
                       /// Title
                       title.isEmpty
                           ? SizedBox.shrink()
                           : Text(title, style: AppTextStyle().landingSubTitle),
-        
+                      if (!isOnline)
+                        Text(
+                          'Last seen $lastLogout',
+                          style: AppTextStyle().rating8,
+                        ),
                       /// Tag
                       tag.isEmpty
                           ? SizedBox.shrink()
@@ -119,7 +117,7 @@ class CommonCaContainer extends StatelessWidget {
                                   style: AppTextStyle().landingSubTitle),
                             ),
                       SizedBox(height: 5),
-        
+
                       /// Address
                       Row(
                         children: [
@@ -134,7 +132,7 @@ class CommonCaContainer extends StatelessWidget {
                           ),
                         ],
                       ),
-        
+
                       /// exprience
                       exprience.isEmpty
                           ? SizedBox.shrink()
@@ -150,7 +148,7 @@ class CommonCaContainer extends StatelessWidget {
                                 ),
                               ],
                             ),
-        
+
                       /// exprience
                       totalClient.isEmpty
                           ? SizedBox.shrink()
@@ -166,7 +164,7 @@ class CommonCaContainer extends StatelessWidget {
                                 ),
                               ],
                             ),
-        
+
                       /// Buttons
                       isVisibleButton
                           ? Row(
