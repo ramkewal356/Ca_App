@@ -10,5 +10,8 @@ class CustomDropdownBloc
     on<DropdownSelectedEvent>((event, emit) {
       emit(CustomDropdownSelected(value: event.value));
     });
+    on<DropdownResetEvent>((event, emit) {
+      emit(CustomDropdownInitial()); // Reset the dropdown state
+    });
   }
 }

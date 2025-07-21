@@ -24,6 +24,7 @@ class TextformfieldWidget extends StatefulWidget {
   final bool visiblePrefixIcon;
   final Widget? prefixIcons;
   final Widget? suffixIcons;
+  final VoidCallback? onTap;
   final List<TextInputFormatter>? inputFormatters;
 
   const TextformfieldWidget(
@@ -46,7 +47,8 @@ class TextformfieldWidget extends StatefulWidget {
       this.inputFormatters,
       this.visiblePrefixIcon = false,
       this.prefixIcons,
-      this.suffixIcons});
+      this.suffixIcons,
+      this.onTap});
 
   @override
   State<TextformfieldWidget> createState() => _TextformfieldWidgetState();
@@ -64,6 +66,7 @@ class _TextformfieldWidgetState extends State<TextformfieldWidget> {
       obscuringCharacter: widget.obscuringCharacter ?? '•',
       controller: widget.controller,
       textAlignVertical: widget.textAlignVertical,
+      onTap: widget.onTap,
       inputFormatters: [
         LengthLimitingTextInputFormatter(widget.textLength),
         FilteringTextInputFormatter.allow(
@@ -82,7 +85,7 @@ class _TextformfieldWidgetState extends State<TextformfieldWidget> {
         suffixIcon: widget.suffixIcons,
         filled: widget.readOnly,
         fillColor: widget.readOnly
-            ? ColorConstants.buttonColor.withOpacity(0.1)
+            ? widget.fillColor ?? ColorConstants.buttonColor.withOpacity(0.1)
             : widget.fillColor,
         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         focusedBorder: OutlineInputBorder(

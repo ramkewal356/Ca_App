@@ -10,7 +10,7 @@ sealed class UploadDocumentEvent extends Equatable {
 class InitializePageEvent extends UploadDocumentEvent {}
 
 class PickDocumentEvent extends UploadDocumentEvent {}
-
+class PickSingleImageEvent extends UploadDocumentEvent {}
 class RemoveDocumentEvent extends UploadDocumentEvent {
   final int index;
 

@@ -1,3 +1,4 @@
+import 'package:ca_app/blocs/help_and_support/help_and_support_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
@@ -6,6 +7,7 @@ import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/custom_appbar.dart';
 import 'package:ca_app/widgets/custom_layout.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HelpAndSupport extends StatefulWidget {
@@ -21,6 +23,16 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
+  final FocusNode _focusNode1 = FocusNode();
+  final FocusNode _focusNode2 = FocusNode();
+  final FocusNode _focusNode3 = FocusNode();
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _subjectController.dispose();
+    _messageController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,110 +44,145 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
       ),
       child: SingleChildScrollView(
         padding: EdgeInsets.all(10),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              Text(
-                'A Help Center is a website where customers can find answers to their questions and solutions to their problems.',
-                style: AppTextStyle().hintText,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              widget.isLogin
-                  ? SizedBox.shrink()
-                  : TextformfieldWidget(
-                      controller: _emailController,
-                      hintText: 'Email',
-                      validator: (email) {
-                        return ValidatorClass.validateEmail(email);
+        child: GestureDetector(
+          onTap: () {
+            debugPrint('dmscb hjnsmmn c  ');
+          },
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  'A Help Center is a website where customers can find answers to their questions and solutions to their problems.',
+                  style: AppTextStyle().hintText,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                SizedBox(height: 20),
+                widget.isLogin
+                    ? SizedBox.shrink()
+                    : TextformfieldWidget(
+                        controller: _emailController,
+                        focusNode: _focusNode1,
+                        hintText: 'Email',
+                        validator: (email) {
+                          return ValidatorClass.validateEmail(email);
+                        },
+                      ),
+                widget.isLogin ? SizedBox.shrink() : SizedBox(height: 20),
+                TextformfieldWidget(
+                  controller: _subjectController,
+                  focusNode: _focusNode2,
+                  hintText: 'Subject',
+                  textLength: 50,
+                  validator: (p0) {
+                    if (p0 == null || p0.isEmpty) {
+                      return 'Please enter subject';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextformfieldWidget(
+                  maxLines: 5,
+                  minLines: 5,
+                  textLength: 250,
+                  controller: _messageController,
+                  focusNode: _focusNode3,
+                  hintText: 'Message',
+                  validator: (p0) {
+                    if (p0 == null || p0.isEmpty) {
+                      return 'Please enter message';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    BlocConsumer<HelpAndSupportBloc, HelpAndSupportState>(
+                      listener: (context, state) {
+                        if (state is AddContactSuccess) {
+                          _formKey.currentState!.reset();
+                          _emailController.clear();
+                          _subjectController.clear();
+                          _messageController.clear();
+                          _focusNode1.unfocus();
+                          _focusNode2.unfocus();
+                          _focusNode3.unfocus();
+                        }
+                      },
+                      builder: (context, state) {
+                        return CommonButtonWidget(
+                            buttonWidth: 160,
+                            buttonTitle: 'Send Message',
+                            loader: state is HelpAndSupportLoading,
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<HelpAndSupportBloc>().add(
+                                    AddContactEvent(
+                                        email: _emailController.text,
+                                        subject: _subjectController.text,
+                                        message: _messageController.text,
+                                        isAuthorize:
+                                            widget.isLogin ? true : false));
+                              }
+                            });
                       },
                     ),
-              widget.isLogin ? SizedBox.shrink() : SizedBox(height: 20),
-              TextformfieldWidget(
-                controller: _subjectController,
-                hintText: 'Subject',
-                validator: (p0) {
-                  if (p0 == null || p0.isEmpty) {
-                    return 'Please enter subject';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              TextformfieldWidget(
-                maxLines: 5,
-                minLines: 5,
-                controller: _messageController,
-                hintText: 'Message',
-                validator: (p0) {
-                  if (p0 == null || p0.isEmpty) {
-                    return 'Please enter message';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CommonButtonWidget(
-                      buttonWidth: 160,
-                      buttonTitle: 'Send Message',
-                      onTap: () {
-                        if (_formKey.currentState!.validate()) {}
-                      }),
-                  widget.isLogin ? Spacer() : SizedBox.shrink(),
-                  widget.isLogin
-                      ? CommonButtonWidget(
-                          buttonIconVisible: true,
-                          buttonIcon: Icon(
-                            Icons.history,
-                            color: ColorConstants.white,
-                          ),
-                          buttonWidth: 170,
-                          buttonTitle: 'Help History',
-                          onTap: () {
-                            context.push('/help&support_history');
-                          })
-                      : SizedBox.shrink()
-                ],
-              ),
-              SizedBox(height: 20),
-              _listTile(
-                  icon: Icon(
-                    Icons.location_on_outlined,
-                    size: 30,
-                    color: ColorConstants.redColor,
-                  ),
-                  title: 'Our Address',
-                  subTitle: '3481 Melrose Place, Berverly Hills'),
-              _listTile(
-                  icon: Icon(
-                    Icons.email_outlined,
-                    size: 30,
-                    color: Colors.blue[100],
-                  ),
-                  title: 'Send your message',
-                  subTitle: 'info@example.com'),
-              _listTile(
-                  icon: Icon(
-                    Icons.call,
-                    size: 30,
-                    color: ColorConstants.darkGray,
-                  ),
-                  title: 'Call us on',
-                  subTitle: '(+1) 517 788 6780'),
-              _listTile(
-                  icon: Icon(
-                    Icons.timer_outlined,
-                    size: 30,
-                    color: Colors.orangeAccent,
-                  ),
-                  title: 'Work Time',
-                  subTitle: 'Mon-Fri : 8:00-16:00 , Sat: 10:00-2:00')
-            ],
+                    widget.isLogin ? Spacer() : SizedBox.shrink(),
+                    widget.isLogin
+                        ? CommonButtonWidget(
+                            buttonIconVisible: true,
+                            buttonIcon: Icon(
+                              Icons.history,
+                              color: ColorConstants.white,
+                            ),
+                            buttonWidth: 170,
+                            buttonTitle: 'Help History',
+                            onTap: () {
+                              context.push('/help&support_history');
+                            })
+                        : SizedBox.shrink()
+                  ],
+                ),
+                SizedBox(height: 20),
+                _listTile(
+                    icon: Icon(
+                      Icons.location_on_outlined,
+                      size: 30,
+                      color: ColorConstants.redColor,
+                    ),
+                    title: 'Our Address',
+                    subTitle: '3481 Melrose Place, Berverly Hills'),
+                _listTile(
+                    icon: Icon(
+                      Icons.email_outlined,
+                      size: 30,
+                      color: Colors.blue[100],
+                    ),
+                    title: 'Send your message',
+                    subTitle: 'info@example.com'),
+                _listTile(
+                    icon: Icon(
+                      Icons.call,
+                      size: 30,
+                      color: ColorConstants.darkGray,
+                    ),
+                    title: 'Call us on',
+                    subTitle: '(+1) 517 788 6780'),
+                _listTile(
+                    icon: Icon(
+                      Icons.timer_outlined,
+                      size: 30,
+                      color: Colors.orangeAccent,
+                    ),
+                    title: 'Work Time',
+                    subTitle: 'Mon-Fri : 8:00-16:00 , Sat: 10:00-2:00')
+              ],
+            ),
           ),
         ),
       ),

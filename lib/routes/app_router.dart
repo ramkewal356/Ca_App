@@ -1,5 +1,25 @@
+import 'package:ca_app/data/models/user_model.dart';
 import 'package:ca_app/screens/auth_screens/forgot_screen.dart';
+import 'package:ca_app/screens/auth_screens/signup_for_individual_customer.dart';
+import 'package:ca_app/screens/ca_screens/all_raise_history/all_raise_history_screen.dart';
+import 'package:ca_app/screens/ca_screens/customer_allocation/customer_allocation.dart';
+import 'package:ca_app/screens/ca_screens/indivisual_customer_screen/get_requested_service_of_customer.dart';
+import 'package:ca_app/screens/ca_screens/logs_history/logs_history_screen.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/assign_service_to_client.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/my_client_screen.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/view_client_screen.dart';
+import 'package:ca_app/screens/ca_screens/my_client_screens/view_document_screen.dart';
+import 'package:ca_app/screens/ca_screens/permission_history/permission_history_screen.dart';
+import 'package:ca_app/screens/ca_screens/reminders_screen/reminders_screen.dart';
+import 'package:ca_app/screens/ca_screens/reminders_screen/view_reminder_screen.dart';
 import 'package:ca_app/screens/ca_screens/services_screens/services_screen.dart';
+import 'package:ca_app/screens/ca_screens/task_allocation/task_allocation_screen.dart';
+import 'package:ca_app/screens/ca_screens/task_allocation/upload_document_screen.dart';
+import 'package:ca_app/screens/ca_screens/task_allocation/view_task_screen.dart';
+import 'package:ca_app/screens/ca_screens/team_member/get_permission_screen.dart';
+import 'package:ca_app/screens/ca_screens/team_member/team_member_screen.dart';
+import 'package:ca_app/screens/ca_screens/team_member/view_team_member_screen.dart';
+import 'package:ca_app/screens/chat_screen/all_chat_history_creen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support.dart';
 import 'package:ca_app/screens/auth_screens/login_screen.dart';
 import 'package:ca_app/screens/auth_screens/otp_verification_screen.dart';
@@ -9,16 +29,28 @@ import 'package:ca_app/screens/ca_screens/ca_dashboard_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/customer_dashboard_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/hisoty_screen/history_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/my_ca_screen/my_ca_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/indivisual_customer_dashboard.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/customer_services_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/enquiry_history_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/view_ca_by_service_screen.dart';
+import 'package:ca_app/screens/indivisual_customer/service_screen/view_enquiry_screen.dart';
+import 'package:ca_app/screens/my_profile_screen/ca_profile_screen.dart';
+import 'package:ca_app/screens/my_profile_screen/individual_customer_profile.dart';
 import 'package:ca_app/screens/my_profile_screen/profile_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/payment_screen/payment_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/ca_request_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/raise_request_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/request_details_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/request_screen.dart';
-import 'package:ca_app/screens/customer_client_screens/request_screen/your_request_screen.dart';
+import 'package:ca_app/screens/request_screen/ca_request_screen.dart';
+import 'package:ca_app/screens/request_screen/client_request_screen.dart';
+import 'package:ca_app/screens/request_screen/raise_request_screen.dart';
+import 'package:ca_app/screens/request_screen/request_details_screen.dart';
+import 'package:ca_app/screens/request_screen/request_screen.dart';
+import 'package:ca_app/screens/request_screen/your_request_screen.dart';
 import 'package:ca_app/screens/customer_client_screens/upload_document/upload_document_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support_history_screen.dart';
 import 'package:ca_app/screens/help&support_screens/help&support_view_screen.dart';
+import 'package:ca_app/screens/starting_screens/landing_screen/landing_screen.dart';
+import 'package:ca_app/screens/starting_screens/search_ca_list_screen/ca_details_screen.dart';
+import 'package:ca_app/screens/starting_screens/search_ca_list_screen/ca_search_list_screen.dart';
+import 'package:ca_app/screens/starting_screens/search_ca_list_screen/chat_screen.dart';
 import 'package:ca_app/screens/starting_screens/splash_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_clients/my_clients_screen.dart';
 import 'package:ca_app/screens/sub_ca_screens/my_services/my_services_screen.dart';
@@ -40,21 +72,84 @@ final GoRouter goRouter = GoRouter(
         builder: (context, state) => SplashScreen(),
       ),
       GoRoute(
+        path: '/landing_screen',
+        builder: (context, state) => LandingScreen(),
+      ),
+      GoRoute(
+          path: '/ca_search',
+          builder: (context, state) {
+            final data = state.extra as Map<String, dynamic>;
+
+            return CaSearchListScreen(
+              serviceId: data["serviceId"],
+              serviceName: data["serviceName"],
+              searchText: data["searchText"],
+              userId: data["userId"],
+            );
+          }),
+      GoRoute(
+        path: '/ca_details',
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>? ?? {};
+
+          final int? serviceId = data["serviceId"] as int?;
+          final String? serviceName = data["serviceName"] as String?;
+          final String userId = data["userId"] as String;
+          return CaDetailsScreen(
+            userId: userId,
+            serviceId: serviceId,
+            serviceName: serviceName,
+            caId: data["caId"],
+          );
+        },
+      ),
+      GoRoute(
+          path: '/chat_screen',
+          builder: (context, state) {
+            final data = state.extra as Map<String, dynamic>;
+            return ChatScreen(
+              name: data["name"],
+              title: data["title"],
+              profileImg: data["profileImg"],
+              isOnline: data["isOnline"],
+              senderId: data["senderId"],
+              receiverId: data["receiverId"],
+              role: data["role"],
+            );
+          }),
+      GoRoute(
+          path: '/chat_history',
+          builder: (context, state) {
+            var data = state.extra as Map<String, dynamic>;
+
+            return AllChatHistoryScreen(
+              role: data["role"],
+              message: data['message'] as Messages?,
+            );
+          }),
+      GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(),
       ),
       GoRoute(
         path: '/register',
         builder: (context, state) {
-          return RegisterScreen();
+          var data = state.extra as UserModel;
+          return RegisterScreen(
+            userData: data,
+          );
         },
       ),
       GoRoute(
           path: '/otpVerify',
           builder: (context, state) {
-            final email = state.extra != null ? state.extra as String : null;
+            // final email = state.extra != null ? state.extra as String : null;
+            final extra = state.extra as Map<String, dynamic>?;
+            final email = extra?['email'] as String?;
+            final selfRegistered = extra?['selfRegistered'] as bool? ?? false;
             return OtpVerificationScreen(
               email: email,
+              selfregisterd: selfRegistered,
             );
           }),
       GoRoute(
@@ -65,7 +160,7 @@ final GoRouter goRouter = GoRouter(
         path: '/resetPassword',
         builder: (context, state) {
           var data = state.extra as Map<String, dynamic>;
-          return ResetPasswordScreen(email: data['email']);
+          return ResetPasswordScreen(userId: data['userId']);
         },
       ),
 
@@ -73,6 +168,18 @@ final GoRouter goRouter = GoRouter(
         path: '/myProfile',
         builder: (context, state) {
           return ProfileScreen();
+        },
+      ),
+      GoRoute(
+        path: '/caProfile',
+        builder: (context, state) {
+          return CaProfileScreen();
+        },
+      ),
+      GoRoute(
+        path: '/individual_customer_Profile',
+        builder: (context, state) {
+          return IndividualCustomerProfile();
         },
       ),
       GoRoute(
@@ -92,37 +199,56 @@ final GoRouter goRouter = GoRouter(
       GoRoute(
         path: '/view_history',
         builder: (context, state) {
-          return HelpAndSupportViewScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return HelpAndSupportViewScreen(
+            contactId: data["contactId"],
+          );
         },
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) => SignupForIndividualCustomer(),
       ),
       // CA AND SUBCA COMMON MODULE ROUTES
       GoRoute(
         path: '/recent_document',
         builder: (context, state) {
-          return RecentDocumentScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return RecentDocumentScreen(
+            role: data['role'],
+          );
         },
       ),
       // CLIENT AND SUBCA COMMON MODULE ROUTES
       GoRoute(
         path: '/myCa',
         builder: (context, state) {
-          return MyCaScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return MyCaScreen(
+            caId: data["caId"],
+            role: data["role"],
+          );
         },
       ),
       // CA,SUBCA AND CLIENT  COMMON MODULE ROUTES
       GoRoute(
           path: '/raise_request',
           builder: (context, state) {
-            var userRole = state.extra as Map<String, dynamic>;
+            var extra = state.extra as Map<String, dynamic>;
             return RaiseRequestScreen(
-              userRole: userRole['role'],
+              userRole: extra['role'],
+              selectedUser: extra['selectedUser'],
+              selectedId: extra['selectedId'],
             );
           },
           routes: [
             GoRoute(
               path: 'your_request',
               builder: (context, state) {
-                return YourRequestScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return YourRequestScreen(
+                  role: data["role"],
+                );
               },
             ),
             GoRoute(
@@ -131,11 +257,23 @@ final GoRouter goRouter = GoRouter(
                 return CaRequestScreen();
               },
             ),
+            GoRoute(
+              path: 'client_request',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ClientRequestScreen(
+                  role: data["role"],
+                );
+              },
+            ),
           ]),
       GoRoute(
         path: '/request_details',
         builder: (context, state) {
-          return RequestDetailsScreen();
+          var data = state.extra as Map<String, dynamic>;
+          return RequestDetailsScreen(
+            requestId: data["requestId"],
+          );
         },
       ),
       // CUSTOMER MODULE ROUTES
@@ -154,19 +292,29 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'history',
               builder: (context, state) {
-                return HistoryScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return HistoryScreen(
+                  userId: data["userId"],
+                );
               },
             ),
             GoRoute(
               path: 'payment',
               builder: (context, state) {
-                return PaymentScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return PaymentScreen(
+                  caId: data["caId"],
+                );
               },
             ),
             GoRoute(
               path: 'request',
               builder: (context, state) {
-                return RequestScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return RequestScreen(
+                  caName: data["caName"],
+                  caId: data["caId"],
+                );
               },
             ),
           ]),
@@ -183,6 +331,159 @@ final GoRouter goRouter = GoRouter(
                 return ServicesScreen();
               },
             ),
+            GoRoute(
+              path: 'my_client',
+              builder: (context, state) {
+                return MyCAClientScreen();
+              },
+            ),
+            GoRoute(
+              path: 'indivisual_customer',
+              builder: (context, state) {
+                return GetRequestedServiceOfCustomer();
+              },
+            ),
+            GoRoute(
+              path: 'view_client',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewClientScreen(
+                  userId: data["userId"],
+                  role: data["role"],
+                );
+              },
+            ),
+            GoRoute(
+              path: 'view_document',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewDocumentScreen(
+                  userId: data["userId"],
+                  role: data["role"],
+                  userName: data["userName"],
+                );
+              },
+            ),
+            GoRoute(
+              path: 'team_member',
+              builder: (context, state) {
+                return TeamMemberScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_team_member',
+              builder: (context, state) {
+                var userId = state.extra as Map<String, dynamic>;
+                return ViewTeamMemberScreen(
+                  userId: userId['userId'],
+                );
+              },
+            ),
+            GoRoute(
+              path: 'customer_allocation',
+              builder: (context, state) {
+                return CustomerAllocation();
+              },
+            ),
+            GoRoute(
+              path: 'task_allocation',
+              builder: (context, state) {
+                return TaskAllocationScreen();
+              },
+            ),
+            GoRoute(
+              path: 'all_raise_history',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return AllRaiseHistoryScreen(
+                  id: data["id"],
+                );
+              },
+            ),
+            GoRoute(
+              path: 'view_task',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewTaskScreen(taskId: data['taskId']);
+              },
+            ),
+            GoRoute(
+              path: 'upload_task_document',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return UploadTaskDocumentScreen(
+                  taskId: data["taskId"],
+                );
+              },
+            ),
+            GoRoute(
+              path: 'logs_history',
+              builder: (context, state) {
+                var data = state.extra != null
+                    ? state.extra as Map<String, dynamic>
+                    : {};
+                return LogsHistoryScreen(
+                  uponId: data["uponId"],
+                );
+              },
+            ),
+            GoRoute(
+              path: 'reminders',
+              builder: (context, state) {
+                return RemindersScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_reminder',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewReminderScreen(reminderId: data["reminderId"]);
+              },
+            ),
+            GoRoute(
+              path: 'assign_service',
+              builder: (context, state) {
+                // Ensure `state.extra` is a Map before casting
+                final extra = state.extra as Map<String, dynamic>? ?? {};
+
+                // Extract parameters safely, providing default values if missing
+                final String? clientId = extra["clientId"] as String?;
+                final List<String> selectedServicesList =
+                    (extra["serviceList"] as List<dynamic>?)?.cast<String>() ??
+                        [];
+                final List<int> selectedServicesIdList =
+                    (extra["serviceIdList"] as List<dynamic>?)?.cast<int>() ??
+                        [];
+                return AssignServiceToClient(
+                  clientId: clientId,
+                  selectedServicesList: selectedServicesList,
+                  selectedServicesIdList: selectedServicesIdList,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'permission',
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>? ?? {};
+                final int subCaId = extra["subCaId"] as int;
+                final List<String> selectedPermissionNamesList =
+                    List<String>.from(
+                        extra["selectedPermissionNamesList"] ?? []);
+                final List<int> selectedPermissionIdsList =
+                    List<int>.from(extra["selectedPermissionIdsList"] ?? []);
+                return GetPermissionScreen(
+                  subCaId: subCaId,
+                  selectedPermissionIdsList: selectedPermissionIdsList,
+                  selectedPermissionNamesList: selectedPermissionNamesList,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'permission_history',
+              builder: (context, state) {
+                return PermissionHistoryScreen();
+              },
+            ),
           ]),
       // SUBCA MODULE ROUTES
       GoRoute(
@@ -194,7 +495,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'my_service',
               builder: (context, state) {
-                return MyServicesScreen();
+                var data = state.extra as Map<String, dynamic>;
+                return MyServicesScreen(
+                  caId: data["caId"],
+                );
               },
             ),
             GoRoute(
@@ -210,4 +514,40 @@ final GoRouter goRouter = GoRouter(
               },
             ),
           ]),
+      // CUSTOMER MODULE ROUTES
+      GoRoute(
+          path: '/indivisual_customer',
+          builder: (context, state) {
+            return IndivisualCustomerDashboard();
+          },
+          routes: [
+            GoRoute(
+              path: 'services',
+              builder: (context, state) => CustomerServicesScreen(),
+            ),
+            GoRoute(
+              path: 'view_service',
+              builder: (context, state) {
+                var data = state.extra as Map<String, dynamic>;
+                return ViewCaByServiceScreen(serviceId: data['serviceId']);
+              },
+            ),
+            GoRoute(
+              path: 'requested_ca',
+              builder: (context, state) {
+                return EnquiryHistoryScreen();
+              },
+            ),
+            GoRoute(
+              path: 'view_requested_ca',
+              builder: (context, state) {
+                var extra = state.extra as Map<String, dynamic>;
+
+                return ViewEnquiryScreen(
+                  serviceOrderId: extra["serviceOrderId"],
+                  caSide: extra['caSide'] ?? false,
+                );
+              },
+            ),
+          ])
     ]);

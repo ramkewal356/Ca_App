@@ -1,0 +1,63 @@
+part of 'team_member_bloc.dart';
+
+sealed class TeamMemberEvent extends Equatable {
+  const TeamMemberEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetTeamMemberEvent extends TeamMemberEvent {
+  final String searchText;
+  final bool isPagination;
+  final String filterText;
+  final bool isFilter;
+  final bool isSearch;
+  final int? pageNumber;
+  final int? pagesize;
+  const GetTeamMemberEvent(
+      {required this.searchText,
+      required this.filterText,
+      required this.isPagination,
+      required this.isFilter,
+      required this.isSearch,
+      this.pageNumber,
+      this.pagesize});
+  @override
+  List<Object> get props => [
+        searchText,
+        filterText,
+        isPagination,
+        isFilter,
+        isSearch,
+        pageNumber ?? 0,
+        pagesize ?? 0
+      ];
+}
+
+class GetSubCaByCaIdEvent extends TeamMemberEvent {
+  final String searhText;
+
+  const GetSubCaByCaIdEvent({required this.searhText});
+  @override
+  List<Object> get props => [searhText];
+}
+
+class GetVerifiedSubCaByCaIdEvent extends TeamMemberEvent {
+  final String selectedSubCaName;
+
+  const GetVerifiedSubCaByCaIdEvent({required this.selectedSubCaName});
+  @override
+  List<Object> get props => [selectedSubCaName];
+}
+class GetActiveCaWithServiceEvent extends TeamMemberEvent {}
+class UpdateSubCaNameEvent extends TeamMemberEvent {
+  final String selectedSubCaName;
+
+  const UpdateSubCaNameEvent({required this.selectedSubCaName});
+  @override
+  List<Object> get props => [selectedSubCaName];
+}
+
+class GetDeginationEvent extends TeamMemberEvent {}
+class GetPermissionEvent extends TeamMemberEvent {}

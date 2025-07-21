@@ -9,11 +9,23 @@ class CustomTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return TextButton(
+    //   onPressed: onTap,
+
+    //   child: Text(
+    //     buttonTitle,
+    //     style: AppTextStyle().textButtonStyle,
+    //   ),
+    // );
     return InkWell(
       onTap: onTap,
-      child: Text(
-        buttonTitle,
-        style: AppTextStyle().textButtonStyle,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Text(
+          buttonTitle,
+          style: AppTextStyle().textButtonStyle,
+        ),
       ),
     );
   }

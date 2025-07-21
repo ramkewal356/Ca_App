@@ -15,8 +15,13 @@ class ServicesScreen extends StatefulWidget {
 }
 
 class _ServicesScreenState extends State<ServicesScreen> {
-  List<String> tabList = ['Services', 'Create New Services', 'View Services'];
+  List<String> tabList = ['Services', 'Create Services', 'View Services'];
   int selectedIndex = 0;
+  void switchToServiceScreen1() {
+    setState(() {
+      selectedIndex = 0;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return CustomLayoutPage(
@@ -69,7 +74,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
               ),
               Divider(),
               if (selectedIndex == 0) Expanded(child: ServiceScreen1()),
-              if (selectedIndex == 1) Expanded(child: CreateServiceScreen()),
+              if (selectedIndex == 1)
+                Expanded(
+                    child: CreateServiceScreen(
+                  onServiceCreated: switchToServiceScreen1,
+                )),
               if (selectedIndex == 2) Expanded(child: ViewPreviousScreen()),
             ],
           ),

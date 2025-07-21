@@ -4,14 +4,21 @@ import 'package:flutter/material.dart';
 class CustomTextItem extends StatelessWidget {
   final String lable;
   final String value;
-  const CustomTextItem({super.key, required this.lable, required this.value});
+  final bool inOneLinetext;
+  final int? maxLine;
+  const CustomTextItem(
+      {super.key,
+      required this.lable,
+      required this.value,
+      this.maxLine,
+      this.inOneLinetext = false});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.only(bottom: 2),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             lable,
@@ -25,6 +32,8 @@ class CustomTextItem extends StatelessWidget {
           SizedBox(width: 5),
           Expanded(
             child: Text(
+              maxLines: inOneLinetext ? maxLine : 1,
+              overflow: inOneLinetext ? TextOverflow.ellipsis : null,
               value,
               style: AppTextStyle().cardValueText,
             ),

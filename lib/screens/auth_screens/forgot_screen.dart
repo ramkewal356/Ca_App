@@ -5,7 +5,6 @@ import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
-import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
@@ -62,19 +61,25 @@ class _ForgotScreenState extends State<ForgotScreen> {
               SizedBox(height: 20),
               BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state) {
-                  if (state is AuthForgotSuccessState) {
-                    context.push('/otpVerify', extra: _emailController.text);
-                    Utils.toastSuccessMessage('Otp Sent Successfully');
+                  if (state is SendOtpSuccess) {
+                    context.push(
+                      '/otpVerify',
+                      extra: {
+                        'email': _emailController.text,
+                        'selfRegistered': false,
+                      },
+                    );
+                    // Utils.toastSuccessMessage('Otp Sent Successfully');
                   }
                 },
                 builder: (context, state) {
                   return CommonButtonWidget(
-                      loader: state is AuthForgotLoadingState,
+                      loader: state is SendOtpLoading,
                       buttonTitle: 'Submit',
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
                           BlocProvider.of<AuthBloc>(context).add(
-                              AuthForgotEvent(email: _emailController.text));
+                              SendOtpEvent(email: _emailController.text));
                           // context.read<AuthBloc>().add(
                           //     AuthForgotEvent(email: _emailController.text));
                         }

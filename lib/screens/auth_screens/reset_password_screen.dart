@@ -1,16 +1,21 @@
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_event.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
 import 'package:ca_app/utils/assets.dart';
 import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/constanst/validator.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:ca_app/widgets/common_button_widget.dart';
 import 'package:ca_app/widgets/textformfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  final String email;
-  const ResetPasswordScreen({super.key, required this.email});
+  final int userId;
+  const ResetPasswordScreen({super.key, required this.userId});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -25,7 +30,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('email on reset screen:-- ${widget.email}');
+    debugPrint('email on reset screen:-- ${widget.userId}');
 
     return Scaffold(
       backgroundColor: ColorConstants.white,
@@ -125,11 +130,30 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   },
                 ),
                 SizedBox(height: 20),
-                CommonButtonWidget(
-                    buttonTitle: 'Reset Password',
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {}
-                    })
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is UpdateUserSuccess) {
+                      // context.pop();
+                      // context.pop();
+                      // context.pop();
+                      Utils.toastSuccessMessage(
+                          'Password updated successfully');
+                      context.push('/login');
+                    }
+                  },
+                  builder: (context, state) {
+                    return CommonButtonWidget(
+                        loader: state is AuthLoading,
+                        buttonTitle: 'Reset Password',
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            context.read<AuthBloc>().add(UpdateUserEvent(
+                                userId: widget.userId.toString(),
+                                password: _newPassController.text));
+                          }
+                        });
+                  },
+                )
               ],
             ),
           ),

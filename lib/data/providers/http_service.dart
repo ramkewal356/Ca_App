@@ -1,13 +1,15 @@
 import 'dart:convert';
-
 import 'package:ca_app/data/models/response_model/base_response_model.dart';
+// import 'package:ca_app/data/providers/dio_interceptor.dart';
 import 'package:ca_app/data/providers/end_points.dart';
-import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/string.dart';
+import 'package:ca_app/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class HttpService<T> {
   Dio? _http;
@@ -36,29 +38,47 @@ class HttpService<T> {
       // this.baseURL = "http://3.110.83.101:9000/";
     }
     _http = Dio();
-  }
+   
+    // _http?.interceptors.add(DioInterceptor());
+    // _http?.interceptors.add(InterceptorsWrapper(
+    //   onError: (DioException e, handler) async {
+    //     if (e.response?.statusCode == 401) {
+    //       debugPrint("⚠️ Token expired, logging out...");
 
+    //       await SharedPrefsClass().removeToken();
+
+    //       navigatorKey.currentState?.pushNamedAndRemoveUntil(
+    //         '/landing_screen',
+    //         (route) => false,
+    //       );
+    //     }
+    //     return handler.next(e); // continue error flow
+    //   },
+    // ));
+  }
   authorizeRequest() async {
     if (this.headers == null) {
       this.headers = <String, String>{};
     }
     var prefsToken = await SharedPreferences.getInstance();
-    dynamic token = prefsToken.getString('token');
-    this.headers?.addAll({"Token": token});
-    debugPrint("header ${this.headers}");
+    String? token = prefsToken.getString('token');
+    if (token != null && token.isNotEmpty) {
+      this.headers?.addAll({"Authorization": "Bearer $token"});
+    } else {
+      debugPrint("No token found! Login again.");
+    }
 
-    // this.headers!.addAll({"token": "${_auth.authenticationToken}"});
-    // print({'token....jhjh': this.headers});
+    debugPrint("Updated Headers: ${this.headers}");
   }
 
   // ignore: avoid_shadowing_type_parameters
-  Future<Response<T>>? request<T>() {
+  Future<Response<T>?>? request<T>() async {
     dynamic bodyData;
     if (this.headers == null) {
       this.headers = <String, String>{};
     }
     if (isAuthorizeRequest) {
-      authorizeRequest();
+      await authorizeRequest();
     }
 
     // Body Type check
@@ -68,7 +88,8 @@ class HttpService<T> {
     switch (this.bodyType) {
       case HttpBodyType.FormData:
         this.headers?.addAll({
-          'Content-Type': 'application/x-www-form-urlencoded',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "multipart/form-data",
         });
         bodyData = this.body != null ? FormData.fromMap(this.body!) : null;
         break;
@@ -98,6 +119,8 @@ class HttpService<T> {
           this.baseURL! + this.endURL!,
           queryParameters: this.queryParameters,
           options: Options(
+            sendTimeout: Duration(seconds: 10),
+            receiveTimeout: Duration(seconds: 15),
             headers: this.headers,
             validateStatus: (status) {
               this.responseStatusCode = status!;
@@ -111,6 +134,8 @@ class HttpService<T> {
         // FormData dataaa = bodyData;
         debugPrint("bodyData formdata $bodyData");
         debugPrint("baseUrl: ${this.baseURL! + this.endURL!}");
+        debugPrint("call  ${this.headers}");
+
         return _http!.post<T>(
           this.baseURL! + this.endURL!,
           queryParameters: this.queryParameters,
@@ -172,6 +197,7 @@ class HttpService<T> {
             receiveDataWhenStatusError: true,
           ),
         );
+
       // break;
       default:
         return null;
@@ -220,11 +246,11 @@ class HttpService<T> {
         // bad request
         // print({"error 400": error.response.data["message"]});
         if (message != null) {
-          // Utils.flushBarErrorMessage(message, context);
-          Fluttertoast.showToast(
-              msg: message,
-              backgroundColor: ColorConstants.redColor,
-              textColor: ColorConstants.white);
+          Utils.toastErrorMessage(message);
+          // Fluttertoast.showToast(
+          //     msg: message,
+          //     backgroundColor: ColorConstants.redColor,
+          //     textColor: ColorConstants.white);
           break;
         } else {
           Fluttertoast.showToast(msg: kStringBadRequest);
@@ -251,7 +277,8 @@ class HttpService<T> {
       case 500:
         // internal server error
         if (message != null) {
-          Fluttertoast.showToast(msg: message);
+          // Fluttertoast.showToast(msg: message);
+          Utils.toastErrorMessage(message);
           break;
         }
         Fluttertoast.showToast(msg: kStringServerError);

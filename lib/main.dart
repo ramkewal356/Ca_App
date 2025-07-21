@@ -1,18 +1,48 @@
+
 import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/chat/chat_bloc.dart';
 import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
-import 'package:ca_app/blocs/login/login_bloc.dart';
+import 'package:ca_app/blocs/customer/customer_bloc.dart';
+import 'package:ca_app/blocs/dashboard/dashboard_bloc.dart';
+import 'package:ca_app/blocs/document/document_bloc.dart';
+import 'package:ca_app/blocs/help_and_support/help_and_support_bloc.dart';
+import 'package:ca_app/blocs/image_picker/image_picker_bloc.dart';
+import 'package:ca_app/blocs/indivisual_customer/indivisual_customer_bloc.dart';
+import 'package:ca_app/blocs/logs/logs_bloc.dart';
 import 'package:ca_app/blocs/multi_select_dropdown/multi_select_dropdown_bloc.dart';
-import 'package:ca_app/blocs/register/register_bloc.dart';
+import 'package:ca_app/blocs/permission/permission_bloc.dart';
+import 'package:ca_app/blocs/profile/profile_bloc.dart';
+import 'package:ca_app/blocs/raise_request/raise_request_bloc.dart';
+import 'package:ca_app/blocs/reminder/reminder_bloc.dart';
+import 'package:ca_app/blocs/service/service_bloc.dart';
+import 'package:ca_app/blocs/task/task_bloc.dart';
+import 'package:ca_app/blocs/team_member/team_member_bloc.dart';
 import 'package:ca_app/blocs/upload_document/upload_document_bloc.dart';
+// import 'package:ca_app/data/repositories/document_repository.dart';
 import 'package:ca_app/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void main() {
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+  // FlutterDownloader.registerCallback(DocumentRepository.downloadCallback);
+
+
   runApp(const MyApp());
 }
+// final ReceivePort _port = ReceivePort();
 
+// @pragma('vm:entry-point')
+// void downloadCallback(String id, int status, int progress) {
+//   IsolateNameServer.lookupPortByName('downloader_send_port')
+//       ?.send([id, status, progress]);
+// }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,22 +52,57 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc()),
-        BlocProvider(create: (_) => LoginBloc()),
+        BlocProvider(create: (_) => DashboardBloc()),
         BlocProvider(create: (_) => CustomDropdownBloc()),
-        BlocProvider(create: (_) => RegisterBloc()),
         BlocProvider(create: (_) => UploadDocumentBloc()),
         BlocProvider(create: (_) => MultiSelectDropdownBloc()),
+        BlocProvider(create: (_) => TeamMemberBloc()),
+        BlocProvider(create: (_) => CustomerBloc()),
+        BlocProvider(create: (_) => DocumentBloc()),
+        BlocProvider(create: (_) => LogsBloc()),
+        BlocProvider(create: (_) => ServiceBloc()),
+        BlocProvider(create: (_) => DownloadDocumentBloc()),
+        BlocProvider(create: (_) => AssigneCustomerBloc()),
+        BlocProvider(create: (_) => TaskBloc()),
+        BlocProvider(create: (_) => CreateNewTaskBloc()),
+        BlocProvider(create: (_) => ActionOnTaskBloc()),
+        BlocProvider(create: (_) => HelpAndSupportBloc()),
+        BlocProvider(create: (_) => RaiseRequestBloc()),
+        BlocProvider(create: (_) => GetDeginationBloc()),
+        BlocProvider(create: (_) => ReminderBloc()),
+        BlocProvider(create: (_) => CreateReminderBloc()),
+        BlocProvider(create: (_) => ImagePickerBloc()),
+        BlocProvider(create: (_) => GetLoginCustomerBloc()),
+        BlocProvider(create: (_) => AssignServiceBloc()),
+        BlocProvider(create: (_) => GetPermissionBloc()),
+        BlocProvider(create: (_) => PermissionBloc()),
+        BlocProvider(create: (_) => ChangeStatusBloc()),
+        BlocProvider(create: (_) => IndivisualCustomerBloc()),
+        BlocProvider(create: (_) => ProfileBloc()),
+        BlocProvider(create: (_) => GetDegreeBloc()),
+        BlocProvider(create: (_) => ChatBloc()),
+        BlocProvider(create: (_) => ChatHistoryBloc()),
+        
+
+
+      
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        routerConfig: goRouter,
-        // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
+      child: ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: true,
+              ),
+              routerConfig: goRouter,
+              // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+            );
+          }),
     );
   }
 }

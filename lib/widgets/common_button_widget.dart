@@ -16,6 +16,8 @@ class CommonButtonWidget extends StatefulWidget {
   final Widget? buttonIcon;
   final Function()? onTap;
   final Color? buttonBorderColor;
+  final Color? loaderColor;
+  final double? borderRadius;
   const CommonButtonWidget(
       {super.key,
       this.buttonWidth,
@@ -28,7 +30,10 @@ class CommonButtonWidget extends StatefulWidget {
       this.loader = false,
       this.disable = false,
       this.buttonBorderColor,
-      required this.onTap});
+      this.loaderColor,
+    required this.onTap,
+    this.borderRadius,
+  });
 
   @override
   State<CommonButtonWidget> createState() => _CommonButtonWidgetState();
@@ -39,9 +44,11 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
   Widget build(BuildContext context) {
     return Material(
       elevation: 1,
-      color: widget.buttonColor ?? ColorConstants.buttonColor,
+      color: widget.disable
+          ? ColorConstants.buttonColor.withOpacity(0.2)
+          : widget.buttonColor ?? ColorConstants.buttonColor,
       shadowColor: widget.buttonColor ?? ColorConstants.buttonColor,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
       child: InkWell(
         onTap: (widget.disable || widget.loader) ? null : widget.onTap,
         child: Container(
@@ -49,16 +56,18 @@ class _CommonButtonWidgetState extends State<CommonButtonWidget> {
           height: widget.buttonheight ?? 50,
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           decoration: BoxDecoration(
-              color: widget.buttonColor ?? ColorConstants.buttonColor,
+              color: widget.disable
+                  ? ColorConstants.buttonColor.withOpacity(0.2)
+                  : widget.buttonColor ?? ColorConstants.buttonColor,
               border: Border.all(
                 color: widget.buttonBorderColor ??
-                    ColorConstants.darkGray.withOpacity(0.5),
+                    ColorConstants.darkGray.withOpacity(0.2),
               ),
-              borderRadius: BorderRadius.circular(8)),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 8)),
           child: Center(
               child: widget.loader
                   ? CircularProgressIndicator(
-                      color: ColorConstants.white,
+                      color: widget.loaderColor ?? ColorConstants.white,
                     )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,

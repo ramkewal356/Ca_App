@@ -5,11 +5,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CustomDropdownButton extends StatelessWidget {
+class CustomDropdownButton extends StatefulWidget {
   final List<String> dropdownItems;
   final String? initialValue;
   final String hintText;
-
+  final bool initialStateSelected;
   final Function(String?)? onChanged;
   final String? Function(String?)? validator;
   final Color? fillColor;
@@ -18,48 +18,84 @@ class CustomDropdownButton extends StatelessWidget {
       required this.dropdownItems,
       required this.initialValue,
       required this.hintText,
+      this.initialStateSelected = false,
       this.onChanged,
       this.validator,
       this.fillColor});
 
   @override
+  State<CustomDropdownButton> createState() => _CustomDropdownButtonState();
+}
+
+class _CustomDropdownButtonState extends State<CustomDropdownButton> {
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CustomDropdownBloc, CustomDropdownState>(
-      listener: (context, state) {},
+    return BlocBuilder<CustomDropdownBloc, CustomDropdownState>(
+    
       builder: (context, state) {
-        String? selectedValue = (state is CustomDropdownSelected &&
-                dropdownItems.contains(state.value))
+        List<String> uniqueDropdownItems =
+            widget.dropdownItems.toSet().toList();
+        String? selectedValue = (widget.initialStateSelected)
+            ? ((state is CustomDropdownSelected &&
+                uniqueDropdownItems.contains(state.value))
             ? state.value
-            : initialValue;
+                : (state is CustomDropdownInitial) // Reset state
+                    ? null
+                    : (widget.initialValue != null &&
+                            uniqueDropdownItems.contains(widget.initialValue))
+                        ? widget.initialValue
+                        : null)
+            : (state is CustomDropdownSelected &&
+                    uniqueDropdownItems.contains(state.value))
+                ? state.value
+                : (widget.initialValue != null &&
+                        uniqueDropdownItems.contains(widget.initialValue))
+                    ? widget.initialValue
+                : null;
+        // String? selectedValue = (state is CustomDropdownSelected &&
+        //         uniqueDropdownItems.contains(state.value))
+        //     ? state.value
+        //     : (widget.initialValue != null &&
+        //             uniqueDropdownItems.contains(widget.initialValue))
+        //         ? widget.initialValue
+        //         : null;
         return FormField<String>(
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            initialValue:
-                dropdownItems.contains(selectedValue) ? selectedValue : null,
-            validator: validator,
+            initialValue: uniqueDropdownItems.contains(selectedValue)
+                ? selectedValue
+                : null,
+            validator: widget.validator,
+            
             builder: (FormFieldState<String> fieldState) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DropdownButton2(
+                    isExpanded: true,
                     hint: Text(
-                      hintText,
+                      widget.hintText,
                       style: AppTextStyle().hintText,
                     ),
                     value: selectedValue,
                     // disabledHint: Text('data'),
                     underline: SizedBox.shrink(),
-                    items: dropdownItems.map((value) {
-                      return DropdownMenuItem(value: value, child: Text(value));
+                    items: uniqueDropdownItems.map((value) {
+                      return DropdownMenuItem(
+                          value: value,
+                          child: Text(
+                            value,
+                          ));
                     }).toList(),
+                    
                     buttonStyleData: ButtonStyleData(
-                      height: 55,
+                      height: 50,
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
+                          vertical: 10, horizontal: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: ColorConstants.darkGray),
-                        color: fillColor,
+                        color: widget.fillColor,
                       ),
                       elevation: 0,
                     ),
@@ -67,7 +103,7 @@ class CustomDropdownButton extends StatelessWidget {
                       icon: Icon(
                         Icons.keyboard_arrow_down_outlined,
                       ),
-                      iconSize: 24,
+                      iconSize: 20,
                       iconEnabledColor: Colors.black38,
                       iconDisabledColor: Colors.grey,
                     ),
@@ -87,6 +123,7 @@ class CustomDropdownButton extends StatelessWidget {
                         thumbVisibility: WidgetStateProperty.all(true),
                       ),
                     ),
+                    
                     menuItemStyleData: const MenuItemStyleData(
                       height: 50,
                       overlayColor:
@@ -98,15 +135,15 @@ class CustomDropdownButton extends StatelessWidget {
                         BlocProvider.of<CustomDropdownBloc>(context)
                             .add(DropdownSelectedEvent(value: value));
                       }
-                      if (onChanged != null) {
-                        onChanged!(value);
+                      if (widget.onChanged != null) {
+                        widget.onChanged!(value);
                       }
                       fieldState.didChange(value);
                     },
                   ),
                   if (fieldState.hasError)
                     Padding(
-                      padding: const EdgeInsets.only(top: 5, left: 15),
+                      padding: const EdgeInsets.only(top: 5, left: 10),
                       child: Text(
                         fieldState.errorText!,
                         style: TextStyle(

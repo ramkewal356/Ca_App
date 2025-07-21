@@ -4,6 +4,7 @@ import 'package:ca_app/utils/constanst/colors.dart';
 import 'package:ca_app/utils/constanst/text_style.dart';
 import 'package:ca_app/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_google_maps_webservices/places.dart';
 
 class CustomSearchLocation extends StatefulWidget {
@@ -12,6 +13,7 @@ class CustomSearchLocation extends StatefulWidget {
   final Color? fillColor;
   final FocusNode? focusNode;
   final String state;
+  final Widget? prefixIcon;
   // final bool stateValidation;
   const CustomSearchLocation({
     super.key,
@@ -20,6 +22,7 @@ class CustomSearchLocation extends StatefulWidget {
     required this.hintText,
     this.fillColor,
     this.focusNode,
+      this.prefixIcon
     // required this.stateValidation,
   });
 
@@ -51,7 +54,9 @@ class _CustomSearchLocationState extends State<CustomSearchLocation> {
       readOnly: true,
       focusNode: widget.focusNode,
       decoration: InputDecoration(
+        prefixIcon: widget.prefixIcon,
         hintText: widget.hintText,
+        prefixIconConstraints: BoxConstraints(maxWidth: 30),
         hintStyle: AppTextStyle().hintText,
         fillColor: widget.fillColor ?? ColorConstants.white,
         filled: true,
@@ -95,15 +100,15 @@ class _CustomSearchLocationState extends State<CustomSearchLocation> {
           ),
         ),
 
-        errorStyle: const TextStyle(
-          color: ColorConstants.redColor, // Change error text color
-          fontSize: 13, // Adjust error text size if needed
+        errorStyle: TextStyle(
+          color: Colors.red[900],
+          fontSize: 13, 
         ),
       ),
       onTap: _navigateToSearchPage,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please select location';
+          return 'Please select address';
         }
         return null;
       },
@@ -120,7 +125,8 @@ class SearchLocationPage extends StatefulWidget {
 }
 
 class _SearchLocationPageState extends State<SearchLocationPage> {
-  String kGoogleApiKey = 'AIzaSyDhKIUQ4QBoDuOsooDfNY_EjCG0MB7Ami8';
+  String kGoogleApiKey = dotenv.env['API_KEY'] ?? '';
+  // String kGoogleApiKey = 'AIzaSyA5TT3UUixs2V3IGu1t9wjXkkCRCn3n2hg';
   final TextEditingController _searchController = TextEditingController();
   late GoogleMapsPlaces googlePlace;
   List<Prediction> predictions = [];

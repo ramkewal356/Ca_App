@@ -11,6 +11,7 @@ class UploadDocumentBloc
     on<InitializePageEvent>(_initializePage);
 
     on<PickDocumentEvent>(_pickDocument);
+    on(_pickSingleImage);
     on<RemoveDocumentEvent>(_removeDocument);
     on<ResetDocumentEvent>(_resetDocument);
   }
@@ -28,6 +29,24 @@ class UploadDocumentBloc
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+      );
+
+      if (result != null) {
+        _documents.addAll(result.files);
+        emit(UploadDocumentLoaded(documents: List.from(_documents)));
+      }
+    } catch (e) {
+      emit(UploadDocumentError(message: e.toString()));
+    }
+  }
+
+  Future<void> _pickSingleImage(
+      PickSingleImageEvent event, Emitter<UploadDocumentState> emit) async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
         type: FileType.custom,
         allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
       );

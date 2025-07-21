@@ -1,0 +1,626 @@
+import 'package:ca_app/blocs/auth/auth_bloc.dart';
+import 'package:ca_app/blocs/auth/auth_event.dart';
+import 'package:ca_app/blocs/auth/auth_state.dart';
+import 'package:ca_app/blocs/custom_dropdown/custom_dropdown_bloc.dart';
+import 'package:ca_app/blocs/service/service_bloc.dart';
+import 'package:ca_app/data/local_storage/shared_prefs_class.dart';
+import 'package:ca_app/data/models/get_services_list_model.dart';
+import 'package:ca_app/utils/constanst/colors.dart';
+import 'package:ca_app/utils/constanst/text_style.dart';
+import 'package:ca_app/widgets/common_button_widget.dart';
+import 'package:ca_app/widgets/coomon_ca_container.dart';
+import 'package:ca_app/widgets/custom_card.dart';
+import 'package:ca_app/widgets/custom_dropdown_button.dart';
+import 'package:ca_app/widgets/custom_layout.dart';
+import 'package:ca_app/widgets/textformfield_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+class CaDetailsScreen extends StatefulWidget {
+  final String userId;
+  final String caId;
+  final int? serviceId;
+  final String? serviceName;
+  const CaDetailsScreen(
+      {super.key,
+      required this.userId,
+      this.serviceId,
+      this.serviceName,
+      required this.caId});
+
+  @override
+  State<CaDetailsScreen> createState() => _CaDetailsScreenState();
+}
+
+class _CaDetailsScreenState extends State<CaDetailsScreen> {
+  final TextEditingController _subjectController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  int? serviceId;
+  String serviceName = '';
+  String selectedUrgencyLevel = '';
+  @override
+  void initState() {
+    super.initState();
+    _getUser();
+    _fetchService();
+  }
+
+  void _getUser() {
+    BlocProvider.of<AuthBloc>(context)
+        .add(GetUserByIdEvent(userId: widget.caId));
+  }
+
+  void _fetchService() {
+    setState(() {
+      serviceId = widget.serviceId ?? 0;
+      serviceName = widget.serviceName ?? '';
+    });
+    context.read<ServiceBloc>().add(GetCaServiceListEvent(
+        caId: widget.caId,
+        isSearch: true,
+        searchText: '',
+        isPagination: false,
+        pageNumber: -1,
+        pageSize: -1));
+  }
+
+  final Map<int, int> ratingStats = {
+    5: 75,
+    4: 15,
+    3: 5,
+    2: 4,
+    1: 1,
+  };
+  final List<Map<String, dynamic>> reviews = [
+    {
+      "name": "Sarah Johnson",
+      "date": "2 weeks ago",
+      "rating": 5,
+      "comment":
+          "Jennifer was extremely helpful with my business tax preparation. She identified several deductions I had missed and saved me thousands of dollars."
+    },
+    {"name": "Michael Chen", "date": "1 month ago", "rating": 5, "comment": ""},
+  ];
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('service Name ${widget.serviceName}');
+    debugPrint('user id ${widget.userId}');
+
+    return CustomLayoutPage(
+      bgColor: ColorConstants.white,
+      appBar: AppBar(
+        title: Text(
+          'Ca Details',
+          style: AppTextStyle().cardLableText,
+        ),
+        backgroundColor: ColorConstants.white,
+        shadowColor: ColorConstants.white,
+        elevation: 2,
+      ),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is GetUserLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: ColorConstants.buttonColor,
+              ),
+            );
+          } else if (state is GetUserByIdSuccess) {
+            var userData = state.getUserByIdData?.data;
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 5),
+                    CommonCaContainer(
+                      imageUrl: userData?.profileUrl ?? '',
+                      name: '${userData?.firstName} ${userData?.lastName}',
+                      title: userData?.professionalTitle ?? '',
+                      tag: widget.serviceName ?? '',
+                      address: userData?.firmAddress ?? userData?.address ?? '',
+                      isOnline: userData?.receiverOnline ?? false,
+                      rating: 4.9,
+                      reviews: 174,
+                      exprience:
+                          '${userData?.years ?? '0'}.${userData?.months ?? '0'}',
+                      totalClient: '500',
+                      isVisibleButton: true,
+                      lastLogout: userData?.lastLogout ?? '',
+                      onChatTap: () async {
+                        String? token = await SharedPrefsClass().getToken();
+
+                        if (token != null) {
+                          context.push('/chat_screen', extra: {
+                            "name":
+                                '${userData?.firstName} ${userData?.lastName}',
+                            "title": userData?.professionalTitle ?? '',
+                            "profileImg": userData?.profileUrl ?? '',
+                            "isOnline": userData?.isOnline,
+                            "senderId": widget.userId,
+                            "receiverId": widget.caId,
+                            "role": 'Customer'
+                          });
+                        } else {
+                          context.push('/login');
+                        }
+                      },
+                      onSendEnquiry: () async {
+                        String? token = await SharedPrefsClass().getToken();
+
+                        if (token != null) {
+                          _sendEnquiryModal(
+                            onTap: () {
+                              context.read<AssignServiceBloc>().add(
+                                  SendSercieRequestOrderEvent(
+                                      serviceId: serviceId ?? 0,
+                                      caId: widget.userId.toString(),
+                                      message: _messageController.text,
+                                      subject: _subjectController.text,
+                                      urgencyLevel: selectedUrgencyLevel));
+                            },
+                          );
+                        } else {
+                          context.push('/login');
+                        }
+                      },
+                    ),
+                    SizedBox(height: 5),
+                    CustomCard(
+                        // ignore: deprecated_member_use
+                        cardColor: ColorConstants.buttonColor.withOpacity(0.1),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'About ${userData?.firstName ?? ''} ${userData?.lastName ?? ''}',
+                              style: AppTextStyle().landingAccountTitle20,
+                            ),
+                            Text(
+                              userData?.about ??
+                                  'Jennifer is a seasoned CPA with over 12 years of experience in tax planning and preparation. She specializes in helping small to medium businesses optimize their tax strategies and ensure compliance with current regulations.',
+                              style: AppTextStyle().textSmallButtonStyle,
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'Certifications',
+                              style: AppTextStyle().landingAccountTitle20,
+                            ),
+                            // SizedBox(height: 10),
+                            (userData?.userCertifications ?? []).isEmpty
+                                ? Text(
+                                    'N/A',
+                                    style: AppTextStyle().listTileText,
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        userData?.userCertifications?.length ??
+                                            0,
+                                    itemBuilder: (context, index) {
+                                      return itemText(
+                                          '${userData?.userCertifications?[index].toString()}');
+                                    }),
+
+                            // SizedBox(height: 10),
+                            // itemText('Enrolled Agent (EA)'),
+                            // SizedBox(height: 10),
+                            // itemText('QuickBooks ProAdvisor'),
+                            SizedBox(height: 10),
+                            Text(
+                              'Education',
+                              style: AppTextStyle().landingAccountTitle20,
+                            ),
+                            (userData?.caEducations ?? []).isEmpty
+                                ? Text(
+                                    'N/A',
+                                    style: AppTextStyle().listTileText,
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        userData?.caEducations?.length ?? 0,
+                                    itemBuilder: (context, index) {
+                                      return itemText(
+                                          '${userData?.caEducations?[index].degree} (${userData?.caEducations?[index].university})');
+                                    }),
+                          ],
+                        )),
+                    CustomCard(
+                        // ignore: deprecated_member_use
+                        cardColor: ColorConstants.buttonColor.withOpacity(0.1),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Services',
+                              style: AppTextStyle().landingAccountTitle20,
+                            ),
+                            BlocBuilder<ServiceBloc, ServiceState>(
+                              builder: (context, state) {
+                                if (state is GetCaServiceListSuccess) {
+                                  return state.getCaServicesList.isEmpty
+                                      ? Text('N/A')
+                                      : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              state.getCaServicesList.length,
+                                          itemBuilder: (context, index) {
+                                            var services =
+                                                state.getCaServicesList[index];
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 5),
+                                              child: itemText(
+                                                  services.subService ?? ''),
+                                            );
+                                          },
+                                        );
+                                }
+                                return Container();
+                              },
+                            ),
+                            // SizedBox(height: 20),
+                            // itemText('Tax Planning & Preparation'),
+                            // SizedBox(height: 10),
+                            // itemText('Business Tax Returns'),
+                            // SizedBox(height: 10),
+                            // itemText('Individual Tax Returns'),
+                            // SizedBox(height: 10),
+                            // itemText('Tax Consultation'),
+                            // SizedBox(height: 10),
+                            // itemText('IRS Representation'),
+                            // SizedBox(height: 10),
+                            // itemText('Financial Planning')
+                          ],
+                        )),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '4.9',
+                          style: AppTextStyle().headingtext,
+                        )
+                      ],
+                    ),
+                    Text(
+                      'All reviews',
+                      style: AppTextStyle().cardLableText,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '196 total',
+                          style: AppTextStyle().textMediumButtonStyle,
+                        ),
+                        Text(
+                          'Write a review',
+                          style: AppTextStyle().textMediumButtonStyle,
+                        )
+                      ],
+                    ),
+                    CustomCard(
+                        child: Column(
+                      children: [
+                        ...ratingStats.entries.map((entry) => RatingBarRow(
+                              stars: entry.key,
+                              percent: entry.value,
+                            )),
+                      ],
+                    )),
+                    SizedBox(height: 10),
+                    Text(
+                      'Client Reviews',
+                      style: AppTextStyle().cardLableText,
+                    ),
+                    SizedBox(height: 10),
+                    ...reviews.map((review) => ReviewTile(review)),
+                  ],
+                ),
+              ),
+            );
+          }
+          return Container();
+        },
+      ),
+    );
+  }
+
+  itemText(String lable) {
+    return Row(
+      children: [
+        Icon(
+          Icons.task_alt_outlined,
+          size: 18,
+          color: ColorConstants.buttonColor,
+        ),
+        SizedBox(width: 5),
+        Expanded(
+          child: Text(
+            lable,
+            style: AppTextStyle().textSmallButtonStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  itemText1(String lable) {
+    return Row(
+      children: [
+        Icon(
+          Icons.workspace_premium_outlined,
+          size: 18,
+          color: ColorConstants.buttonColor,
+        ),
+        SizedBox(width: 5),
+        Expanded(
+          child: Text(
+            lable,
+            style: AppTextStyle().textSmallButtonStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  _sendEnquiryModal({required VoidCallback onTap}) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: SingleChildScrollView(
+                  child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    color: ColorConstants.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Send Enquiry',
+                          style: AppTextStyle().textButtonStyle,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            icon: Icon(Icons.close))
+                      ],
+                    ),
+                    Text(
+                      'Fill out the form below and Jennifer Smith will get back to you within 24 hours.',
+                      style: AppTextStyle().landinghinttextblack,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Service Type',
+                      style: AppTextStyle().listTileText,
+                    ),
+                    SizedBox(height: 5),
+                    (widget.serviceName ?? '').isNotEmpty
+                        ? TextformfieldWidget(
+                            readOnly: true,
+                            controller:
+                                TextEditingController(text: serviceName),
+                            hintText: 'Select service')
+                        : BlocBuilder<ServiceBloc, ServiceState>(
+                            builder: (context, state) {
+                              List<ServicesListData> listData = [];
+                              if (state is GetCaServiceListSuccess) {
+                                listData = state.getCaServicesList;
+                                debugPrint(
+                                    'cvsdfdsd ${listData.map((toElement) => '${toElement.subService} (${toElement.serviceName})').toList()}');
+                              }
+                              return CustomDropdownButton(
+                                dropdownItems: listData
+                                    .map((toElement) =>
+                                        toElement.subService ?? '')
+                                    .toList(),
+                                initialValue: serviceName,
+                                hintText: 'select service',
+                                onChanged: (p0) {
+                                  final selectedService = listData.firstWhere(
+                                    (service) => service.subService == p0,
+                                    orElse: () =>
+                                        ServicesListData(), // or handle null more strictly
+                                  );
+
+                                  setState(() {
+                                    serviceName = p0!;
+                                    serviceId = selectedService.serviceId;
+                                  });
+
+                                  debugPrint('Selected serviceId: $serviceId');
+                                },
+                              );
+                            },
+                          ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Subject',
+                      style: AppTextStyle().listTileText,
+                    ),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                        controller: _subjectController,
+                        hintText: 'Brief subject of your enquiry'),
+                    SizedBox(height: 8),
+                    Text(
+                      'Urgency Level',
+                      style: AppTextStyle().listTileText,
+                    ),
+                    SizedBox(height: 5),
+                    CustomDropdownButton(
+                      dropdownItems: ['LOW', 'MEDIUM', 'HIGH'],
+                      initialValue: selectedUrgencyLevel,
+                      hintText: 'General Enquiry',
+                      onChanged: (p0) {
+                        setState(() {
+                          selectedUrgencyLevel = p0!;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Message',
+                      style: AppTextStyle().listTileText,
+                    ),
+                    SizedBox(height: 5),
+                    TextformfieldWidget(
+                        maxLines: 3,
+                        minLines: 3,
+                        controller: _messageController,
+                        hintText:
+                            'Please describe your accounting needs in details'),
+                    SizedBox(height: 15),
+                    BlocConsumer<AssignServiceBloc, ServiceState>(
+                      listener: (context, state) {
+                        if (state is SendSericeRequestOrderSuccess) {
+                          context
+                              .read<CustomDropdownBloc>()
+                              .add(DropdownResetEvent());
+                          context.pop();
+                        } else if (state is ServiceError) {
+                          context.pop();
+                          context
+                              .read<CustomDropdownBloc>()
+                              .add(DropdownResetEvent());
+                        }
+                      },
+                      builder: (context, state) {
+                        return CommonButtonWidget(
+                          buttonheight: 45,
+                          loader: state is SendServiceRequestLoading,
+                          buttonTitle: 'Send Enquiry',
+                          onTap: onTap,
+                        );
+                      },
+                    )
+                  ],
+                ),
+              )),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class RatingBarRow extends StatelessWidget {
+  final int stars;
+  final int percent;
+
+  const RatingBarRow({super.key, required this.stars, required this.percent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Checkbox(
+            value: false,
+            onChanged: (_) {},
+            side: BorderSide(color: ColorConstants.buttonColor, width: 2),
+          ),
+          Text(
+            '$stars - star',
+            style: AppTextStyle().labletext,
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  height: 15,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                Container(
+                  height: 15,
+                  width: percent * 2.0, // adjust as needed
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8),
+          Text(
+            '$percent%',
+            style: AppTextStyle().labletext,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ReviewTile extends StatelessWidget {
+  final Map<String, dynamic> review;
+
+  const ReviewTile(this.review, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(review['name'], style: AppTextStyle().textCardStyle),
+        Row(
+          children: [
+            Row(
+              children: List.generate(5, (index) {
+                return Icon(Icons.star,
+                    color:
+                        index < review['rating'] ? Colors.orange : Colors.grey,
+                    size: 20);
+              }),
+            ),
+            SizedBox(width: 8),
+            Text(
+              review['date'],
+              style: AppTextStyle().landingSubTitle,
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        if (review['comment'].isNotEmpty)
+          Text(
+            review['comment'],
+            style: AppTextStyle().landingSubTitle,
+          ),
+        Divider(height: 24),
+      ],
+    );
+  }
+}
