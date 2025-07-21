@@ -94,7 +94,7 @@ class CommonCaContainer extends StatelessWidget {
                       title.isEmpty
                           ? SizedBox.shrink()
                           : Text(title, style: AppTextStyle().landingSubTitle),
-                      if (!isOnline)
+                      if (!isOnline && lastLogout.isNotEmpty)
                         Text(
                           'Last seen $lastLogout',
                           style: AppTextStyle().rating8,

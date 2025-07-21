@@ -78,7 +78,7 @@ class Data {
   String? dateOfBirth;
   String? typeOfBusiness;
   int? profileCompletion;
-  String? lastLogout;
+  String? lastSeen;
   bool? receiverOnline;
   Data(
       {this.id,
@@ -129,7 +129,7 @@ class Data {
       this.dateOfBirth,
       this.typeOfBusiness,
       this.profileCompletion,
-      this.lastLogout,
+      this.lastSeen,
       this.receiverOnline});
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -193,7 +193,7 @@ class Data {
       dateOfBirth: json["dateOfBirth"],
       typeOfBusiness: json["typeOfBusiness"],
       profileCompletion: json["profileCompletion"],
-      lastLogout: json["lastLogout"],
+      lastSeen: json["lastSeen"],
       receiverOnline: json["receiverOnline"]
       );
 
@@ -254,7 +254,7 @@ class Data {
         "dateOfBirth": dateOfBirth,
         "typeOfBusiness": typeOfBusiness,
         "profileCompletion": profileCompletion,
-        "lastLogout": lastLogout,
+        "lastSeen": lastSeen,
         "receiverOnline": receiverOnline
       };
 }

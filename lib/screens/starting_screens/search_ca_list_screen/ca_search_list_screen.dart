@@ -55,6 +55,7 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
     _serviceController.text = widget.serviceName;
     _searchController.text = widget.searchText;
     _getViewCaByService(isFilter: true);
+    _isLoggin();
     _scrollController.addListener(_onScroll);
   }
 
@@ -261,7 +262,6 @@ class _CaSearchListScreenState extends State<CaSearchListScreen> {
                               if (isLogin) {
                                 _getUser();
                               }
-                             
 
                               _getViewCaByService(isFilter: true);
                             });
